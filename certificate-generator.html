@@ -86,6 +86,15 @@ html,body{height:100%;overflow:hidden;font-family:'Tajawal','Cairo',sans-serif;b
 .sb::-webkit-scrollbar{width:4px;}
 .sb::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
+/* خصائص المجموعات للحفاظ على التنسيق في الكمبيوتر */
+#settingsGrp, #namesGrp { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+
+/* إخفاء وإظهار المجموعات في وضع الهاتف فقط */
+@media(max-width:768px){
+  #settingsGrp, #namesGrp { display: none; }
+  #settingsGrp.mob-on, #namesGrp.mob-on { display: flex; }
+}
+
 /* ── MAIN ── */
 .main{
   flex:1;overflow:auto;
@@ -162,6 +171,7 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
 .btn-g:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,197,24,.38);}
 .btn-g:disabled,.btn-p:disabled{opacity:.3;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
 .fw{width:100%;}
+.mob-only-btn{display:none;}
 
 /* Export type */
 .exrow{display:flex;gap:8px;margin-bottom:10px;}
@@ -259,6 +269,7 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
 
   /* Desktop-only items */
   .dsk{display:none!important;}
+  .mob-only-btn{display:inline-flex !important;}
 
   /* Canvas fits mobile */
   .cwrap{max-width:100%;}
@@ -339,7 +350,6 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
 </head>
 <body data-theme="light">
 
-<!-- ═══════════════ HEADER ═══════════════ -->
 <header class="hdr">
   <div class="logo">
     <div class="logo-ico">🎓</div>
@@ -364,107 +374,109 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
   </div>
 </header>
 
-<!-- ═══════════════ LAYOUT ═══════════════ -->
 <div class="layout">
 
-  <!-- SIDEBAR -->
   <aside class="sb mob-on" id="sbEl">
 
-    <div class="card">
-      <div class="ctitle"><div class="cico">🖼</div>صورة الشهادة</div>
-      <div class="uz" id="imgZone" onclick="document.getElementById('imgIn').click()">
-        <input type="file" id="imgIn" accept="image/*">
-        <span class="uico">📂</span>
-        <div class="utxt"><strong>اضغط لاختيار الصورة</strong>أو اسحبها — PNG · JPG · WEBP</div>
-      </div>
-      <div class="ibox" id="ibox">
-        <div class="irow"><span><b>الحجم: </b><span id="imgDim">—</span></span><span><b>الصيغة: </b><span id="imgFmt">—</span></span></div>
-        <div class="hint">⚡ يُصدَّر بالجودة الأصلية الكاملة</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="ctitle"><div class="cico">✏️</div>إعدادات النص</div>
-      <div class="mb">
-        <label>نوع الخط</label>
-        <select id="ff">
-          <optgroup label="عربية حديثة">
-            <option value="'Tajawal',sans-serif">Tajawal — تجوال</option>
-            <option value="'Cairo',sans-serif">Cairo — القاهرة</option>
-            <option value="'Almarai',sans-serif">Almarai — المراعي</option>
-            <option value="'IBM Plex Sans Arabic',sans-serif">IBM Plex Arabic</option>
-          </optgroup>
-          <optgroup label="كلاسيكية وفنية">
-            <option value="'Amiri',serif">Amiri — أميري</option>
-            <option value="'Aref Ruqaa',serif">Aref Ruqaa — رقعة</option>
-            <option value="'Reem Kufi',sans-serif">Reem Kufi — كوفي</option>
-            <option value="'Lateef',serif">Lateef — لطيف</option>
-          </optgroup>
-          <optgroup label="نظام">
-            <option value="'Traditional Arabic',serif">Traditional Arabic</option>
-            <option value="Arial,sans-serif">Arial</option>
-          </optgroup>
-          <optgroup label="لاتينية">
-            <option value="'Times New Roman',serif">Times New Roman</option>
-            <option value="Georgia,serif">Georgia</option>
-            <option value="Verdana,sans-serif">Verdana</option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="g2">
-        <div><label>الحجم (px)</label><input type="number" id="fs" value="52" min="8" max="500"></div>
-        <div><label>اللون</label><input type="color" id="fc" value="#1a3a6e"></div>
-      </div>
-      <div class="mb">
-        <label>تنسيق الخط</label>
-        <div class="g3">
-          <button class="tb" id="bB" onclick="tog('bold')"><b>B عريض</b></button>
-          <button class="tb" id="bI" onclick="tog('italic')"><i>I مائل</i></button>
-          <button class="tb" id="bU" onclick="tog('underline')"><u>U تسطير</u></button>
+    <div id="settingsGrp" class="mob-on">
+      <div class="card">
+        <div class="ctitle"><div class="cico">🖼</div>صورة الشهادة</div>
+        <div class="uz" id="imgZone" onclick="document.getElementById('imgIn').click()">
+          <input type="file" id="imgIn" accept="image/*">
+          <span class="uico">📂</span>
+          <div class="utxt"><strong>اضغط لاختيار الصورة</strong>أو اسحبها — PNG · JPG · WEBP</div>
+        </div>
+        <div class="ibox" id="ibox">
+          <div class="irow"><span><b>الحجم: </b><span id="imgDim">—</span></span><span><b>الصيغة: </b><span id="imgFmt">—</span></span></div>
+          <div class="hint">⚡ يُصدَّر بالجودة الأصلية الكاملة</div>
         </div>
       </div>
-      <div class="mb">
-        <label>المحاذاة</label>
-        <div class="g3">
-          <button class="tb on" id="aC" onclick="aln('center')">⎄ وسط</button>
-          <button class="tb" id="aR" onclick="aln('right')">← يمين</button>
-          <button class="tb" id="aL" onclick="aln('left')">يسار →</button>
+
+      <div class="card">
+        <div class="ctitle"><div class="cico">✏️</div>إعدادات النص</div>
+        <div class="mb">
+          <label>نوع الخط</label>
+          <select id="ff">
+            <optgroup label="عربية حديثة">
+              <option value="'Tajawal',sans-serif">Tajawal — تجوال</option>
+              <option value="'Cairo',sans-serif">Cairo — القاهرة</option>
+              <option value="'Almarai',sans-serif">Almarai — المراعي</option>
+              <option value="'IBM Plex Sans Arabic',sans-serif">IBM Plex Arabic</option>
+            </optgroup>
+            <optgroup label="كلاسيكية وفنية">
+              <option value="'Amiri',serif">Amiri — أميري</option>
+              <option value="'Aref Ruqaa',serif">Aref Ruqaa — رقعة</option>
+              <option value="'Reem Kufi',sans-serif">Reem Kufi — كوفي</option>
+              <option value="'Lateef',serif">Lateef — لطيف</option>
+            </optgroup>
+            <optgroup label="نظام">
+              <option value="'Traditional Arabic',serif">Traditional Arabic</option>
+              <option value="Arial,sans-serif">Arial</option>
+            </optgroup>
+            <optgroup label="لاتينية">
+              <option value="'Times New Roman',serif">Times New Roman</option>
+              <option value="Georgia,serif">Georgia</option>
+              <option value="Verdana,sans-serif">Verdana</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="g2">
+          <div><label>الحجم (px)</label><input type="number" id="fs" value="52" min="8" max="500"></div>
+          <div><label>اللون</label><input type="color" id="fc" value="#1a3a6e"></div>
+        </div>
+        <div class="mb">
+          <label>تنسيق الخط</label>
+          <div class="g3">
+            <button class="tb" id="bB" onclick="tog('bold')"><b>B عريض</b></button>
+            <button class="tb" id="bI" onclick="tog('italic')"><i>I مائل</i></button>
+            <button class="tb" id="bU" onclick="tog('underline')"><u>U تسطير</u></button>
+          </div>
+        </div>
+        <div class="mb">
+          <label>المحاذاة</label>
+          <div class="g3">
+            <button class="tb on" id="aC" onclick="aln('center')">⎄ وسط</button>
+            <button class="tb" id="aR" onclick="aln('right')">← يمين</button>
+            <button class="tb" id="aL" onclick="aln('left')">يسار →</button>
+          </div>
+        </div>
+        <div>
+          <label>نص تجريبي للمعاينة</label>
+          <input type="text" id="smp" value="أحمد بن علي" placeholder="اكتب اسماً للمعاينة...">
         </div>
       </div>
-      <div>
-        <label>نص تجريبي للمعاينة</label>
-        <input type="text" id="smp" value="أحمد بن علي" placeholder="اكتب اسماً للمعاينة...">
+
+      <div class="card">
+        <div class="ctitle"><div class="cico">📍</div>موضع النص</div>
+        <p class="hint" style="margin-bottom:8px;">اضغط على الشهادة لتحديد مكان الاسم، ثم اسحب النقطة الزرقاء لضبطه.</p>
+        <div class="cbox">
+          <span><span class="cl">X:</span> <span id="px">—</span></span>
+          <span><span class="cl">Y:</span> <span id="py">—</span></span>
+          <span><span class="cl">الحالة:</span> <span id="pst">لم يُحدد</span></span>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:9px;flex-wrap:wrap;">
+          <button class="btn btn-s" style="font-size:11px;flex:1;" onclick="resetPos()">🔄 إعادة الضبط</button>
+          <button class="btn btn-p dsk" style="font-size:11px;flex:1;" id="previewBtn" onclick="goPreview()">👁 معاينة</button>
+          <button class="btn btn-p mob-only-btn" style="font-size:11px;flex:1;" onclick="switchTab('n')">التالي: الأسماء ➡️</button>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="ctitle"><div class="cico">📍</div>موضع النص</div>
-      <p class="hint" style="margin-bottom:8px;">اضغط على الشهادة لتحديد مكان الاسم، ثم اسحب النقطة الزرقاء لضبطه.</p>
-      <div class="cbox">
-        <span><span class="cl">X:</span> <span id="px">—</span></span>
-        <span><span class="cl">Y:</span> <span id="py">—</span></span>
-        <span><span class="cl">الحالة:</span> <span id="pst">لم يُحدد</span></span>
-      </div>
-      <div style="display:flex;gap:7px;margin-top:9px;flex-wrap:wrap;">
-        <button class="btn btn-s" style="font-size:11px;flex:1;" onclick="resetPos()">🔄 إعادة الضبط</button>
-        <button class="btn btn-p dsk" style="font-size:11px;flex:1;" id="previewBtn" onclick="goPreview()">👁 معاينة</button>
+    <div id="namesGrp">
+      <div class="card">
+        <div class="ctitle"><div class="cico">👥</div>قائمة الأسماء</div>
+        <div class="uz" id="jsonZone" onclick="document.getElementById('jsonIn').click()">
+          <input type="file" id="jsonIn" accept=".json">
+          <span class="uico">📋</span>
+          <div class="utxt"><strong>رفع ملف JSON</strong>[ {"name":"Ahmed"}, ... ]</div>
+        </div>
+        <div id="namesBadge" style="display:none;"><div class="badge">✅ <span id="nCount">0</span> اسم محمّل</div></div>
+        <div class="dv"></div>
+        <label>أو أدخل يدوياً (سطر لكل اسم)</label>
+        <textarea id="manual" placeholder="أحمد محمد&#10;سارة علي&#10;خالد عمر&#10;فاطمة حسن"></textarea>
       </div>
     </div>
 
-    <div class="card">
-      <div class="ctitle"><div class="cico">👥</div>قائمة الأسماء</div>
-      <div class="uz" id="jsonZone" onclick="document.getElementById('jsonIn').click()">
-        <input type="file" id="jsonIn" accept=".json">
-        <span class="uico">📋</span>
-        <div class="utxt"><strong>رفع ملف JSON</strong>[ {"name":"Ahmed"}, ... ]</div>
-      </div>
-      <div id="namesBadge" style="display:none;"><div class="badge">✅ <span id="nCount">0</span> اسم محمّل</div></div>
-      <div class="dv"></div>
-      <label>أو أدخل يدوياً (سطر لكل اسم)</label>
-      <textarea id="manual" placeholder="أحمد محمد&#10;سارة علي&#10;خالد عمر&#10;فاطمة حسن"></textarea>
-    </div>
-
-    <!-- Desktop export card -->
     <div class="card dsk" id="dskExportCard">
       <div class="ctitle"><div class="cico">📦</div>التصدير</div>
       <label>صيغة الملف</label>
@@ -483,7 +495,6 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
 
   </aside>
 
-  <!-- MAIN -->
   <main class="main" id="mainEl">
 
     <div class="empty" id="emptyEl">
@@ -512,7 +523,6 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
       <div class="dot" id="dotEl"></div>
     </div>
 
-    <!-- MOBILE: Generate panel (shown when generate tab active) -->
     <div id="genPanel">
       <div class="card">
         <div class="ctitle"><div class="cico">⚡</div>توليد الشهادات</div>
@@ -549,7 +559,6 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
       </div>
     </div>
 
-    <!-- Download results -->
     <div class="dl-sec" id="dlSec">
       <div class="dl-title">📥 شهاداتك جاهزة — اضغط لتحميل:</div>
       <div class="dl-grid" id="dlGrid"></div>
@@ -558,12 +567,17 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
   </main>
 </div>
 
-<!-- ═══════════════ TAB BAR (mobile) ═══════════════ -->
 <nav class="tab-bar">
   <button class="tab-item active" id="tab-s" onclick="switchTab('s')">
     <div class="ti-bg">⚙️</div>
     <div class="ti-lbl">إعدادات</div>
   </button>
+  
+  <button class="tab-item" id="tab-n" onclick="switchTab('n')">
+    <div class="ti-bg">👥</div>
+    <div class="ti-lbl">الأسماء</div>
+  </button>
+
   <button class="tab-item" id="tab-p" onclick="switchTab('p')">
     <div class="ti-bg">🖼</div>
     <div class="ti-lbl">معاينة</div>
@@ -574,12 +588,11 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
     <div class="tab-dot" id="rdot"></div>
   </button>
   <button class="tab-item" id="tab-t" onclick="toggleTheme()">
-    <div class="ti-bg" id="tIco">🌙</div>
+    <div class="ti-bg" id="tIco">☀️</div>
     <div class="ti-lbl">المظهر</div>
   </button>
 </nav>
 
-<!-- ═══════════════ OVERLAY ═══════════════ -->
 <div class="ov" id="ovEl">
   <div class="ov-ring"></div>
   <div class="ov-title" id="ovTitle">جاري المعالجة...</div>
@@ -589,7 +602,6 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
   </div>
 </div>
 
-<!-- ═══════════════ TOASTS ═══════════════ -->
 <div class="toasts" id="toastsEl"></div>
 
 <script>
@@ -597,9 +609,10 @@ textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga);}
 var S={
   img:null,iw:0,ih:0,scale:1,
   tx:null,ty:null,drag:false,dox:0,doy:0,
+  pinchDist:null,startFs:52,
   names:[],idx:0,fmt:'png',
   bold:false,italic:false,underline:false,align:'center',
-  theme:'light',tab:'s'
+  theme:'light',tab:'s' /* تم تغيير السمة الافتراضية إلى light */
 };
 
 /* ── DOM ── */
@@ -636,14 +649,22 @@ function toggleTheme(){
 function switchTab(t){
   if(!mob())return;
   S.tab=t;
-  // Update tab bar
-  ['s','p','g','t'].forEach(function(x){
+  
+  // تحديث الأزرار في الشريط السفلي
+  ['s','n','p','g','t'].forEach(function(x){
     var el=document.getElementById('tab-'+x);
     if(el)el.classList.toggle('active',x===t);
   });
-  // Panel visibility
-  sbEl.classList.toggle('mob-on',t==='s');
-  mainEl.classList.toggle('mob-on',t==='p'||t==='g');
+  
+  // التحكم بظهور اللوحة الجانبية
+  sbEl.classList.toggle('mob-on', t==='s' || t==='n');
+  mainEl.classList.toggle('mob-on', t==='p' || t==='g');
+
+  // التحكم بإظهار مجموعة الإعدادات أو مجموعة الأسماء
+  var sGrp = document.getElementById('settingsGrp');
+  var nGrp = document.getElementById('namesGrp');
+  if(sGrp) sGrp.classList.toggle('mob-on', t==='s');
+  if(nGrp) nGrp.classList.toggle('mob-on', t==='n');
 
   var gp=document.getElementById('genPanel');
   var dl=document.getElementById('dlSec');
@@ -652,7 +673,7 @@ function switchTab(t){
   var em=document.getElementById('emptyEl');
 
   if(t==='p'){
-    // Preview: show canvas/empty, hide generate panel
+    // Preview
     if(gp)gp.style.display='none';
     if(cw)cw.style.display=S.img?'inline-block':'none';
     if(tb)tb.style.display=S.img?'flex':'none';
@@ -660,7 +681,7 @@ function switchTab(t){
     if(dl&&dl.querySelector('#dlGrid').children.length>0)dl.style.display='block';
     else if(dl)dl.style.display='none';
   } else if(t==='g'){
-    // Generate: hide canvas, show generate panel
+    // Generate
     if(cw)cw.style.display='none';
     if(tb)tb.style.display='none';
     if(em)em.style.display='none';
@@ -721,7 +742,6 @@ function loadImg(file){
       requestAnimationFrame(function(){requestAnimationFrame(function(){
         fitCanvas();setStep(2);
         toast('تم التحميل بنجاح ✅','ok');
-        // Auto-switch to preview on mobile
         if(mob())setTimeout(function(){switchTab('p');},350);
       });});
     };
@@ -743,7 +763,6 @@ function fitCanvas(){
   mc.width=Math.round(S.iw*sc);mc.height=Math.round(S.ih*sc);
   document.getElementById('dimLbl').textContent=S.iw+' × '+S.ih+' px';
   document.getElementById('zoomLbl').textContent=Math.round(sc*100)+'%';
-  // Show canvas elements
   document.getElementById('emptyEl').style.display='none';
   document.getElementById('toolbarEl').style.display='flex';
   cwrapEl.style.display='inline-block';
@@ -778,30 +797,73 @@ function draw(nameOvr){
   } else {dot.style.display='none';}
 }
 
-/* ── CANVAS INTERACTION ── */
+/* ── CANVAS INTERACTION (Pinch to Zoom + Drag) ── */
 function handleStart(mx,my){
   if(!S.img)return;
   if(S.tx!==null){
-    var px=S.tx*S.scale,py=S.ty*S.scale;
-    if(Math.abs(mx-px)<30&&Math.abs(my-py)<30){S.drag=true;S.dox=mx-px;S.doy=my-py;mc.style.cursor='grabbing';return;}
+    var px=S.tx*S.scale, py=S.ty*S.scale;
+    var hitArea = mob() ? 60 : 30; 
+    if(Math.abs(mx-px)<hitArea && Math.abs(my-py)<hitArea){
+      S.drag=true; S.dox=mx-px; S.doy=my-py; 
+      mc.style.cursor='grabbing'; 
+      return;
+    }
   }
   setPos(mx/S.scale,my/S.scale);
 }
-function handleMove(mx,my){if(!S.drag)return;setPos((mx-S.dox)/S.scale,(my-S.doy)/S.scale);}
+
+function handleMove(mx,my){
+  if(!S.drag)return;
+  setPos((mx-S.dox)/S.scale,(my-S.doy)/S.scale);
+}
+
+function getPinchDistance(t1, t2) {
+  return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+}
+
 mc.addEventListener('mousedown',function(e){e.preventDefault();var r=mc.getBoundingClientRect();handleStart(e.clientX-r.left,e.clientY-r.top);});
 mc.addEventListener('mousemove',function(e){var r=mc.getBoundingClientRect();handleMove(e.clientX-r.left,e.clientY-r.top);});
 mc.addEventListener('mouseup',function(){S.drag=false;mc.style.cursor='crosshair';});
 mc.addEventListener('mouseleave',function(){S.drag=false;mc.style.cursor='crosshair';});
-mc.addEventListener('touchstart',function(e){if(e.touches.length>1)return;e.preventDefault();var r=mc.getBoundingClientRect();handleStart(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);},{passive:false});
-mc.addEventListener('touchmove',function(e){if(e.touches.length>1)return;e.preventDefault();var r=mc.getBoundingClientRect();handleMove(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);},{passive:false});
-mc.addEventListener('touchend',function(){S.drag=false;});
+
+mc.addEventListener('touchstart',function(e){
+  e.preventDefault();
+  var r=mc.getBoundingClientRect();
+  if(e.touches.length === 1) {
+    handleStart(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top);
+  } else if (e.touches.length === 2) {
+    S.pinchDist = getPinchDistance(e.touches[0], e.touches[1]);
+    S.startFs = parseInt(document.getElementById('fs').value) || 52;
+  }
+},{passive:false});
+
+mc.addEventListener('touchmove',function(e){
+  e.preventDefault();
+  var r=mc.getBoundingClientRect();
+  if(e.touches.length === 1) {
+    handleMove(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top);
+  } else if (e.touches.length === 2) {
+    if(S.pinchDist) {
+      var newDist = getPinchDistance(e.touches[0], e.touches[1]);
+      var scaleFactor = newDist / S.pinchDist;
+      var newFs = Math.max(8, Math.min(500, Math.round(S.startFs * scaleFactor)));
+      document.getElementById('fs').value = newFs;
+      draw();
+    }
+  }
+},{passive:false});
+
+mc.addEventListener('touchend',function(e){
+  if(e.touches.length < 2) S.pinchDist = null;
+  if(e.touches.length === 0) S.drag = false;
+});
 
 function setPos(x,y){
   S.tx=Math.max(0,Math.min(x,S.iw));S.ty=Math.max(0,Math.min(y,S.ih));
   document.getElementById('px').textContent=Math.round(S.tx);
   document.getElementById('py').textContent=Math.round(S.ty);
   document.getElementById('pst').textContent='محدد ✓';
-  document.getElementById('modeLbl').textContent='✓ محدد — اسحب لتعديله';
+  document.getElementById('modeLbl').textContent='✓ محدد — اسحب لتعديله أو استخدم إصبعين لتغيير الحجم';
   checkReady();draw();
 }
 function resetPos(){
@@ -929,9 +991,7 @@ async function generateMobile(){
       if(S.fmt==='pdf'){var arr=await makePDF(name);blob=new Blob([arr],{type:'application/pdf'});}
       else{blob=await makePNG(name);}
       var burl=URL.createObjectURL(blob);
-      // Try auto-download
       try{var lnk=document.createElement('a');lnk.href=burl;lnk.download=sn+'.'+ext;document.body.appendChild(lnk);lnk.click();document.body.removeChild(lnk);}catch(e){}
-      // Card in grid
       var card=document.createElement('a');
       card.className='dl-item';card.href=burl;card.download=sn+'.'+ext;card.target='_blank';
       card.innerHTML='<div class="di">'+(S.fmt==='pdf'?'📄':'🖼')+'</div><div>'+name+'</div><div class="dn">'+sn+'.'+ext+'</div>';
@@ -940,7 +1000,6 @@ async function generateMobile(){
     }
     setOv(true,'تم! جاري الانتهاء...','',100);await tick();
     setOv(false);mProg.style.display='none';mFill.style.width='0%';
-    // Show results + switch to preview
     dlSec.style.display='block';
     toast('✅ '+total+' شهادة جاهزة للتحميل!','ok');
     setTimeout(function(){switchTab('p');},300);
@@ -957,7 +1016,6 @@ function setStep(n){for(var i=1;i<=4;i++){var el=document.getElementById('s'+i);
 window.addEventListener('resize',function(){if(S.img)fitCanvas();});
 
 /* ── INIT ── */
-// On mobile start: hide main, show sidebar
 if(mob()){
   mainEl.classList.remove('mob-on');
   sbEl.classList.add('mob-on');

@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF ↔ Image Converter</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 1px solid #e8eaed;
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a2e;
+    letter-spacing: -0.5px;
+  }
+
+  header p {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+
+  .mode-switcher {
+    display: flex;
+    background: #fff;
+    border: 1px solid #e0e3e8;
+    border-radius: 12px;
+    padding: 6px;
+    margin-bottom: 24px;
+    gap: 6px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: #666;
+    transition: all 0.18s;
+  }
+
+  .mode-btn.active {
+    background: #007bff;
+    color: #fff;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e0e3e8;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #888;
+    margin-bottom: 16px;
+  }
+
+  .drop-zone {
+    border: 2px dashed #c8d0dc;
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.18s;
+    background: #fafbfc;
+  }
+
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: #007bff;
+    background: #f0f6ff;
+  }
+
+  .drop-zone .icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .drop-zone h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .drop-zone p {
+    font-size: 13px;
+    color: #888;
+  }
+
+  .drop-zone .browse-btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 9px 22px;
+    background: #007bff;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s;
+  }
+
+  .drop-zone .browse-btn:hover { background: #0069d9; }
+
+  .options-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 160px;
+  }
+
+  .option-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .option-group select, .option-group input[type=range] {
+    padding: 8px 10px;
+    border: 1px solid #dde1e7;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #333;
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .option-group select:focus { border-color: #007bff; }
+
+  .quality-display {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+  }
+
+  .fit-options {
+    display: flex;
+    gap: 8px;
+  }
+
+  .fit-btn {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #dde1e7;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #fff;
+    color: #555;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .fit-btn.active {
+    border-color: #007bff;
+    background: #eef4ff;
+    color: #007bff;
+  }
+
+  .action-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 11px 24px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: #007bff;
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #0069d9; }
+  .btn-primary:disabled { background: #a0c4ff; cursor: not-allowed; }
+
+  .btn-outline {
+    background: #fff;
+    border: 1px solid #dde1e7;
+    color: #555;
+  }
+
+  .btn-outline:hover { background: #f5f7fa; }
+
+  .btn-danger {
+    background: #fff;
+    border: 1px solid #fca5a5;
+    color: #dc2626;
+  }
+
+  .btn-danger:hover { background: #fef2f2; }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .thumb-wrap {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e0e3e8;
+    background: #f5f7fa;
+    aspect-ratio: 0.75;
+  }
+
+  .thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .thumb-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 6px;
+    text-align: center;
+  }
+
+  .thumb-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    background: rgba(220,38,38,0.85);
+    color: #fff;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 22px;
+    text-align: center;
+    padding: 0;
+    display: none;
+  }
+
+  .thumb-wrap:hover .thumb-remove { display: block; }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #eef4ff;
+    border-radius: 9px;
+    font-size: 13px;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+
+  .status-bar.error {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fca5a5;
+  }
+
+  .status-bar.success {
+    background: #f0fdf4;
+    color: #16a34a;
+    border-color: #bbf7d0;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #bfdbfe;
+    border-top-color: #1d4ed8;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .download-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  .download-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid #e0e3e8;
+    border-radius: 9px;
+    background: #fafbfc;
+    font-size: 12px;
+    color: #333;
+  }
+
+  .download-item a {
+    color: #007bff;
+    font-weight: 500;
+    text-decoration: none;
+    word-break: break-all;
+  }
+
+  .download-item a:hover { text-decoration: underline; }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .options-row { flex-direction: column; }
+    .action-row { flex-direction: column; }
+    .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PDF ↔ Image Converter</h1>
+  <p>Convert PDF pages to images, or combine images into a PDF — right in your browser.</p>
+</header>
+
+<div class="container">
+
+  <!-- Mode Switcher -->
+  <div class="mode-switcher">
+    <button class="mode-btn active" id="modePdfToImg" onclick="switchMode('pdf2img')">📄 PDF → Images</button>
+    <button class="mode-btn" id="modeImgToPdf" onclick="switchMode('img2pdf')">🖼️ Images → PDF</button>
+  </div>
+
+  <!-- Upload Card -->
+  <div class="card" id="uploadCard">
+    <div class="card-title">Upload File</div>
+    <div class="drop-zone" id="dropZone">
+      <div class="icon">⬆️</div>
+      <h3 id="dropTitle">Drop your PDF here</h3>
+      <p id="dropSubtitle">Supports .pdf files up to 50MB</p>
+      <button class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse File</button>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleFileInput(this.files)">
+    </div>
+  </div>
+
+  <!-- Options Card: PDF to Image -->
+  <div class="card" id="optionsPdfToImg">
+    <div class="card-title">Conversion Options</div>
+    <div class="options-row">
+      <div class="option-group">
+        <label>Output Format</label>
+        <select id="imgFormat">
+          <option value="png">PNG</option>
+          <option value="jpg">JPG</option>
+        </select>
+      </div>
+      <div class="option-group" style="flex:1; min-width:200px;">
+        <label>Image Quality <span class="quality-display" id="qualityVal">100%</span></label>
+        <input type="range" id="imgQuality" min="50" max="100" value="100"
+          oninput="document.getElementById('qualityVal').textContent=this.value+'%'">
+      </div>
+    </div>
+  </div>
+
+  <!-- Options Card: Image to PDF -->
+  <div class="card hidden" id="optionsImgToPdf">
+    <div class="card-title">Conversion Options</div>
+    <div class="options-row">
+      <div class="option-group">
+        <label>Page Size</label>
+        <select id="pageSize">
+          <option value="a4">A4</option>
+          <option value="letter">Letter</option>
+          <option value="a3">A3</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Image Fit</label>
+        <div class="fit-options">
+          <button class="fit-btn active" id="fitContain" onclick="setFit('contain')">Contain</button>
+          <button class="fit-btn" id="fitCover" onclick="setFit('cover')">Cover</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div id="statusBar" class="status-bar hidden">
+    <div class="spinner" id="statusSpinner"></div>
+    <span id="statusText">Processing...</span>
+  </div>
+
+  <!-- Preview Card -->
+  <div class="card hidden" id="previewCard">
+    <div class="card-title" id="previewTitle">Preview</div>
+    <div class="preview-grid" id="previewGrid"></div>
+  </div>
+
+  <!-- Actions -->
+  <div class="action-row" id="actionRow" style="margin-bottom:20px; display:none;">
+    <button class="btn btn-primary" id="convertBtn" onclick="startConvert()">Convert</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- Download Card -->
+  <div class="card hidden" id="downloadCard">
+    <div class="card-title">Download</div>
+    <div style="margin-bottom:14px;">
+      <button class="btn btn-primary" id="downloadAllBtn" onclick="downloadAll()">⬇ Download All</button>
+    </div>
+    <div class="download-grid" id="downloadGrid"></div>
+  </div>
+
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let currentMode = 'pdf2img';
+let uploadedPdf = null;
+let uploadedImages = [];
+let convertedOutputs = [];
+let fitMode = 'contain';
+
+function switchMode(mode) {
+  currentMode = mode;
+  resetAll();
+  document.getElementById('modePdfToImg').classList.toggle('active', mode === 'pdf2img');
+  document.getElementById('modeImgToPdf').classList.toggle('active', mode === 'img2pdf');
+  document.getElementById('optionsPdfToImg').classList.toggle('hidden', mode !== 'pdf2img');
+  document.getElementById('optionsImgToPdf').classList.toggle('hidden', mode !== 'img2pdf');
+
+  const input = document.getElementById('fileInput');
+  if (mode === 'pdf2img') {
+    input.accept = '.pdf';
+    document.getElementById('dropTitle').textContent = 'Drop your PDF here';
+    document.getElementById('dropSubtitle').textContent = 'Supports .pdf files up to 50MB';
+  } else {
+    input.accept = '.png,.jpg,.jpeg';
+    input.multiple = true;
+    document.getElementById('dropTitle').textContent = 'Drop your images here';
+    document.getElementById('dropSubtitle').textContent = 'Supports .png, .jpg, .jpeg — multiple files';
+  }
+}
+
+function setFit(mode) {
+  fitMode = mode;
+  document.getElementById('fitContain').classList.toggle('active', mode === 'contain');
+  document.getElementById('fitCover').classList.toggle('active', mode === 'cover');
+}
+
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  handleFileInput(e.dataTransfer.files);
+});
+
+function handleFileInput(files) {
+  if (!files || files.length === 0) return;
+
+  if (currentMode === 'pdf2img') {
+    const file = files[0];
+    if (!file.name.toLowerCase().endsWith('.pdf')) return showStatus('Please upload a valid PDF file.', 'error');
+    uploadedPdf = file;
+    previewPdf(file);
+  } else {
+    const valid = Array.from(files).filter(f => /\.(png|jpe?g)$/i.test(f.name));
+    if (valid.length === 0) return showStatus('Please upload PNG or JPG images.', 'error');
+    uploadedImages = uploadedImages.concat(valid);
+    previewImages();
+  }
+}
+
+async function previewPdf(file) {
+  showStatus('Loading PDF...', 'info');
+  try {
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    const grid = document.getElementById('previewGrid');
+    grid.innerHTML = '';
+    document.getElementById('previewTitle').textContent = `Preview — ${pdf.numPages} page${pdf.numPages > 1 ? 's' : ''}`;
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const vp = page.getViewport({ scale: 0.4 });
+      const canvas = document.createElement('canvas');
+      canvas.width = vp.width; canvas.height = vp.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      const wrap = document.createElement('div');
+      wrap.className = 'thumb-wrap';
+      const img = document.createElement('img');
+      img.src = canvas.toDataURL();
+      const lbl = document.createElement('div');
+      lbl.className = 'thumb-label';
+      lbl.textContent = 'Page ' + i;
+      wrap.appendChild(img); wrap.appendChild(lbl);
+      grid.appendChild(wrap);
+    }
+
+    hideStatus();
+    show('previewCard');
+    document.getElementById('actionRow').style.display = 'flex';
+  } catch (e) {
+    showStatus('Could not read PDF. Is it a valid file?', 'error');
+  }
+}
+
+function previewImages() {
+  const grid = document.getElementById('previewGrid');
+  grid.innerHTML = '';
+  document.getElementById('previewTitle').textContent = `Images — ${uploadedImages.length} file${uploadedImages.length > 1 ? 's' : ''}`;
+
+  uploadedImages.forEach((file, idx) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'thumb-wrap';
+    const img = document.createElement('img');
+    const url = URL.createObjectURL(file);
+    img.src = url;
+    const lbl = document.createElement('div');
+    lbl.className = 'thumb-label';
+    lbl.textContent = file.name.length > 14 ? file.name.slice(0, 12) + '…' : file.name;
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'thumb-remove';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = () => {
+      uploadedImages.splice(idx, 1);
+      previewImages();
+    };
+    wrap.appendChild(img); wrap.appendChild(lbl); wrap.appendChild(removeBtn);
+    grid.appendChild(wrap);
+  });
+
+  show('previewCard');
+  document.getElementById('actionRow').style.display = uploadedImages.length > 0 ? 'flex' : 'none';
+}
+
+async function startConvert() {
+  document.getElementById('downloadCard').classList.add('hidden');
+  convertedOutputs = [];
+  document.getElementById('downloadGrid').innerHTML = '';
+
+  if (currentMode === 'pdf2img') {
+    await convertPdfToImages();
+  } else {
+    await convertImagesToPdf();
+  }
+}
+
+async function convertPdfToImages() {
+  if (!uploadedPdf) return showStatus('No PDF uploaded.', 'error');
+  showStatus('Converting pages...', 'info');
+  const format = document.getElementById('imgFormat').value;
+  const quality = parseInt(document.getElementById('imgQuality').value) / 100;
+
+  try {
+    const buf = await uploadedPdf.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    const dlGrid = document.getElementById('downloadGrid');
+    convertedOutputs = [];
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      showStatus(`Converting page ${i} of ${pdf.numPages}...`, 'info');
+      const page = await pdf.getPage(i);
+      const vp = page.getViewport({ scale: 2 });
+      const canvas = document.createElement('canvas');
+      canvas.width = vp.width; canvas.height = vp.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
+      const dataUrl = canvas.toDataURL(mime, quality);
+
+      const filename = `page-${String(i).padStart(2, '0')}.${format}`;
+      convertedOutputs.push({ filename, dataUrl });
+
+      const item = document.createElement('div');
+      item.className = 'download-item';
+      item.innerHTML = `<span>🖼️</span><a href="${dataUrl}" download="${filename}">${filename}</a>`;
+      dlGrid.appendChild(item);
+    }
+
+    showStatus(`Done! ${pdf.numPages} image${pdf.numPages > 1 ? 's' : ''} ready.`, 'success');
+    show('downloadCard');
+  } catch (e) {
+    showStatus('Conversion failed. ' + e.message, 'error');
+  }
+}
+
+async function convertImagesToPdf() {
+  if (uploadedImages.length === 0) return showStatus('No images uploaded.', 'error');
+  showStatus('Building PDF...', 'info');
+
+  const { jsPDF } = window.jspdf;
+  const pageSizeMap = { a4: [210, 297], letter: [215.9, 279.4], a3: [297, 420] };
+  const [pw, ph] = pageSizeMap[document.getElementById('pageSize').value];
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [pw, ph] });
+
+  try {
+    for (let i = 0; i < uploadedImages.length; i++) {
+      showStatus(`Processing image ${i + 1} of ${uploadedImages.length}...`, 'info');
+      const dataUrl = await fileToDataUrl(uploadedImages[i]);
+      const imgProps = doc.getImageProperties(dataUrl);
+      const imgW = imgProps.width;
+      const imgH = imgProps.height;
+
+      let drawW, drawH, offX = 0, offY = 0;
+
+      if (fitMode === 'contain') {
+        const scaleX = pw / imgW;
+        const scaleY = ph / imgH;
+        const scale = Math.min(scaleX, scaleY);
+        drawW = imgW * scale;
+        drawH = imgH * scale;
+        offX = (pw - drawW) / 2;
+        offY = (ph - drawH) / 2;
+      } else {
+        const scaleX = pw / imgW;
+        const scaleY = ph / imgH;
+        const scale = Math.max(scaleX, scaleY);
+        drawW = imgW * scale;
+        drawH = imgH * scale;
+        offX = (pw - drawW) / 2;
+        offY = (ph - drawH) / 2;
+      }
+
+      if (i > 0) doc.addPage();
+      doc.addImage(dataUrl, imgProps.fileType === 'JPEG' ? 'JPEG' : 'PNG', offX, offY, drawW, drawH);
+    }
+
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    const filename = 'converted.pdf';
+    convertedOutputs = [{ filename, dataUrl: url }];
+
+    const dlGrid = document.getElementById('downloadGrid');
+    dlGrid.innerHTML = '';
+    const item = document.createElement('div');
+    item.className = 'download-item';
+    item.innerHTML = `<span>📄</span><a href="${url}" download="${filename}">${filename}</a>`;
+    dlGrid.appendChild(item);
+
+    showStatus(`Done! PDF with ${uploadedImages.length} page${uploadedImages.length > 1 ? 's' : ''} ready.`, 'success');
+    show('downloadCard');
+  } catch (e) {
+    showStatus('Conversion failed. ' + e.message, 'error');
+  }
+}
+
+function fileToDataUrl(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function downloadAll() {
+  convertedOutputs.forEach(({ filename, dataUrl }) => {
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    a.click();
+  });
+}
+
+function showStatus(msg, type = 'info') {
+  const bar = document.getElementById('statusBar');
+  const spinner = document.getElementById('statusSpinner');
+  const text = document.getElementById('statusText');
+  bar.className = 'status-bar' + (type === 'error' ? ' error' : type === 'success' ? ' success' : '');
+  bar.classList.remove('hidden');
+  spinner.style.display = type === 'info' ? 'block' : 'none';
+  text.textContent = msg;
+}
+
+function hideStatus() {
+  document.getElementById('statusBar').classList.add('hidden');
+}
+
+function show(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function resetAll() {
+  uploadedPdf = null;
+  uploadedImages = [];
+  convertedOutputs = [];
+  document.getElementById('previewGrid').innerHTML = '';
+  document.getElementById('downloadGrid').innerHTML = '';
+  document.getElementById('fileInput').value = '';
+  document.getElementById('previewCard').classList.add('hidden');
+  document.getElementById('downloadCard').classList.add('hidden');
+  document.getElementById('statusBar').classList.add('hidden');
+  document.getElementById('actionRow').style.display = 'none';
+}
+</script>
+</body>
+</html>

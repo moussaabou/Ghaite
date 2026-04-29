@@ -1,0 +1,359 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#app{display:flex;height:100vh;min-height:700px;background:#f5f5f5;font-family:'Segoe UI',sans-serif}
+#sidebar{width:320px;min-width:260px;background:#fff;border-right:0.5px solid #e0e0e0;display:flex;flex-direction:column;overflow:hidden}
+#sh{padding:14px 18px;border-bottom:0.5px solid #e0e0e0}
+#sh h1{font-size:15px;font-weight:600;color:#1a1a1a}
+#sh p{font-size:11px;color:#888;margin-top:2px}
+#tabs{display:flex;background:#f8f8f8;border-bottom:0.5px solid #e0e0e0}
+.tab{flex:1;padding:9px 6px;font-size:11px;font-weight:600;border:none;background:transparent;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.3px}
+.tab.active{color:#185FA5;border-bottom-color:#185FA5;background:#fff}
+#form-area{flex:1;overflow-y:auto;padding:14px 18px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:10px;font-weight:600;color:#999;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.fg input,.fg textarea,.fg select{width:100%;padding:7px 9px;font-size:12px;border:0.5px solid #ddd;border-radius:6px;background:#fff;color:#1a1a1a;font-family:inherit;transition:border-color .15s}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:#378ADD}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.5}
+.sec-title{font-size:11px;font-weight:600;color:#1a1a1a;margin:18px 0 8px;padding-bottom:5px;border-bottom:0.5px solid #eee;text-transform:uppercase;letter-spacing:.4px}
+.add-btn{width:100%;padding:6px;font-size:11px;border:0.5px dashed #ccc;border-radius:6px;background:transparent;color:#888;cursor:pointer;transition:all .2s;margin-top:4px}
+.add-btn:hover{background:#f5f5f5;color:#333}
+.ec{background:#fafafa;border-radius:6px;padding:8px 10px;margin-bottom:6px;border:0.5px solid #eee;position:relative}
+.ec .rb{position:absolute;top:6px;right:6px;background:transparent;border:none;font-size:13px;color:#ccc;cursor:pointer}
+.ec .rb:hover{color:#e24b4a}
+.ec input{width:100%;padding:4px 6px;font-size:11px;border:0.5px solid #e0e0e0;border-radius:4px;margin-bottom:4px;background:#fff;color:#1a1a1a;font-family:inherit}
+.ec input:last-child{margin-bottom:0}
+.ec input:focus{outline:none;border-color:#378ADD}
+.sw{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.st{display:flex;align-items:center;gap:3px;padding:3px 8px;background:#e6f1fb;border-radius:20px;font-size:11px;color:#0c447c}
+.st button{background:none;border:none;color:#0c447c;cursor:pointer;font-size:11px;padding:0;line-height:1}
+.sir{display:flex;gap:5px}
+.sir input{flex:1;font-size:11px}
+.sir button{padding:5px 10px;font-size:11px;background:#185FA5;color:#fff;border:none;border-radius:6px;cursor:pointer}
+#template-panel{display:none;padding:14px 18px;flex:1;overflow-y:auto}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tc{border:2px solid #e0e0e0;border-radius:8px;padding:8px;cursor:pointer;transition:all .2s;text-align:center}
+.tc:hover{border-color:#aaa}
+.tc.selected{border-color:#185FA5;background:#e6f1fb}
+.tc .tp{height:52px;border-radius:4px;margin-bottom:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,.9);font-weight:600;letter-spacing:.5px}
+.tc .tn{font-size:10px;font-weight:600;color:#333;margin-top:2px}
+#sf{padding:10px 18px;border-top:0.5px solid #e0e0e0;display:flex;gap:6px}
+.dl-btn{flex:1;padding:9px;font-size:11px;font-weight:600;border:none;border-radius:6px;cursor:pointer;transition:all .2s}
+.dl-pdf{background:#185FA5;color:#fff}
+.dl-pdf:hover{background:#0c447c}
+.dl-word{background:#2E7D32;color:#fff}
+.dl-word:hover{background:#1B5E20}
+#preview-area{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;align-items:center;background:#e8e8e8}
+#pl{font-size:10px;color:#999;margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase}
+#cv-page{width:595px;min-height:842px;background:#fff;position:relative;overflow:hidden;transition:all .35s}
+</style>
+
+<div id="app">
+<div id="sidebar">
+  <div id="sh"><h1>CV Builder</h1><p>سيرة ذاتية احترافية</p></div>
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('info',this)">المعلومات</button>
+    <button class="tab" onclick="switchTab('template',this)">القوالب</button>
+  </div>
+  <div id="form-area">
+    <div class="fg" style="text-align:center;margin-bottom:16px">
+      <div id="photo-circle" onclick="document.getElementById('ph-inp').click()" style="width:68px;height:68px;border-radius:50%;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;overflow:hidden;cursor:pointer;background:#f5f5f5;transition:border-color .2s">
+        <span id="ph-icon" style="font-size:20px;color:#bbb">+</span>
+        <img id="ph-img" style="display:none;width:100%;height:100%;object-fit:cover">
+      </div>
+      <div style="font-size:10px;color:#aaa">صورة شخصية (اختياري)</div>
+      <input type="file" id="ph-inp" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+    </div>
+    <div class="fg"><label>الاسم الكامل *</label><input id="f-name" placeholder="محمد أحمد" oninput="update()"></div>
+    <div class="fg"><label>المسمى الوظيفي</label><input id="f-title" placeholder="مهندس برمجيات" oninput="update()"></div>
+    <div class="fg"><label>البريد الإلكتروني</label><input id="f-email" placeholder="email@example.com" oninput="update()"></div>
+    <div class="fg"><label>رقم الهاتف</label><input id="f-phone" placeholder="+213 555 000 000" oninput="update()"></div>
+    <div class="fg"><label>العنوان</label><input id="f-address" placeholder="المدينة، البلد" oninput="update()"></div>
+    <div class="fg"><label>LinkedIn</label><input id="f-linkedin" placeholder="linkedin.com/in/..." oninput="update()"></div>
+    <div class="fg"><label>GitHub / Portfolio</label><input id="f-github" placeholder="github.com/..." oninput="update()"></div>
+    <div class="sec-title">الملخص المهني</div>
+    <div class="fg"><textarea id="f-summary" placeholder="نبذة مختصرة عن خبراتك..." oninput="update()"></textarea></div>
+    <div class="sec-title">الخبرات العملية</div>
+    <div id="exp-list"></div>
+    <button class="add-btn" onclick="addEntry('exp')">+ إضافة خبرة</button>
+    <div class="sec-title">التعليم</div>
+    <div id="edu-list"></div>
+    <button class="add-btn" onclick="addEntry('edu')">+ إضافة مؤهل</button>
+    <div class="sec-title">المهارات</div>
+    <div class="sw" id="skills-wrap"></div>
+    <div class="sir"><input id="skill-input" placeholder="أضف مهارة..." onkeydown="if(event.key==='Enter')addSkill()"><button onclick="addSkill()">إضافة</button></div>
+    <div class="sec-title">اللغات</div>
+    <div id="lang-list"></div>
+    <button class="add-btn" onclick="addEntry('lang')">+ إضافة لغة</button>
+    <div class="sec-title">الشهادات والدورات</div>
+    <div id="cert-list"></div>
+    <button class="add-btn" onclick="addEntry('cert')">+ إضافة شهادة</button>
+  </div>
+  <div id="template-panel">
+    <div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">قوالب بسيطة</div>
+    <div class="tg" style="margin-bottom:14px">
+      <div class="tc selected" onclick="selectTmpl('classic',this)"><div class="tp" style="background:#1a2332">Classic</div><div class="tn">كلاسيك</div></div>
+      <div class="tc" onclick="selectTmpl('white',this)"><div class="tp" style="background:#f0f0f0;color:#333">White</div><div class="tn">أبيض</div></div>
+      <div class="tc" onclick="selectTmpl('left-line',this)"><div class="tp" style="background:#fff;border:1px solid #ccc;color:#333;border-left:4px solid #1a2332">Line</div><div class="tn">خط جانبي</div></div>
+      <div class="tc" onclick="selectTmpl('compact',this)"><div class="tp" style="background:#fafafa;color:#555;border:1px solid #ddd;font-size:8px;flex-direction:column;gap:2px"><div style="width:60%;height:4px;background:#555;border-radius:2px"></div><div style="width:80%;height:3px;background:#aaa;border-radius:2px"></div><div style="width:50%;height:3px;background:#aaa;border-radius:2px"></div></div><div class="tn">مضغوط</div></div>
+    </div>
+    <div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">قوالب ملونة</div>
+    <div class="tg">
+      <div class="tc" onclick="selectTmpl('modern',this)"><div class="tp" style="background:#185FA5">Modern</div><div class="tn">أزرق</div></div>
+      <div class="tc" onclick="selectTmpl('creative',this)"><div class="tp" style="background:#533AB7">Creative</div><div class="tn">بنفسجي</div></div>
+      <div class="tc" onclick="selectTmpl('teal',this)"><div class="tp" style="background:#0F6E56">Teal</div><div class="tn">أخضر</div></div>
+      <div class="tc" onclick="selectTmpl('coral',this)"><div class="tp" style="background:#993C1D">Coral</div><div class="tn">برتقالي</div></div>
+      <div class="tc" onclick="selectTmpl('rose',this)"><div class="tp" style="background:#993556">Rose</div><div class="tn">وردي</div></div>
+      <div class="tc" onclick="selectTmpl('dark',this)"><div class="tp" style="background:#1a1a1a">Dark</div><div class="tn">داكن</div></div>
+      <div class="tc" onclick="selectTmpl('gold',this)"><div class="tp" style="background:#854F0B">Gold</div><div class="tn">ذهبي</div></div>
+      <div class="tc" onclick="selectTmpl('minimal',this)"><div class="tp" style="background:#2C2C2A">Minimal</div><div class="tn">رمادي</div></div>
+    </div>
+  </div>
+  <div id="sf">
+    <button class="dl-btn dl-pdf" onclick="downloadPDF()">تحميل PDF</button>
+    <button class="dl-btn dl-word" onclick="downloadWord()">تحميل Word</button>
+  </div>
+</div>
+
+<div id="preview-area">
+  <div id="pl">معاينة مباشرة</div>
+  <div id="cv-page"></div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+const TEMPLATES = {
+  classic:{leftBg:'#1a2332',accent:'#1a2332',twoCol:true},
+  modern:{leftBg:'#185FA5',accent:'#185FA5',twoCol:true},
+  creative:{leftBg:'#533AB7',accent:'#533AB7',twoCol:true},
+  teal:{leftBg:'#0F6E56',accent:'#0F6E56',twoCol:true},
+  coral:{leftBg:'#993C1D',accent:'#993C1D',twoCol:true},
+  rose:{leftBg:'#993556',accent:'#993556',twoCol:true},
+  dark:{leftBg:'#1a1a1a',accent:'#1a1a1a',twoCol:true},
+  gold:{leftBg:'#854F0B',accent:'#854F0B',twoCol:true},
+  minimal:{leftBg:'#2C2C2A',accent:'#2C2C2A',twoCol:true},
+  white:{leftBg:null,accent:'#333',twoCol:false},
+  'left-line':{leftBg:null,accent:'#1a2332',twoCol:false,line:true},
+  compact:{leftBg:null,accent:'#222',twoCol:false,compact:true}
+};
+
+let state={name:'',title:'',email:'',phone:'',address:'',linkedin:'',github:'',summary:'',photo:null,skills:[],exp:[],edu:[],langs:[],certs:[],template:'classic'};
+
+function switchTab(t,el){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('form-area').style.display=t==='info'?'block':'none';
+  document.getElementById('template-panel').style.display=t==='template'?'block':'none';
+}
+
+function selectTmpl(name,el){
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.template=name;
+  renderCV();
+}
+
+function handlePhoto(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    state.photo=e.target.result;
+    document.getElementById('ph-icon').style.display='none';
+    const img=document.getElementById('ph-img');
+    img.src=e.target.result;img.style.display='block';
+    renderCV();
+  };
+  r.readAsDataURL(f);
+}
+
+function update(){
+  state.name=document.getElementById('f-name').value;
+  state.title=document.getElementById('f-title').value;
+  state.email=document.getElementById('f-email').value;
+  state.phone=document.getElementById('f-phone').value;
+  state.address=document.getElementById('f-address').value;
+  state.linkedin=document.getElementById('f-linkedin').value;
+  state.github=document.getElementById('f-github').value;
+  state.summary=document.getElementById('f-summary').value;
+  renderCV();
+}
+
+function initials(n){if(!n)return'';const p=n.trim().split(' ');return p.length>1?(p[0][0]+p[p.length-1][0]).toUpperCase():p[0][0].toUpperCase();}
+
+function renderCV(){
+  const tmpl=TEMPLATES[state.template]||TEMPLATES.classic;
+  const name=state.name||'اسمك الكامل';
+  const title=state.title||'المسمى الوظيفي';
+  const email=state.email||'';
+  const phone=state.phone||'';
+  const addr=state.address||'';
+  const li=state.linkedin||'';
+  const gh=state.github||'';
+  const summary=state.summary||'اكتب هنا ملخصك المهني...';
+  const acc=tmpl.accent;
+
+  if(tmpl.twoCol){
+    const photoHTML=state.photo
+      ?`<img src="${state.photo}" style="width:80px;height:80px;border-radius:50%;border:3px solid rgba(255,255,255,.3);object-fit:cover;display:block;margin:0 auto 8px">`
+      :'';
+    const contacts=[email,phone,addr,li,gh].filter(Boolean).map(c=>`<div style="font-size:10px;color:rgba(255,255,255,.8);margin-bottom:4px;word-break:break-word;line-height:1.4">${c}</div>`).join('');
+    const skillBars=state.skills.map(s=>`<div style="font-size:10px;color:rgba(255,255,255,.85);margin-bottom:2px">${s}</div><div style="height:3px;background:rgba(255,255,255,.15);border-radius:2px;margin-bottom:7px"><div style="height:100%;width:80%;background:rgba(255,255,255,.7);border-radius:2px"></div></div>`).join('');
+    const langsHTML=state.langs.map(l=>`<div style="font-size:10px;color:rgba(255,255,255,.8);margin-bottom:3px">${l[0]||''}${l[1]?' · '+l[1]:''}</div>`).join('');
+    const expHTML=state.exp.map(e=>`<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#1a1a1a">${e[0]||'المسمى'}</div><div style="font-size:10px;color:#666;margin-bottom:3px">${e[1]||'الشركة'}${e[2]?' · '+e[2]:''}</div><div style="font-size:10px;color:#555;line-height:1.6">${e[3]||''}</div></div>`).join('');
+    const eduHTML=state.edu.map(e=>`<div style="margin-bottom:8px"><div style="font-size:12px;font-weight:600;color:#1a1a1a">${e[0]||'الدرجة العلمية'}</div><div style="font-size:10px;color:#666">${e[1]||'المؤسسة'}${e[2]?' · '+e[2]:''}</div></div>`).join('');
+    const certsHTML=state.certs.length?`<div style="margin-top:12px"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:6px;padding-bottom:4px;border-bottom:2px solid ${acc};color:${acc}">شهادات</div>${state.certs.map(c=>`<div style="font-size:10px;color:#555;margin-bottom:3px">${c[0]||''}${c[1]?' — '+c[1]:''}</div>`).join('')}</div>`:'';
+    const skillPillsRight=state.skills.length?`<div style="margin-top:12px"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:6px;padding-bottom:4px;border-bottom:2px solid ${acc};color:${acc}">مهارات</div>${state.skills.map(s=>`<span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;background:#f0f0f0;color:#333;margin:2px;font-weight:500">${s}</span>`).join('')}</div>`:'';
+
+    document.getElementById('cv-page').innerHTML=`
+<div style="display:flex;min-height:842px">
+  <div style="width:190px;min-width:190px;padding:22px 14px;background:${tmpl.leftBg};display:flex;flex-direction:column;gap:14px">
+    <div style="text-align:center">${photoHTML}<div style="font-size:15px;font-weight:700;color:#fff;line-height:1.3;word-break:break-word">${name}</div><div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:2px">${title}</div></div>
+    ${contacts?`<div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:5px;border-bottom:0.5px solid rgba(255,255,255,.15);padding-bottom:3px">تواصل</div>${contacts}</div>`:''}
+    ${state.skills.length?`<div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:5px;border-bottom:0.5px solid rgba(255,255,255,.15);padding-bottom:3px">مهارات</div>${skillBars}</div>`:''}
+    ${state.langs.length?`<div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:5px;border-bottom:0.5px solid rgba(255,255,255,.15);padding-bottom:3px">لغات</div>${langsHTML}</div>`:''}
+  </div>
+  <div style="flex:1;padding:24px 20px;background:#fff;display:flex;flex-direction:column;gap:12px">
+    <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:6px;padding-bottom:4px;border-bottom:2px solid ${acc};color:${acc}">ملخص مهني</div><div style="font-size:11px;color:#444;line-height:1.7">${summary}</div></div>
+    ${state.exp.length?`<div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:6px;padding-bottom:4px;border-bottom:2px solid ${acc};color:${acc}">الخبرات</div>${expHTML}</div>`:''}
+    ${state.edu.length?`<div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:6px;padding-bottom:4px;border-bottom:2px solid ${acc};color:${acc}">التعليم</div>${eduHTML}</div>`:''}
+    ${certsHTML}
+  </div>
+</div>`;
+  } else if(tmpl.line){
+    const photoHTML=state.photo?`<img src="${state.photo}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid ${acc};display:block">`:'';
+    const contactLine=[email,phone,addr].filter(Boolean).join(' · ');
+    document.getElementById('cv-page').innerHTML=`
+<div style="padding:32px 36px;background:#fff;min-height:842px;border-left:5px solid ${acc}">
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:0.5px solid #eee">
+    ${photoHTML}
+    <div><div style="font-size:22px;font-weight:700;color:#1a1a1a">${name}</div><div style="font-size:13px;color:${acc};font-weight:600;margin-top:2px">${title}</div>${contactLine?`<div style="font-size:10px;color:#888;margin-top:4px">${contactLine}</div>`:''}</div>
+  </div>
+  ${summary?`<div style="margin-bottom:16px"><div style="font-size:9px;text-transform:uppercase;font-weight:700;color:${acc};letter-spacing:1px;margin-bottom:5px">الملخص</div><div style="font-size:11px;color:#444;line-height:1.7">${summary}</div></div>`:''}
+  ${state.skills.length?`<div style="margin-bottom:16px"><div style="font-size:9px;text-transform:uppercase;font-weight:700;color:${acc};letter-spacing:1px;margin-bottom:6px">المهارات</div>${state.skills.map(s=>`<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;background:#f0f0f0;color:#333;margin:2px;border:1px solid #ddd">${s}</span>`).join('')}</div>`:''}
+  ${state.exp.length?`<div style="margin-bottom:16px"><div style="font-size:9px;text-transform:uppercase;font-weight:700;color:${acc};letter-spacing:1px;margin-bottom:8px">الخبرات</div>${state.exp.map(e=>`<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#1a1a1a">${e[0]||''}</div><div style="font-size:10px;color:#777;margin-bottom:2px">${e[1]||''}${e[2]?' · '+e[2]:''}</div><div style="font-size:10px;color:#555;line-height:1.6">${e[3]||''}</div></div>`).join('')}</div>`:''}
+  ${state.edu.length?`<div style="margin-bottom:16px"><div style="font-size:9px;text-transform:uppercase;font-weight:700;color:${acc};letter-spacing:1px;margin-bottom:8px">التعليم</div>${state.edu.map(e=>`<div style="margin-bottom:8px"><div style="font-size:12px;font-weight:600;color:#1a1a1a">${e[0]||''}</div><div style="font-size:10px;color:#777">${e[1]||''}${e[2]?' · '+e[2]:''}</div></div>`).join('')}</div>`:''}
+  ${state.langs.length?`<div style="margin-bottom:16px"><div style="font-size:9px;text-transform:uppercase;font-weight:700;color:${acc};letter-spacing:1px;margin-bottom:6px">اللغات</div>${state.langs.map(l=>`<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;background:#f0f0f0;color:#333;margin:2px;border:1px solid #ddd">${l[0]||''}${l[1]?' · '+l[1]:''}</span>`).join('')}</div>`:''}
+  ${state.certs.length?`<div><div style="font-size:9px;text-transform:uppercase;font-weight:700;color:${acc};letter-spacing:1px;margin-bottom:6px">الشهادات</div>${state.certs.map(c=>`<div style="font-size:10px;color:#555;margin-bottom:3px">${c[0]||''}${c[1]?' — '+c[1]:''}</div>`).join('')}</div>`:''}
+</div>`;
+  } else if(tmpl.compact){
+    const photoHTML=state.photo?`<img src="${state.photo}" style="width:65px;height:65px;border-radius:4px;object-fit:cover;display:block">`:'';
+    const contactLine=[email,phone,addr,li].filter(Boolean).join(' | ');
+    document.getElementById('cv-page').innerHTML=`
+<div style="padding:28px 32px;background:#fff;min-height:842px">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid ${acc}">
+    <div><div style="font-size:24px;font-weight:700;color:#1a1a1a;letter-spacing:-.5px">${name}</div><div style="font-size:12px;color:#555;margin-top:3px">${title}</div>${contactLine?`<div style="font-size:9px;color:#999;margin-top:5px">${contactLine}</div>`:''}</div>
+    ${photoHTML}
+  </div>
+  ${summary?`<div style="margin-bottom:14px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ملخص</div><div style="font-size:11px;color:#444;line-height:1.6">${summary}</div></div>`:''}
+  ${state.skills.length?`<div style="margin-bottom:14px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">المهارات</div><div>${state.skills.map(s=>`<span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;background:#f5f5f5;color:#333;margin:2px;font-weight:500;border:0.5px solid #ddd">${s}</span>`).join('')}</div></div>`:''}
+  ${state.exp.length?`<div style="margin-bottom:14px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">الخبرات</div>${state.exp.map(e=>`<div style="display:flex;justify-content:space-between;margin-bottom:10px"><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#1a1a1a">${e[0]||''} ${e[1]?'— '+e[1]:''}</div><div style="font-size:10px;color:#555;margin-top:2px;line-height:1.5">${e[3]||''}</div></div>${e[2]?`<div style="font-size:9px;color:#999;white-space:nowrap;margin-left:10px;padding-top:2px">${e[2]}</div>`:''}</div>`).join('')}</div>`:''}
+  ${state.edu.length?`<div style="margin-bottom:14px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">التعليم</div>${state.edu.map(e=>`<div style="display:flex;justify-content:space-between;margin-bottom:7px"><div><div style="font-size:11px;font-weight:600;color:#1a1a1a">${e[0]||''}</div><div style="font-size:10px;color:#666">${e[1]||''}</div></div>${e[2]?`<div style="font-size:9px;color:#999;padding-top:2px">${e[2]}</div>`:''}</div>`).join('')}</div>`:''}
+  ${state.langs.length||state.certs.length?`<div style="display:flex;gap:30px">
+    ${state.langs.length?`<div><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">اللغات</div>${state.langs.map(l=>`<div style="font-size:10px;color:#555;margin-bottom:2px">${l[0]||''}${l[1]?' · '+l[1]:''}</div>`).join('')}</div>`:''}
+    ${state.certs.length?`<div><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">الشهادات</div>${state.certs.map(c=>`<div style="font-size:10px;color:#555;margin-bottom:2px">${c[0]||''}${c[1]?' — '+c[1]:''}</div>`).join('')}</div>`:''}
+  </div>`:''}
+</div>`;
+  } else {
+    const photoHTML=state.photo?`<img src="${state.photo}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid #eee;display:block;margin:0 auto 10px">`:'';
+    const contacts=[email,phone,addr,li,gh].filter(Boolean).map(c=>`<div style="font-size:10px;color:#666;margin-bottom:3px">${c}</div>`).join('');
+    document.getElementById('cv-page').innerHTML=`
+<div style="padding:30px 36px;background:#fff;min-height:842px">
+  <div style="text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #eee">
+    ${photoHTML}
+    <div style="font-size:22px;font-weight:700;color:#1a1a1a">${name}</div>
+    <div style="font-size:12px;color:#888;margin-top:3px">${title}</div>
+    <div style="margin-top:8px">${contacts}</div>
+  </div>
+  ${summary?`<div style="margin-bottom:16px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;border-bottom:1px solid #eee;padding-bottom:3px">ملخص مهني</div><div style="font-size:11px;color:#444;line-height:1.7">${summary}</div></div>`:''}
+  ${state.skills.length?`<div style="margin-bottom:16px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:3px">المهارات</div>${state.skills.map(s=>`<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;background:#f5f5f5;color:#333;margin:2px;border:1px solid #eee">${s}</span>`).join('')}</div>`:''}
+  ${state.exp.length?`<div style="margin-bottom:16px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:3px">الخبرات</div>${state.exp.map(e=>`<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#1a1a1a">${e[0]||''}</div><div style="font-size:10px;color:#888;margin-bottom:2px">${e[1]||''}${e[2]?' · '+e[2]:''}</div><div style="font-size:10px;color:#555;line-height:1.6">${e[3]||''}</div></div>`).join('')}</div>`:''}
+  ${state.edu.length?`<div style="margin-bottom:16px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:3px">التعليم</div>${state.edu.map(e=>`<div style="margin-bottom:8px"><div style="font-size:12px;font-weight:600;color:#1a1a1a">${e[0]||''}</div><div style="font-size:10px;color:#888">${e[1]||''}${e[2]?' · '+e[2]:''}</div></div>`).join('')}</div>`:''}
+  ${state.langs.length?`<div style="margin-bottom:16px"><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:3px">اللغات</div>${state.langs.map(l=>`<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;background:#f5f5f5;color:#333;margin:2px;border:1px solid #eee">${l[0]||''}${l[1]?' · '+l[1]:''}</span>`).join('')}</div>`:''}
+  ${state.certs.length?`<div><div style="font-size:9px;font-weight:700;color:${acc};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:3px">الشهادات</div>${state.certs.map(c=>`<div style="font-size:10px;color:#555;margin-bottom:3px">${c[0]||''}${c[1]?' — '+c[1]:''}</div>`).join('')}</div>`:''}
+</div>`;
+  }
+}
+
+function addSkill(){
+  const inp=document.getElementById('skill-input');
+  const val=inp.value.trim();if(!val)return;
+  state.skills.push(val);inp.value='';
+  renderSkillTags();renderCV();
+}
+function removeSkill(i){state.skills.splice(i,1);renderSkillTags();renderCV();}
+function renderSkillTags(){
+  document.getElementById('skills-wrap').innerHTML=state.skills.map((s,i)=>`<div class="st">${s}<button onclick="removeSkill(${i})">×</button></div>`).join('');
+}
+
+const ENTRY_CFG={
+  exp:{list:'exp',domId:'exp-list',fields:['المسمى الوظيفي','الشركة','المدة','الوصف']},
+  edu:{list:'edu',domId:'edu-list',fields:['الدرجة / التخصص','المؤسسة','السنة']},
+  lang:{list:'langs',domId:'lang-list',fields:['اللغة','المستوى (مثال: متقدم)']},
+  cert:{list:'certs',domId:'cert-list',fields:['الشهادة / الدورة','الجهة / السنة']}
+};
+function addEntry(type){
+  const cfg=ENTRY_CFG[type];
+  const idx=state[cfg.list].length;
+  state[cfg.list].push(cfg.fields.map(()=>''));
+  const card=document.createElement('div');
+  card.className='ec';
+  card.innerHTML=`<button class="rb" onclick="removeEntry('${type}',${idx},this.parentElement)">×</button>`+
+    cfg.fields.map((f,i)=>`<input placeholder="${f}" oninput="updateEntry('${type}',${idx},${i},this.value)">`).join('');
+  document.getElementById(cfg.domId).appendChild(card);
+}
+function removeEntry(type,idx,el){
+  const lists={exp:'exp',edu:'edu',lang:'langs',cert:'certs'};
+  state[lists[type]].splice(idx,1);el.remove();renderCV();
+}
+function updateEntry(type,idx,field,val){
+  const lists={exp:'exp',edu:'edu',lang:'langs',cert:'certs'};
+  if(state[lists[type]][idx])state[lists[type]][idx][field]=val;
+  renderCV();
+}
+
+function downloadPDF(){
+  const btn=document.querySelector('.dl-pdf');
+  btn.textContent='جاري التحميل...';btn.disabled=true;
+  const el=document.getElementById('cv-page');
+  html2pdf().set({
+    margin:0,filename:(state.name||'CV')+'.pdf',
+    image:{type:'jpeg',quality:.98},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},
+    jsPDF:{unit:'px',format:[595,842],orientation:'portrait'}
+  }).from(el).save().then(()=>{btn.textContent='تحميل PDF';btn.disabled=false;})
+  .catch(()=>{btn.textContent='تحميل PDF';btn.disabled=false;});
+}
+
+function downloadWord(){
+  const btn=document.querySelector('.dl-word');
+  btn.textContent='جاري التحميل...';btn.disabled=true;
+  const tmpl=TEMPLATES[state.template]||TEMPLATES.classic;
+  const acc=tmpl.accent;
+  const name=state.name||'اسمك الكامل';
+  const photoTag=state.photo?`<img src="${state.photo}" width="80" height="80" style="border-radius:50%"><br>`:'';
+  const expRows=state.exp.map(e=>`<tr><td><b>${e[0]||''}</b> — ${e[1]||''}${e[2]?' ('+e[2]+')':''}<br><small>${e[3]||''}</small></td></tr>`).join('');
+  const eduRows=state.edu.map(e=>`<tr><td><b>${e[0]||''}</b> — ${e[1]||''}${e[2]?' ('+e[2]+')':''}</td></tr>`).join('');
+  const skillStr=state.skills.join(' · ');
+  const langRows=state.langs.map(l=>`${l[0]||''}${l[1]?' ('+l[1]+')':''}`).join(' · ');
+  const certRows=state.certs.map(c=>`<li>${c[0]||''}${c[1]?' — '+c[1]:''}</li>`).join('');
+  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>CV</title><style>body{font-family:Arial,sans-serif;margin:40px;direction:rtl}h1{color:${acc};font-size:22px}h2{color:${acc};font-size:13px;border-bottom:2px solid ${acc};padding-bottom:4px;margin-top:18px}table{width:100%;border-collapse:collapse}td{padding:4px 0;font-size:11px}p{font-size:11px;color:#444;line-height:1.7}.contact{font-size:10px;color:#777}</style></head><body>
+<div style="text-align:center">${photoTag}<h1>${name}</h1><p style="color:${acc};font-size:13px;margin:0">${state.title||''}</p><p class="contact">${[state.email,state.phone,state.address,state.linkedin,state.github].filter(Boolean).join(' | ')}</p></div>
+${state.summary?`<h2>الملخص المهني</h2><p>${state.summary}</p>`:''}
+${state.exp.length?`<h2>الخبرات العملية</h2><table>${expRows}</table>`:''}
+${state.edu.length?`<h2>التعليم</h2><table>${eduRows}</table>`:''}
+${skillStr?`<h2>المهارات</h2><p>${skillStr}</p>`:''}
+${langRows?`<h2>اللغات</h2><p>${langRows}</p>`:''}
+${certRows?`<h2>الشهادات</h2><ul>${certRows}</ul>`:''}
+</body></html>`;
+  const blob=new Blob(['\ufeff',html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=(state.name||'CV')+'.doc';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  btn.textContent='تحميل Word';btn.disabled=false;
+}
+
+renderCV();
+</script>

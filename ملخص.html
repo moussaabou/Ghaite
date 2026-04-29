@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>مكتبتي الشخصية ✦ بطاقات القراءة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@400;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root {
+  --ink: #1a1a2e;
+  --ink2: #2d2d44;
+  --paper: #faf9f6;
+  --paper2: #f3f0ea;
+  --cream: #ede8dc;
+  --gold: #c9a84c;
+  --gold2: #e8c96e;
+  --rose: #c4455d;
+  --teal: #1a7f74;
+  --sky: #2563c8;
+  --muted: #7a7a8e;
+  --border: rgba(0,0,0,0.1);
+  --r: 14px;
+  --rr: 20px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow2: 0 2px 8px rgba(0,0,0,0.07);
+  --accent: var(--teal);
+  font-size: 15px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Tajawal',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* ===== NAVIGATION TABS ===== */
+.app-header{background:var(--ink);color:#fff;padding:0;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+.app-title{display:flex;align-items:center;gap:10px;padding:14px 20px 0;font-size:1.1rem;font-weight:700;color:var(--gold2);letter-spacing:0.5px}
+.app-title span{font-size:1.4rem}
+.nav-tabs{display:flex;overflow-x:auto;padding:0 12px;scrollbar-width:none;gap:4px}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{padding:10px 16px;border:none;background:transparent;color:rgba(255,255,255,0.55);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.nav-tab.active{color:var(--gold2);border-bottom-color:var(--gold2)}
+.nav-tab:hover{color:#fff}
+.tab-icon{font-size:1rem}
+
+/* ===== SECTIONS ===== */
+.section{display:none;padding:20px;max-width:900px;margin:0 auto;padding-bottom:80px}
+.section.active{display:block}
+
+/* ===== CARD CREATOR ===== */
+.creator-grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:768px){.creator-grid{grid-template-columns:1fr 1fr;align-items:start}}
+
+.panel{background:#fff;border-radius:var(--rr);border:1px solid var(--border);padding:20px;box-shadow:var(--shadow2)}
+.panel-title{font-size:0.95rem;font-weight:700;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+
+.form-group{margin-bottom:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:0.8rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
+input[type=text],input[type=number],textarea,select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.9rem;background:var(--paper);color:var(--ink);outline:none;transition:all 0.2s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(26,127,116,0.12)}
+textarea{resize:vertical;min-height:75px}
+input[type=color]{width:100%;height:40px;padding:2px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer}
+input[type=file]{width:100%;font-size:0.85rem;cursor:pointer}
+
+.segmented{display:flex;background:var(--paper2);border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap}
+.seg-btn{flex:1;min-width:60px;padding:7px 10px;border:none;border-radius:8px;font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;transition:all 0.2s;text-align:center}
+.seg-btn.active{background:#fff;color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+
+.color-presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.color-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;transition:transform 0.2s;border:2px solid transparent}
+.color-dot:hover,.color-dot.active{transform:scale(1.2);border-color:#fff;box-shadow:0 0 0 2px var(--ink)}
+
+.quote-item-wrap{position:relative;margin-bottom:8px}
+.quote-item-wrap textarea{padding-left:40px}
+.btn-del-quote{position:absolute;top:50%;left:10px;transform:translateY(-50%);background:none;border:none;color:#ccc;font-size:1.1rem;cursor:pointer;padding:4px;line-height:1}
+.btn-del-quote:hover{color:var(--rose)}
+.btn-add{width:100%;padding:10px;border:2px dashed var(--border);border-radius:10px;background:transparent;font-family:inherit;font-size:0.85rem;color:var(--muted);cursor:pointer;transition:all 0.2s;margin-top:4px}
+.btn-add:hover{border-color:var(--accent);color:var(--accent);background:rgba(26,127,116,0.04)}
+
+.action-bar{display:flex;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.action-btn{flex:1;padding:12px;border:none;border-radius:12px;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:7px;color:#fff}
+.action-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.btn-save{background:var(--accent)}
+.btn-img{background:var(--sky)}
+.btn-pdf{background:var(--ink)}
+
+/* ===== BOOK CARD PREVIEW ===== */
+.preview-sticky{position:sticky;top:80px}
+.book-card{width:100%;font-family:var(--card-font,'Tajawal',sans-serif);border-radius:16px;overflow:hidden;position:relative;transition:all 0.3s}
+
+/* Template 1: Modern */
+.tpl-modern{background:#fff;box-shadow:var(--shadow)}
+.tpl-modern .card-cover{width:100%;height:220px;overflow:hidden;position:relative}
+.tpl-modern .card-cover img{width:100%;height:100%;object-fit:cover}
+.tpl-modern .card-cover .cover-ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,rgba(26,127,116,0.12),rgba(37,99,200,0.08))}
+.tpl-modern .card-body{padding:22px}
+.tpl-modern .card-title{font-size:1.3rem;font-weight:800;color:var(--c-primary,var(--teal));margin-bottom:3px;line-height:1.3;text-align:center}
+.tpl-modern .card-author{font-size:0.95rem;color:var(--muted);text-align:center}
+.tpl-modern .card-header-block{text-align:center;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border)}
+.tpl-modern .card-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;font-size:0.78rem;justify-content:center}
+.tpl-modern .meta-chip{background:var(--paper2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.tpl-modern .card-section{margin-bottom:12px;background:var(--paper);border-radius:10px;padding:14px;border-right:3px solid var(--c-primary,var(--teal))}
+.tpl-modern .card-section h4{font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--c-primary,var(--teal));margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.tpl-modern .card-section p{font-size:0.9rem;line-height:1.75;color:#2d3748;white-space:pre-wrap}
+.tpl-modern .sec-quote{border-right-color:#c9a84c;background:#fffbf0}
+.tpl-modern .sec-opinion{border-right-color:#c4455d;background:#fff5f7}
+.tpl-modern .sec-notes{border-right-color:#7c3aed;background:#faf5ff}
+.tpl-modern .quote-text{font-style:italic;font-size:0.95rem;color:#6b4a00;border-bottom:1px dashed #e8c96e;padding-bottom:10px;margin-bottom:10px}
+.tpl-modern .quote-text:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.tpl-modern .card-ribbon{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--c-primary,var(--teal));color:#fff;padding:9px 16px;font-size:0.82rem;font-weight:700;letter-spacing:0.3px;width:100%}
+.tpl-modern .card-rating{font-size:1.1rem;margin-top:6px;text-align:center}
+.tpl-modern .card-sig{text-align:center;padding:14px;border-top:1px solid var(--border);font-size:0.82rem;color:var(--muted);font-style:italic}
+
+/* Template 2: Notebook */
+.tpl-notebook{background:#fffef5;box-shadow:var(--shadow);border:1px solid #d4c9a8}
+.tpl-notebook .card-cover{height:200px;position:relative;overflow:hidden;border-bottom:4px double #c9b87a}
+.tpl-notebook .nb-lines{position:absolute;inset:0;background-image:repeating-linear-gradient(transparent,transparent 24px,#e8e0c0 24px,#e8e0c0 25px);opacity:0.5}
+.tpl-notebook .cover-img-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.tpl-notebook .card-body{padding:22px 24px;background-image:repeating-linear-gradient(transparent,transparent 28px,#ede6cc 28px,#ede6cc 29px);background-position:0 8px}
+.tpl-notebook .card-header-block{text-align:center;padding-bottom:14px;margin-bottom:14px;border-bottom:2px dashed #c9b87a}
+.tpl-notebook .card-title{font-family:'Amiri',serif;font-size:1.5rem;font-weight:700;color:#3d2b00;border-bottom:2px solid var(--c-primary,#c9a84c);display:inline-block;padding-bottom:4px;margin-bottom:6px}
+.tpl-notebook .card-author{font-family:'Amiri',serif;font-style:italic;color:#7a5c00;font-size:1rem}
+.tpl-notebook .card-meta{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0;font-size:0.88rem;color:#6b5500;padding:10px 0;border-top:1px dashed #c9b87a;border-bottom:1px dashed #c9b87a;justify-content:center}
+.tpl-notebook .meta-chip{display:flex;align-items:center;gap:4px;background:transparent;border:none;padding:0}
+.tpl-notebook .card-section{margin-bottom:16px;padding:0 0 14px 0;background:transparent;border-right:none;border-bottom:1px dashed #d4c9a8}
+.tpl-notebook .card-section:last-of-type{border-bottom:none}
+.tpl-notebook .card-section h4{font-family:'Cairo',sans-serif;color:var(--c-primary,#c9a84c);font-size:0.88rem;font-weight:700;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px}
+.tpl-notebook .card-section p{font-family:'Amiri',serif;font-size:1rem;line-height:1.85;color:#2c1e00;white-space:pre-wrap}
+.tpl-notebook .sec-quote{background:rgba(201,168,76,0.06);padding:12px;border-radius:6px;border-right:none;border:none}
+.tpl-notebook .quote-text{font-family:'Amiri',serif;font-style:italic;font-size:1.05rem;color:#4a3000;padding:8px 0;border-bottom:1px dashed #d4c9a8}
+.tpl-notebook .quote-text:last-child{border-bottom:none}
+.tpl-notebook .card-ribbon{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--c-primary,#c9a84c);color:#fff;padding:7px 16px;font-size:0.8rem;font-weight:700;width:100%}
+.tpl-notebook .card-rating{font-size:1.1rem;margin-top:5px;text-align:center}
+.tpl-notebook .card-sig{text-align:center;padding:12px;border-top:1px dashed #c9b87a;font-family:'Amiri',serif;font-style:italic;font-size:0.95rem;color:#7a5c00}
+
+/* Template 3: Dark/Minimal */
+.tpl-dark{background:#141420;color:#e8e6f0;box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+.tpl-dark .card-cover{height:210px;overflow:hidden;position:relative;border-bottom:1px solid rgba(255,255,255,0.08)}
+.tpl-dark .cover-ph{background:linear-gradient(135deg,#1e1e35,#2a1a35)}
+.tpl-dark .card-body{padding:22px}
+.tpl-dark .card-title{font-size:1.25rem;font-weight:800;color:#e8c96e;margin-bottom:3px;line-height:1.3;text-align:center}
+.tpl-dark .card-author{font-size:0.9rem;color:rgba(255,255,255,0.5);text-align:center}
+.tpl-dark .card-header-block{text-align:center;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.tpl-dark .card-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;font-size:0.78rem;justify-content:center}
+.tpl-dark .meta-chip{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:4px}
+.tpl-dark .card-section{margin-bottom:12px;background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;border-right:3px solid #e8c96e}
+.tpl-dark .card-section h4{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#e8c96e;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.tpl-dark .card-section p{font-size:0.9rem;line-height:1.75;color:rgba(255,255,255,0.8);white-space:pre-wrap}
+.tpl-dark .sec-quote{border-right-color:#c4455d;background:rgba(196,69,93,0.08)}
+.tpl-dark .sec-opinion{border-right-color:#7c3aed;background:rgba(124,58,237,0.07)}
+.tpl-dark .sec-notes{border-right-color:#1a7f74;background:rgba(26,127,116,0.07)}
+.tpl-dark .quote-text{font-style:italic;font-size:0.95rem;color:#e8c96e;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:10px;margin-bottom:10px}
+.tpl-dark .quote-text:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.tpl-dark .card-ribbon{display:flex;align-items:center;justify-content:center;gap:6px;background:#e8c96e;color:#141420;padding:8px 16px;font-size:0.8rem;font-weight:800;width:100%}
+.tpl-dark .card-rating{font-size:1.1rem;margin-top:4px;text-align:center}
+.tpl-dark .card-sig{text-align:center;padding:14px;border-top:1px solid rgba(255,255,255,0.08);font-size:0.82rem;color:rgba(255,255,255,0.4)}
+
+/* Template 4: Magazine */
+.tpl-magazine{background:#fff;box-shadow:var(--shadow)}
+.tpl-magazine .card-cover{height:250px;position:relative;overflow:hidden}
+.tpl-magazine .card-cover img{width:100%;height:100%;object-fit:cover}
+.tpl-magazine .cover-overlay{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.85))}
+.tpl-magazine .cover-ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#2d2d44}
+.tpl-magazine .cover-titles{position:absolute;bottom:0;left:0;right:0;padding:20px;color:#fff}
+.tpl-magazine .card-title{font-family:'Cairo',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;line-height:1.25;margin-bottom:4px;text-shadow:0 1px 8px rgba(0,0,0,0.5)}
+.tpl-magazine .card-author{font-size:0.9rem;color:rgba(255,255,255,0.7)}
+.tpl-magazine .card-body{padding:20px}
+.tpl-magazine .card-ribbon{position:absolute;top:14px;left:14px;background:var(--c-primary,var(--rose));color:#fff;padding:5px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.3px;z-index:5}
+.tpl-magazine .card-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;font-size:0.78rem;justify-content:center}
+.tpl-magazine .meta-chip{background:var(--paper2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.tpl-magazine .card-rating{font-size:1.1rem;margin-bottom:12px}
+.tpl-magazine .card-section{margin-bottom:12px;padding:14px;border-radius:10px;background:var(--paper)}
+.tpl-magazine .card-section h4{font-family:'Cairo',sans-serif;font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;color:var(--c-primary,var(--rose));margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tpl-magazine .card-section p{font-size:0.9rem;line-height:1.75;color:#1a1a2e;white-space:pre-wrap}
+.tpl-magazine .sec-quote{background:#fff8e1;border-left:none;border-top:3px solid var(--gold)}
+.tpl-magazine .quote-text{font-style:italic;font-size:0.95rem;color:#5c3d00;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid #ffe082}
+.tpl-magazine .quote-text:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.tpl-magazine .card-sig{text-align:center;padding:14px;border-top:1px solid var(--border);font-size:0.82rem;color:var(--muted)}
+
+/* Template 5: Minimalist */
+.tpl-minimal{background:#fff;border:1px solid #e0ddd5;box-shadow:0 4px 16px rgba(0,0,0,0.06)}
+.tpl-minimal .card-cover{height:180px;overflow:hidden;border-bottom:1px solid #e0ddd5}
+.tpl-minimal .cover-ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--paper2)}
+.tpl-minimal .card-body{padding:24px}
+.tpl-minimal .card-title{font-family:'Cairo',sans-serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:3px}
+.tpl-minimal .card-author{font-size:0.9rem;color:var(--muted);margin-bottom:14px}
+.tpl-minimal .card-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;font-size:0.8rem;color:var(--muted);padding-top:12px;border-top:1px solid #e0ddd5}
+.tpl-minimal .meta-chip{display:flex;align-items:center;gap:4px;background:transparent;border:none;padding:0}
+.tpl-minimal .card-header-block{text-align:center;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid #e0ddd5}
+.tpl-minimal .card-title{font-family:'Cairo',sans-serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:3px;text-align:center}
+.tpl-minimal .card-author{font-size:0.9rem;color:var(--muted);margin-bottom:0;text-align:center}
+.tpl-minimal .card-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;font-size:0.8rem;color:var(--muted);padding-top:12px;border-top:1px solid #e0ddd5;justify-content:center}
+.tpl-minimal .meta-chip{display:flex;align-items:center;gap:4px;background:transparent;border:none;padding:0}
+.tpl-minimal .card-ribbon{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--ink);color:#fff;padding:7px 16px;font-size:0.78rem;font-weight:700;letter-spacing:0.5px;width:100%}
+.tpl-minimal .card-rating{font-size:1.05rem;margin-top:4px;text-align:center}
+.tpl-minimal .card-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #e0ddd5;background:transparent;border-right:none;border-radius:0}
+.tpl-minimal .card-section:last-of-type{border-bottom:none}
+.tpl-minimal .card-section h4{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:7px}
+.tpl-minimal .card-section p{font-size:0.92rem;line-height:1.8;color:var(--ink);white-space:pre-wrap}
+.tpl-minimal .quote-text{font-size:0.95rem;color:var(--ink);padding:10px 14px;border-right:2px solid var(--ink);margin-bottom:8px;background:var(--paper)}
+.tpl-minimal .quote-text:last-child{margin-bottom:0}
+.tpl-minimal .card-rating{font-size:1.05rem;margin-bottom:12px}
+.tpl-minimal .card-sig{padding-top:14px;border-top:1px solid #e0ddd5;font-size:0.82rem;color:var(--muted);text-align:center}
+
+/* ===== HIDDEN ELEMENTS ===== */
+.hidden{display:none!important}
+
+/* ===== LIBRARY SECTION ===== */
+.lib-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.lib-header h2{font-size:1.1rem;font-weight:700;color:var(--ink)}
+.lib-filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;background:transparent;font-family:inherit;font-size:0.78rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.2s}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.lib-search{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:0.9rem;background:var(--paper);outline:none;margin-bottom:16px}
+.lib-search:focus{border-color:var(--accent)}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.lib-card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.lib-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,0.1)}
+.lib-card-cover{height:120px;overflow:hidden;position:relative}
+.lib-card-cover img{width:100%;height:100%;object-fit:cover}
+.lib-card-cover .lc-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:var(--paper2)}
+.lib-card-info{padding:10px}
+.lib-card-title{font-size:0.85rem;font-weight:700;color:var(--ink);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-card-author{font-size:0.75rem;color:var(--muted);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-card-status{font-size:0.7rem;padding:2px 8px;border-radius:10px;display:inline-block;font-weight:600}
+.status-done{background:#e8f8f0;color:#0a7c4e}
+.status-reading{background:#fff5e6;color:#b35a00}
+.status-soon{background:#e8f0ff;color:#1a4fa0}
+.lib-empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.lib-empty p{font-size:0.9rem;margin-top:10px}
+.lib-card-actions{display:flex;gap:6px;margin-top:8px}
+.lc-btn{flex:1;padding:5px;border:none;border-radius:7px;font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+.btn-view{background:var(--paper2);color:var(--ink)}
+.btn-delete{background:#fee2e2;color:#c9463a}
+.lc-btn:hover{opacity:0.8;transform:scale(0.97)}
+.lib-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.stat-box{background:#fff;border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border)}
+.stat-num{font-size:1.5rem;font-weight:800;color:var(--accent)}
+.stat-label{font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
+
+/* ===== TRACKER SECTION ===== */
+.tracker-header{margin-bottom:20px}
+.tracker-header h2{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.tracker-header p{font-size:0.85rem;color:var(--muted)}
+.reading-goal{background:#fff;border-radius:var(--rr);border:1px solid var(--border);padding:18px;margin-bottom:16px}
+.goal-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.goal-label{font-size:0.88rem;font-weight:600;color:var(--ink);flex:1}
+.goal-input{width:80px;text-align:center;font-weight:700}
+.progress-bar{width:100%;height:10px;background:var(--paper2);border-radius:10px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent),#2563c8);transition:width 0.5s ease}
+.progress-text{font-size:0.8rem;color:var(--muted);margin-top:5px;text-align:left}
+.timeline{background:#fff;border-radius:var(--rr);border:1px solid var(--border);padding:18px;margin-top:16px}
+.timeline-title{font-size:0.88rem;font-weight:700;color:var(--ink);margin-bottom:14px}
+.timeline-item{display:flex;gap:12px;margin-bottom:16px}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:4px;flex-shrink:0;position:relative}
+.tl-dot::after{content:'';position:absolute;top:10px;left:4px;width:2px;height:calc(100% + 12px);background:var(--border)}
+.timeline-item:last-child .tl-dot::after{display:none}
+.tl-content{flex:1}
+.tl-title{font-size:0.85rem;font-weight:600;color:var(--ink)}
+.tl-meta{font-size:0.75rem;color:var(--muted);margin-top:2px}
+.reading-log{margin-top:16px}
+.log-form{background:#fff;border-radius:var(--rr);border:1px solid var(--border);padding:18px;margin-bottom:14px}
+.log-form h3{font-size:0.88rem;font-weight:700;margin-bottom:12px}
+.log-entry{background:#fff;border-radius:12px;border:1px solid var(--border);padding:12px;margin-bottom:8px;display:flex;align-items:start;gap:10px}
+.log-date{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.log-day{font-size:0.9rem;font-weight:800;color:#fff;line-height:1}
+.log-month{font-size:0.6rem;color:rgba(255,255,255,0.7);text-transform:uppercase}
+.log-text{flex:1}
+.log-book{font-size:0.85rem;font-weight:700;color:var(--ink)}
+.log-pages{font-size:0.78rem;color:var(--muted);margin-top:2px}
+.log-note{font-size:0.78rem;color:var(--ink2);margin-top:3px;font-style:italic}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.cal-day{height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+.cal-day.empty{background:transparent}
+.cal-day.no-read{background:var(--paper2);color:var(--muted)}
+.cal-day.read{background:var(--accent);color:#fff}
+.cal-day.today{box-shadow:0 0 0 2px var(--accent)}
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-nav{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted);padding:4px 8px}
+.cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.cal-day-name{text-align:center;font-size:0.65rem;font-weight:600;color:var(--muted);padding:2px}
+
+/* ===== CHARTS/STATS ===== */
+.charts-panel{background:#fff;border-radius:var(--rr);border:1px solid var(--border);padding:18px;margin-bottom:16px}
+.charts-panel h3{font-size:0.88rem;font-weight:700;margin-bottom:14px;color:var(--ink)}
+.genre-bars{display:flex;flex-direction:column;gap:8px}
+.genre-row{display:flex;align-items:center;gap:10px}
+.genre-name{font-size:0.8rem;font-weight:600;color:var(--ink);width:80px;flex-shrink:0;text-align:right}
+.genre-bar-wrap{flex:1;height:20px;background:var(--paper2);border-radius:10px;overflow:hidden}
+.genre-bar-fill{height:100%;border-radius:10px;transition:width 0.6s ease}
+.genre-count{font-size:0.75rem;color:var(--muted);width:20px;text-align:center}
+
+/* ===== QUOTE WALL ===== */
+.quotes-wall{display:grid;grid-template-columns:1fr;gap:12px}
+.quote-wall-item{background:#fff;border-radius:14px;border:1px solid var(--border);padding:16px;position:relative;overflow:hidden}
+.quote-wall-item::before{content:'❝';position:absolute;top:-8px;right:12px;font-size:4rem;color:var(--paper2);font-family:serif;line-height:1}
+.qw-text{font-family:'Amiri',serif;font-size:1.05rem;line-height:1.8;color:var(--ink);font-style:italic;position:relative;z-index:1}
+.qw-source{font-size:0.78rem;color:var(--muted);margin-top:8px;font-weight:600}
+.qw-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.qw-tag{padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;background:var(--paper2);color:var(--muted)}
+
+/* ===== WISHES SECTION ===== */
+.wishes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.wish-card{background:#fff;border-radius:14px;border:1px solid var(--border);padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
+.wish-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.08)}
+.wish-card .wish-cover{width:60px;height:80px;margin:0 auto 10px;border-radius:6px;overflow:hidden;background:var(--paper2);display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.wish-card .wish-cover img{width:100%;height:100%;object-fit:cover}
+.wish-title{font-size:0.82rem;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px}
+.wish-author{font-size:0.72rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wish-priority{position:absolute;top:8px;right:8px;font-size:0.9rem}
+.wish-del{position:absolute;top:8px;left:8px;background:#fee2e2;color:#c9463a;border:none;border-radius:6px;padding:2px 6px;font-size:0.7rem;cursor:pointer;opacity:0}
+.wish-card:hover .wish-del{opacity:1}
+.add-wish-form{background:#fff;border-radius:var(--rr);border:1px solid var(--border);padding:18px;margin-bottom:16px}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.modal-box{background:#fff;border-radius:var(--rr);max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
+.modal-header h3{font-size:1rem;font-weight:700}
+.btn-modal-close{background:var(--paper2);border:none;width:32px;height:32px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-content{padding:20px}
+.modal-actions{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px}
+
+/* ===== FAB ===== */
+.fab{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:500}
+.fab-btn{padding:13px 22px;border:none;border-radius:100px;font-family:inherit;font-size:0.88rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:all 0.2s;display:flex;align-items:center;gap:7px}
+.fab-btn:active{transform:scale(0.96)}
+.fab-new{background:var(--accent);color:#fff}
+.fab-lib{background:var(--ink);color:#fff}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 20px;border-radius:100px;font-size:0.85rem;font-weight:600;opacity:0;transition:all 0.3s;pointer-events:none;z-index:2000;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== EMPTY STATES ===== */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state .es-icon{font-size:3rem;margin-bottom:12px;display:block}
+.empty-state h3{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+.empty-state p{font-size:0.85rem}
+
+/* ===== PRINT ===== */
+@media print{
+  .app-header,.form-section,.fab,.modal-overlay,.nav-tabs,.app-title{display:none!important}
+  body{background:#fff}
+  .section{display:block!important;padding:0;max-width:100%}
+  .creator-grid{grid-template-columns:1fr}
+  .preview-sticky{position:static}
+  .panel:first-child{display:none}
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:500px){
+  .form-row{grid-template-columns:1fr}
+  .action-bar{flex-direction:column}
+  .lib-grid{grid-template-columns:repeat(2,1fr)}
+  .lib-stats{grid-template-columns:repeat(3,1fr)}
+  .wishes-grid{grid-template-columns:repeat(2,1fr)}
+  .fab{bottom:16px;gap:8px}
+  .fab-btn{padding:11px 16px;font-size:0.82rem}
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-title"><span>📚</span> مكتبتي الشخصية</div>
+  <nav class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" data-section="sec-creator"><span class="tab-icon">✏️</span> إنشاء بطاقة</button>
+    <button class="nav-tab" data-section="sec-library"><span class="tab-icon">🗂️</span> مكتبتي</button>
+    <button class="nav-tab" data-section="sec-tracker"><span class="tab-icon">📊</span> تتبع القراءة</button>
+    <button class="nav-tab" data-section="sec-quotes"><span class="tab-icon">💬</span> اقتباساتي</button>
+    <button class="nav-tab" data-section="sec-wishes"><span class="tab-icon">🌟</span> قائمة الرغبات</button>
+  </nav>
+</div>
+
+<!-- ===================== SECTION: CREATOR ===================== -->
+<section id="sec-creator" class="section active">
+  <div class="creator-grid">
+    <!-- Form Panel -->
+    <div class="panel" id="form-panel">
+      <div class="panel-title">⚙️ إعدادات البطاقة</div>
+
+      <div class="form-group">
+        <label>🎨 القالب</label>
+        <div class="segmented" id="template-switcher">
+          <button class="seg-btn active" data-tpl="tpl-modern">عصري</button>
+          <button class="seg-btn" data-tpl="tpl-notebook">دفتر</button>
+          <button class="seg-btn" data-tpl="tpl-dark">داكن</button>
+          <button class="seg-btn" data-tpl="tpl-magazine">مجلة</button>
+          <button class="seg-btn" data-tpl="tpl-minimal">بسيط</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>🔤 الخط</label>
+          <select id="inp-font">
+            <option value="'Tajawal',sans-serif">تجوال</option>
+            <option value="'Cairo',sans-serif">القاهرة</option>
+            <option value="'Amiri',serif">أميري</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>🎨 اللون الأساسي</label>
+          <input type="color" id="inp-color" value="#1a7f74">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ألوان سريعة</label>
+        <div class="color-presets" id="color-presets">
+          <div class="color-dot active" style="background:#1a7f74" data-color="#1a7f74"></div>
+          <div class="color-dot" style="background:#2563c8" data-color="#2563c8"></div>
+          <div class="color-dot" style="background:#c4455d" data-color="#c4455d"></div>
+          <div class="color-dot" style="background:#c9a84c" data-color="#c9a84c"></div>
+          <div class="color-dot" style="background:#7c3aed" data-color="#7c3aed"></div>
+          <div class="color-dot" style="background:#ea580c" data-color="#ea580c"></div>
+          <div class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e"></div>
+          <div class="color-dot" style="background:#065f46" data-color="#065f46"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>🖼️ صورة الغلاف</label>
+        <input type="file" id="inp-cover" accept="image/*">
+        <button type="button" id="btn-rm-cover" class="btn-add hidden" style="margin-top:6px" onclick="removeCover()">🗑️ إزالة صورة الغلاف</button>
+      </div>
+
+      <div class="form-group" id="fallback-group">
+        <label>📌 بديل الغلاف</label>
+        <div class="form-row">
+          <select id="inp-no-cover">
+            <option value="icon">أيقونة</option>
+            <option value="title">عنوان الكتاب</option>
+            <option value="hide">إخفاء</option>
+          </select>
+          <select id="inp-fallback-icon">
+            <option value="📚">📚 كتب</option>
+            <option value="📖">📖 كتاب</option>
+            <option value="🌙">🌙 قمر</option>
+            <option value="🎭">🎭 فن</option>
+            <option value="🔭">🔭 علم</option>
+            <option value="💡">💡 فكرة</option>
+            <option value="🌿">🌿 طبيعة</option>
+            <option value="⚡">⚡ طاقة</option>
+            <option value="🗺️">🗺️ مغامرة</option>
+            <option value="🎯">🎯 هدف</option>
+            <option value="svg-book">🔖 SVG كتاب</option>
+            <option value="svg-brain">🧠 SVG عقل</option>
+            <option value="svg-quote">💬 SVG اقتباس</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>📚 عنوان الكتاب</label>
+          <input type="text" id="inp-title" placeholder="اسم الكتاب">
+        </div>
+        <div class="form-group">
+          <label>✍️ المؤلف</label>
+          <input type="text" id="inp-author" placeholder="اسم الكاتب">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>📌 حالة القراءة</label>
+          <select id="inp-status">
+            <option value="">بدون حالة</option>
+            <option value="✅ تمت القراءة">✅ تمت القراءة</option>
+            <option value="⏳ أقرأ حالياً">⏳ أقرأ حالياً</option>
+            <option value="🔜 قريباً">🔜 سأقرأه قريباً</option>
+            <option value="⏸️ متوقف">⏸️ متوقف مؤقتاً</option>
+            <option value="⭐ مُوصى به">⭐ مُوصى به</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>🌟 التقييم</label>
+          <select id="inp-rating">
+            <option value="">بدون تقييم</option>
+            <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ ممتاز</option>
+            <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ جيد جداً</option>
+            <option value="⭐⭐⭐">⭐⭐⭐ جيد</option>
+            <option value="⭐⭐">⭐⭐ مقبول</option>
+            <option value="⭐">⭐ ضعيف</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>📄 عدد الصفحات</label>
+          <input type="number" id="inp-pages" placeholder="320">
+        </div>
+        <div class="form-group">
+          <label>📅 سنة النشر</label>
+          <input type="text" id="inp-date" placeholder="2024">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>🔖 من صفحة</label>
+          <input type="number" id="inp-page-start" placeholder="1">
+        </div>
+        <div class="form-group">
+          <label>إلى صفحة</label>
+          <input type="number" id="inp-page-end" placeholder="100">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>🏷️ التصنيف</label>
+        <select id="inp-genre">
+          <option value="">اختر التصنيف</option>
+          <option value="روايات">📖 روايات</option>
+          <option value="تطوير الذات">🚀 تطوير الذات</option>
+          <option value="تاريخ">🏛️ تاريخ</option>
+          <option value="علوم">🔬 علوم</option>
+          <option value="فلسفة">🤔 فلسفة</option>
+          <option value="أعمال">💼 أعمال وريادة</option>
+          <option value="أدب">✍️ أدب وشعر</option>
+          <option value="دين">🕌 دين وروحانيات</option>
+          <option value="تقنية">💻 تقنية</option>
+          <option value="أطفال">🧸 أطفال</option>
+          <option value="أخرى">📦 أخرى</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>💡 الفكرة الأساسية</label>
+        <input type="text" id="inp-idea" placeholder="ما الذي يدور حوله الكتاب؟">
+      </div>
+
+      <div class="form-group">
+        <label>📝 الملخص</label>
+        <textarea id="inp-summary" placeholder="اكتب ملخصك هنا..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>💭 رأيك الشخصي</label>
+        <textarea id="inp-opinion" placeholder="ما أعجبك؟ ما لم يعجبك؟"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>💬 الاقتباسات المفضلة</label>
+        <div id="quotes-container">
+          <div class="quote-item-wrap">
+            <textarea class="inp-quote" placeholder="اقتباس مميز من الكتاب..."></textarea>
+          </div>
+        </div>
+        <button type="button" class="btn-add" onclick="addQuote()">＋ إضافة اقتباس</button>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>📎 ملاحظات إضافية</label>
+          <input type="text" id="inp-notes" placeholder="أي ملاحظات...">
+        </div>
+        <div class="form-group">
+          <label>✍️ لُخِّص بواسطة</label>
+          <input type="text" id="inp-sig" placeholder="اسمك / توقيعك">
+        </div>
+      </div>
+
+      <!-- Section Controls: Visibility, Labels, Icons -->
+      <div class="form-group">
+        <div class="panel-title" style="margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">🎨 تخصيص أقسام البطاقة</div>
+
+        <div style="margin-bottom:12px">
+          <label>📌 موضع شريط حالة القراءة</label>
+          <select id="ribbon-position">
+            <option value="below-cover">تحت الغلاف مباشرة</option>
+            <option value="above-header">فوق العنوان</option>
+            <option value="none">إخفاء الشريط</option>
+          </select>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0">
+
+          <div style="border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--paper)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <input type="checkbox" id="vis-idea" checked class="sec-vis-toggle" data-sec="sec-idea" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+              <span style="font-size:0.85rem;font-weight:700;color:var(--ink)">قسم الفكرة الأساسية</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div><label style="font-size:0.72rem">الأيقونة</label>
+                <select id="icon-idea" class="section-icon-sel" style="font-size:0.82rem;padding:7px 10px">
+                  <option value="emoji-💡">💡 مصباح</option>
+                  <option value="svg-lightbulb">SVG مصباح</option>
+                  <option value="svg-star">SVG نجمة</option>
+                  <option value="svg-target">SVG هدف</option>
+                  <option value="svg-zap">SVG برق</option>
+                  <option value="none">بدون أيقونة</option>
+                </select>
+              </div>
+              <div><label style="font-size:0.72rem">اسم القسم</label>
+                <input type="text" id="label-idea" value="الفكرة الأساسية" style="font-size:0.82rem;padding:7px 10px">
+              </div>
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--paper)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <input type="checkbox" id="vis-summary" checked class="sec-vis-toggle" data-sec="sec-summary" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+              <span style="font-size:0.85rem;font-weight:700;color:var(--ink)">قسم الملخص</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div><label style="font-size:0.72rem">الأيقونة</label>
+                <select id="icon-summary" class="section-icon-sel" style="font-size:0.82rem;padding:7px 10px">
+                  <option value="emoji-📝">📝 ورقة</option>
+                  <option value="svg-lines">SVG أسطر</option>
+                  <option value="svg-book2">SVG كتاب</option>
+                  <option value="svg-file">SVG ملف</option>
+                  <option value="none">بدون أيقونة</option>
+                </select>
+              </div>
+              <div><label style="font-size:0.72rem">اسم القسم</label>
+                <input type="text" id="label-summary" value="الملخص" style="font-size:0.82rem;padding:7px 10px">
+              </div>
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--paper)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <input type="checkbox" id="vis-opinion" checked class="sec-vis-toggle" data-sec="sec-opinion" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+              <span style="font-size:0.85rem;font-weight:700;color:var(--ink)">قسم الرأي الشخصي</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div><label style="font-size:0.72rem">الأيقونة</label>
+                <select id="icon-opinion" class="section-icon-sel" style="font-size:0.82rem;padding:7px 10px">
+                  <option value="emoji-💭">💭 فقاعة</option>
+                  <option value="svg-heart">SVG قلب</option>
+                  <option value="svg-chat">SVG رسالة</option>
+                  <option value="svg-thumbup">SVG إعجاب</option>
+                  <option value="none">بدون أيقونة</option>
+                </select>
+              </div>
+              <div><label style="font-size:0.72rem">اسم القسم</label>
+                <input type="text" id="label-opinion" value="رأي شخصي" style="font-size:0.82rem;padding:7px 10px">
+              </div>
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--paper)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <input type="checkbox" id="vis-quotes" checked class="sec-vis-toggle" data-sec="sec-quote" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+              <span style="font-size:0.85rem;font-weight:700;color:var(--ink)">قسم الاقتباسات</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div><label style="font-size:0.72rem">الأيقونة</label>
+                <select id="icon-quotes" class="section-icon-sel" style="font-size:0.82rem;padding:7px 10px">
+                  <option value="emoji-💬">💬 محادثة</option>
+                  <option value="svg-quote2">SVG اقتباس</option>
+                  <option value="svg-pen2">SVG قلم</option>
+                  <option value="svg-bookmark">SVG علامة</option>
+                  <option value="none">بدون أيقونة</option>
+                </select>
+              </div>
+              <div><label style="font-size:0.72rem">اسم القسم</label>
+                <input type="text" id="label-quotes" value="الاقتباسات" style="font-size:0.82rem;padding:7px 10px">
+              </div>
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--paper)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <input type="checkbox" id="vis-notes" checked class="sec-vis-toggle" data-sec="sec-notes" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+              <span style="font-size:0.85rem;font-weight:700;color:var(--ink)">قسم الملاحظات</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div><label style="font-size:0.72rem">الأيقونة</label>
+                <select id="icon-notes" class="section-icon-sel" style="font-size:0.82rem;padding:7px 10px">
+                  <option value="emoji-📎">📎 مشبك</option>
+                  <option value="svg-pin">SVG دبوس</option>
+                  <option value="svg-tag">SVG وسم</option>
+                  <option value="svg-info">SVG معلومات</option>
+                  <option value="none">بدون أيقونة</option>
+                </select>
+              </div>
+              <div><label style="font-size:0.72rem">اسم القسم</label>
+                <input type="text" id="label-notes" value="ملاحظات" style="font-size:0.82rem;padding:7px 10px">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="action-btn btn-save" onclick="saveToLibrary()">💾 حفظ في المكتبة</button>
+        <button class="action-btn btn-img" onclick="downloadImage()">📥 تحميل صورة</button>
+        <button class="action-btn btn-pdf" onclick="window.print()">🖨️ PDF</button>
+      </div>
+    </div>
+
+    <!-- Preview Panel -->
+    <div class="preview-sticky" id="preview-col">
+      <div class="panel">
+        <div class="panel-title">👁️ معاينة البطاقة</div>
+        <div id="card-preview" class="book-card tpl-modern">
+
+          <div id="sec-cover" class="card-cover">
+            <div id="out-placeholder" class="cover-ph" style="font-size:3.5rem">📚</div>
+            <img id="out-cover-img" src="" alt="" style="display:none">
+            <div class="cover-overlay hidden" id="magazine-overlay"></div>
+            <div class="cover-titles hidden" id="magazine-titles">
+              <div class="card-title" id="mag-title"></div>
+              <div class="card-author" id="mag-author"></div>
+            </div>
+          </div>
+
+          <div id="out-ribbon" class="card-ribbon hidden"></div>
+
+          <div class="nb-lines hidden" id="notebook-lines"></div>
+
+          <div class="card-body">
+            <div id="sec-header" class="card-header-block hidden">
+              <div class="card-title" id="out-title"></div>
+              <div class="card-author" id="out-author"></div>
+              <div class="card-rating hidden" id="out-rating"></div>
+            </div>
+
+            <div id="sec-meta" class="card-meta hidden"></div>
+
+            <div id="sec-idea" class="card-section hidden">
+              <h4><span class="sec-icon" id="icon-out-idea">💡</span> <span class="sec-label-idea">الفكرة الأساسية</span></h4><p id="out-idea"></p>
+            </div>
+            <div id="sec-summary" class="card-section hidden">
+              <h4><span class="sec-icon" id="icon-out-summary">📝</span> <span class="sec-label-summary">الملخص</span></h4><p id="out-summary"></p>
+            </div>
+            <div id="sec-opinion" class="card-section sec-opinion hidden">
+              <h4><span class="sec-icon" id="icon-out-opinion">💭</span> <span class="sec-label-opinion">رأي شخصي</span></h4><p id="out-opinion"></p>
+            </div>
+            <div id="sec-quote" class="card-section sec-quote hidden">
+              <h4><span class="sec-icon" id="icon-out-quotes">💬</span> <span class="sec-label-quotes">الاقتباسات</span></h4>
+              <div id="out-quotes"></div>
+            </div>
+            <div id="sec-notes" class="card-section sec-notes hidden">
+              <h4><span class="sec-icon" id="icon-out-notes">📎</span> <span class="sec-label-notes">ملاحظات</span></h4><p id="out-notes"></p>
+            </div>
+            <div id="sec-sig" class="card-sig hidden">لُخِّص بواسطة: <span id="out-sig"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION: LIBRARY ===================== -->
+<section id="sec-library" class="section">
+  <div class="lib-header">
+    <h2>📚 مكتبتي</h2>
+    <div class="lib-filters">
+      <button class="filter-btn active" data-filter="all">الكل</button>
+      <button class="filter-btn" data-filter="✅ تمت القراءة">✅ مقروء</button>
+      <button class="filter-btn" data-filter="⏳ أقرأ حالياً">⏳ أقرأ</button>
+      <button class="filter-btn" data-filter="🔜 قريباً">🔜 قريباً</button>
+    </div>
+  </div>
+  <div class="lib-stats">
+    <div class="stat-box"><div class="stat-num" id="stat-total">0</div><div class="stat-label">إجمالي</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-done">0</div><div class="stat-label">مقروء</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-pages">0</div><div class="stat-label">صفحة</div></div>
+  </div>
+  <input class="lib-search" id="lib-search" type="text" placeholder="🔍 ابحث عن كتاب...">
+  <div class="lib-grid" id="lib-grid">
+    <div class="lib-empty" style="grid-column:1/-1">
+      <span style="font-size:3rem">📚</span>
+      <p style="margin-top:10px">مكتبتك فارغة حتى الآن<br>أنشئ أول بطاقة كتاب!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION: TRACKER ===================== -->
+<section id="sec-tracker" class="section">
+  <div class="tracker-header">
+    <h2>📊 تتبع تقدم القراءة</h2>
+    <p>تابع أهدافك واستمر في القراءة يومياً</p>
+  </div>
+
+  <div class="reading-goal panel">
+    <div class="panel-title">🎯 هدف القراءة السنوي</div>
+    <div class="goal-row">
+      <span class="goal-label">هدفي هذا العام</span>
+      <input type="number" id="inp-goal" class="goal-input" value="24" min="1" max="500" style="width:70px">
+      <span style="font-size:0.85rem;color:var(--muted)">كتاباً</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-text" id="progress-text">0 من 24 كتاب</div>
+  </div>
+
+  <div class="panel" style="margin-bottom:16px">
+    <div class="panel-title">📅 تقويم القراءة</div>
+    <div class="cal-header">
+      <button class="cal-nav" id="cal-prev">‹</button>
+      <span id="cal-month-label" style="font-size:0.9rem;font-weight:700"></span>
+      <button class="cal-nav" id="cal-next">›</button>
+    </div>
+    <div class="cal-days-header">
+      <div class="cal-day-name">أحد</div>
+      <div class="cal-day-name">إثن</div>
+      <div class="cal-day-name">ثلث</div>
+      <div class="cal-day-name">أرب</div>
+      <div class="cal-day-name">خمس</div>
+      <div class="cal-day-name">جمع</div>
+      <div class="cal-day-name">سبت</div>
+    </div>
+    <div class="calendar-grid" id="calendar-grid"></div>
+  </div>
+
+  <div class="log-form panel">
+    <div class="panel-title">✏️ تسجيل جلسة قراءة</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>الكتاب</label>
+        <input type="text" id="log-book-name" placeholder="اسم الكتاب">
+      </div>
+      <div class="form-group">
+        <label>الصفحات المقروءة</label>
+        <input type="number" id="log-pages" placeholder="عدد الصفحات" min="1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>ملاحظة سريعة</label>
+      <input type="text" id="log-note" placeholder="شعورك أو أبرز فكرة...">
+    </div>
+    <button class="action-btn btn-save" style="margin-top:8px" onclick="addLog()">✅ تسجيل الجلسة</button>
+  </div>
+
+  <div class="timeline panel" id="timeline-panel">
+    <div class="timeline-title">📋 سجل الجلسات</div>
+    <div id="timeline-list"><p style="color:var(--muted);font-size:0.85rem">لم تسجل أي جلسة قراءة بعد</p></div>
+  </div>
+</section>
+
+<!-- ===================== SECTION: QUOTES ===================== -->
+<section id="sec-quotes" class="section">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <h2 style="font-size:1.05rem;font-weight:700">💬 جدار الاقتباسات</h2>
+    <span id="quotes-count" style="font-size:0.8rem;color:var(--muted)">0 اقتباس</span>
+  </div>
+  <div class="quotes-wall" id="quotes-wall">
+    <div class="empty-state">
+      <span class="es-icon">💬</span>
+      <h3>لا توجد اقتباسات بعد</h3>
+      <p>احفظ كتاباً بأي اقتباس لتظهر هنا</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION: WISHES ===================== -->
+<section id="sec-wishes" class="section">
+  <div class="add-wish-form panel">
+    <div class="panel-title">➕ إضافة كتاب لقائمة الرغبات</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>عنوان الكتاب</label>
+        <input type="text" id="w-title" placeholder="اسم الكتاب">
+      </div>
+      <div class="form-group">
+        <label>المؤلف</label>
+        <input type="text" id="w-author" placeholder="اسم الكاتب">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>الأولوية</label>
+        <select id="w-priority">
+          <option value="🔥">🔥 عاجل</option>
+          <option value="⭐">⭐ مهم</option>
+          <option value="📌">📌 عادي</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>سبب الرغبة</label>
+        <input type="text" id="w-reason" placeholder="لماذا تريد قراءته؟">
+      </div>
+    </div>
+    <button class="action-btn btn-save" onclick="addWish()">➕ إضافة للقائمة</button>
+  </div>
+  <div class="wishes-grid" id="wishes-grid">
+    <div class="empty-state" style="grid-column:1/-1">
+      <span class="es-icon">🌟</span>
+      <h3>قائمتك فارغة</h3>
+      <p>أضف الكتب التي تريد قراءتها</p>
+    </div>
+  </div>
+</section>
+
+<!-- Modal for viewing card -->
+<div class="modal-overlay hidden" id="view-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>عرض البطاقة</h3>
+      <button class="btn-modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content" id="modal-card-content"></div>
+    <div class="modal-actions">
+      <button class="action-btn btn-img" onclick="downloadModalImage()">📥 تحميل صورة</button>
+      <button class="action-btn btn-save" onclick="editFromLibrary()">✏️ تعديل</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'mkTabati_v2';
+const LOG_KEY = 'mkTabati_logs';
+const WISH_KEY = 'mkTabati_wishes';
+const CAL_KEY = 'mkTabati_readDays';
+const GOAL_KEY = 'mkTabati_goal';
+
+let library = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+let logs = JSON.parse(localStorage.getItem(LOG_KEY)||'[]');
+let wishes = JSON.parse(localStorage.getItem(WISH_KEY)||'[]');
+let readDays = JSON.parse(localStorage.getItem(CAL_KEY)||'[]');
+let hasImg = false;
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let viewingId = null;
+let currentTpl = 'tpl-modern';
+
+const svgIcons = {
+  'svg-book': `<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  'svg-brain': `<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>`,
+  'svg-quote': `<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21c3 0 7-1 7-8V5H2v8c0 1.6.8 3 2 4"/><path d="M14 21c3 0 7-1 7-8V5h-8v8c0 1.6.8 3 2 4"/></svg>`
+};
+
+// ====== NAVIGATION ======
+document.getElementById('nav-tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.nav-tab');
+  if (!btn) return;
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.section).classList.add('active');
+  if (btn.dataset.section === 'sec-library') renderLibrary();
+  if (btn.dataset.section === 'sec-quotes') renderQuotes();
+  if (btn.dataset.section === 'sec-wishes') renderWishes();
+  if (btn.dataset.section === 'sec-tracker') { renderCalendar(); renderLogs(); updateGoalProgress(); }
+});
+
+// ====== TEMPLATE SWITCHER ======
+document.getElementById('template-switcher').addEventListener('click', e => {
+  const btn = e.target.closest('.seg-btn');
+  if (!btn) return;
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTpl = btn.dataset.tpl;
+  const card = document.getElementById('card-preview');
+  card.className = 'book-card ' + currentTpl;
+  const nb = document.getElementById('notebook-lines');
+  const co = document.getElementById('magazine-overlay');
+  const ct = document.getElementById('magazine-titles');
+  nb.classList.toggle('hidden', currentTpl !== 'tpl-notebook');
+  co.classList.toggle('hidden', currentTpl !== 'tpl-magazine');
+  ct.classList.toggle('hidden', currentTpl !== 'tpl-magazine');
+  updatePreview();
+});
+
+// ====== COLOR PRESETS ======
+document.getElementById('color-presets').addEventListener('click', e => {
+  const dot = e.target.closest('.color-dot');
+  if (!dot) return;
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+  dot.classList.add('active');
+  document.getElementById('inp-color').value = dot.dataset.color;
+  updatePreview();
+});
+
+document.getElementById('inp-color').addEventListener('input', function() {
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+  updatePreview();
+});
+
+// ====== COVER UPLOAD ======
+document.getElementById('inp-cover').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    hasImg = true;
+    document.getElementById('out-cover-img').src = ev.target.result;
+    document.getElementById('btn-rm-cover').classList.remove('hidden');
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+});
+
+function removeCover() {
+  document.getElementById('inp-cover').value = '';
+  document.getElementById('out-cover-img').src = '';
+  document.getElementById('btn-rm-cover').classList.add('hidden');
+  hasImg = false;
+  updatePreview();
+}
+
+// ====== QUOTES ======
+function addQuote() {
+  const c = document.getElementById('quotes-container');
+  const w = document.createElement('div');
+  w.className = 'quote-item-wrap';
+  w.innerHTML = `<textarea class="inp-quote" placeholder="اقتباس..."></textarea><button type="button" class="btn-del-quote" onclick="this.parentElement.remove();updatePreview()">✕</button>`;
+  c.appendChild(w);
+  w.querySelector('textarea').focus();
+}
+
+// ====== SECTION SVG ICONS ======
+const sectionSvgIcons = {
+  'svg-lightbulb': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21h6M12 3a6 6 0 0 1 4.24 10.24C15.4 14.1 15 15 15 16H9c0-1-.4-1.9-1.24-2.76A6 6 0 0 1 12 3z"/><line x1="12" y1="16" x2="12" y2="21"/></svg>`,
+  'svg-star': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  'svg-target': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+  'svg-lines': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>`,
+  'svg-book2': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  'svg-heart': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  'svg-chat': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  'svg-quote2': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5H2v8c0 1.6.8 3 2 4"/><path d="M14 21c3 0 7-1 7-8V5h-8v8c0 1.6.8 3 2 4"/></svg>`,
+  'svg-pen2': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  'svg-pin': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  'svg-tag': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`
+};
+
+const sectionEmojiDefaults = {
+  'icon-idea': '💡', 'icon-summary': '📝', 'icon-opinion': '💭',
+  'icon-quotes': '💬', 'icon-notes': '📎'
+};
+
+const sectionLabels = {
+  'icon-idea': 'الفكرة الأساسية', 'icon-summary': 'الملخص',
+  'icon-opinion': 'رأي شخصي', 'icon-quotes': 'الاقتباسات', 'icon-notes': 'ملاحظات'
+};
+
+function getIconHTML(selectId) {
+  const val = document.getElementById(selectId).value;
+  if (val === 'none') return '';
+  if (val === 'emoji') return sectionEmojiDefaults[selectId];
+  if (val.startsWith('svg-')) return sectionSvgIcons[val] || '';
+  return val;
+}
+
+// ====== MAIN UPDATE ======
+function updatePreview() {
+  const color = document.getElementById('inp-color').value;
+  const font = document.getElementById('inp-font').value;
+  const card = document.getElementById('card-preview');
+  card.style.setProperty('--c-primary', color);
+  card.style.fontFamily = font;
+  document.documentElement.style.setProperty('--accent', color);
+
+  const v = id => document.getElementById(id).value.trim();
+  const title = v('inp-title'), author = v('inp-author');
+  const rating = v('inp-rating'), status = v('inp-status');
+  const pages = v('inp-pages'), date = v('inp-date');
+  const ps = v('inp-page-start'), pe = v('inp-page-end');
+  const idea = v('inp-idea'), summary = v('inp-summary');
+  const opinion = v('inp-opinion'), notes = v('inp-notes'), sig = v('inp-sig');
+  const ribbonPos = document.getElementById('ribbon-position').value;
+
+  const isMag = currentTpl === 'tpl-magazine';
+  const isNb = currentTpl === 'tpl-notebook';
+
+  // Ribbon placement
+  const ribbon = document.getElementById('out-ribbon');
+  if (status && ribbonPos !== 'none') {
+    ribbon.classList.remove('hidden');
+    ribbon.textContent = status;
+    // Move ribbon: after cover = default (after sec-cover in DOM), top-card = before cover
+    const coverEl = document.getElementById('sec-cover');
+    const cardEl = document.getElementById('card-preview');
+    if (ribbonPos === 'top-card') {
+      cardEl.insertBefore(ribbon, cardEl.firstChild);
+    } else {
+      // after cover
+      coverEl.insertAdjacentElement('afterend', ribbon);
+    }
+  } else {
+    ribbon.classList.add('hidden');
+  }
+
+  // Section Icons
+  ['idea','summary','opinion','quotes','notes'].forEach(name => {
+    const iconEl = document.getElementById('icon-out-' + name);
+    if (iconEl) {
+      const html = getIconHTML('icon-' + name);
+      iconEl.innerHTML = html;
+      iconEl.style.display = html ? 'inline-flex' : 'none';
+    }
+  });
+
+  // Cover
+  const coverSec = document.getElementById('sec-cover');
+  const ph = document.getElementById('out-placeholder');
+  const img = document.getElementById('out-cover-img');
+  const action = v('inp-no-cover');
+  const icon = v('inp-fallback-icon');
+
+  if (isMag) {
+    document.getElementById('mag-title').textContent = title;
+    document.getElementById('mag-author').textContent = author;
+    document.getElementById('magazine-overlay').classList.remove('hidden');
+    document.getElementById('magazine-titles').classList.remove('hidden');
+  } else {
+    document.getElementById('magazine-overlay').classList.add('hidden');
+    document.getElementById('magazine-titles').classList.add('hidden');
+  }
+
+  if (hasImg) {
+    coverSec.style.display = '';
+    ph.style.display = 'none';
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+    if (action === 'hide') {
+      coverSec.style.display = 'none';
+    } else {
+      coverSec.style.display = '';
+      ph.style.display = 'flex';
+      if (action === 'title') {
+        ph.innerHTML = `<span style="font-size:1.4rem;font-weight:800;color:${color};text-align:center;padding:16px;line-height:1.3">${title||'عنوان الكتاب'}</span>`;
+      } else {
+        if (icon.startsWith('svg-')) {
+          ph.innerHTML = `<span style="color:${color}">${svgIcons[icon]||'📚'}</span>`;
+        } else {
+          ph.innerHTML = `<span style="font-size:3.5rem">${icon}</span>`;
+        }
+      }
+    }
+  }
+
+  // Notebook lines visibility
+  document.getElementById('notebook-lines').classList.toggle('hidden', !isNb);
+
+  // Header - centered title/author block
+  const secHeader = document.getElementById('sec-header');
+  if ((title || author || rating) && !isMag) {
+    secHeader.classList.remove('hidden');
+    document.getElementById('out-title').textContent = title;
+    document.getElementById('out-author').textContent = author;
+    const ratingEl = document.getElementById('out-rating');
+    if (rating) { ratingEl.classList.remove('hidden'); ratingEl.textContent = rating; } else ratingEl.classList.add('hidden');
+  } else if (!isMag) {
+    secHeader.classList.add('hidden');
+  } else {
+    secHeader.classList.add('hidden');
+  }
+
+  // Magazine rating
+  let magRating = document.getElementById('mag-rating');
+  if (isMag && rating) {
+    if (!magRating) { magRating = document.createElement('div'); magRating.id = 'mag-rating'; magRating.className = 'card-rating'; document.getElementById('card-preview').querySelector('.card-body').prepend(magRating); }
+    magRating.textContent = rating;
+  } else if (magRating) {
+    magRating.remove();
+  }
+
+  // Meta
+  const metaEl = document.getElementById('sec-meta');
+  let metaHTML = '';
+  if (pages) metaHTML += `<span class="meta-chip">📄 ${pages} صفحة</span>`;
+  if (date) metaHTML += `<span class="meta-chip">📅 ${date}</span>`;
+  if (ps || pe) metaHTML += `<span class="meta-chip">🔖 من ${ps||'?'} إلى ${pe||'?'}</span>`;
+  if (v('inp-genre')) metaHTML += `<span class="meta-chip">${v('inp-genre')}</span>`;
+  if (metaHTML) { metaEl.classList.remove('hidden'); metaEl.innerHTML = metaHTML; } else metaEl.classList.add('hidden');
+
+  // Text sections
+  toggleSection('sec-idea','out-idea',idea);
+  toggleSection('sec-summary','out-summary',summary);
+  toggleSection('sec-opinion','out-opinion',opinion);
+  toggleSection('sec-notes','out-notes',notes);
+
+  // Quotes
+  const qc = document.getElementById('out-quotes');
+  const secQ = document.getElementById('sec-quote');
+  qc.innerHTML = '';
+  let hasQ = false;
+  document.querySelectorAll('.inp-quote').forEach(ta => {
+    const val = ta.value.trim();
+    if (val) { hasQ = true; const p = document.createElement('p'); p.className = 'quote-text'; p.textContent = '❝ ' + val + ' ❞'; qc.appendChild(p); }
+  });
+  secQ.classList.toggle('hidden', !hasQ);
+
+  // Signature
+  const secSig = document.getElementById('sec-sig');
+  if (sig) { secSig.classList.remove('hidden'); document.getElementById('out-sig').textContent = sig; } else secSig.classList.add('hidden');
+}
+
+function toggleSection(secId, outId, val) {
+  const sec = document.getElementById(secId);
+  const out = document.getElementById(outId);
+  if (val) { sec.classList.remove('hidden'); out.textContent = val; } else sec.classList.add('hidden');
+}
+
+document.querySelector('#form-panel').addEventListener('input', updatePreview);
+
+// ====== SAVE TO LIBRARY ======
+function saveToLibrary() {
+  const v = id => document.getElementById(id).value.trim();
+  const title = v('inp-title');
+  if (!title) { showToast('⚠️ أدخل عنوان الكتاب أولاً'); return; }
+
+  const quotes = [...document.querySelectorAll('.inp-quote')].map(t => t.value.trim()).filter(Boolean);
+  const imgSrc = hasImg ? document.getElementById('out-cover-img').src : '';
+
+  const book = {
+    id: Date.now(),
+    title, author: v('inp-author'), status: v('inp-status'), rating: v('inp-rating'),
+    pages: v('inp-pages'), date: v('inp-date'), genre: v('inp-genre'),
+    pageStart: v('inp-page-start'), pageEnd: v('inp-page-end'),
+    idea: v('inp-idea'), summary: v('inp-summary'), opinion: v('inp-opinion'),
+    notes: v('inp-notes'), sig: v('inp-sig'), quotes,
+    color: document.getElementById('inp-color').value,
+    font: document.getElementById('inp-font').value,
+    template: currentTpl, cover: imgSrc,
+    savedAt: new Date().toLocaleDateString('ar-EG')
+  };
+
+  const existing = library.findIndex(b => b.title === title);
+  if (existing >= 0) { library[existing] = book; showToast('✅ تم تحديث البطاقة'); }
+  else { library.unshift(book); showToast('✅ تم حفظ الكتاب في مكتبتك'); }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
+  updateGoalProgress();
+}
+
+// ====== LIBRARY RENDER ======
+function renderLibrary() {
+  const done = library.filter(b => b.status && b.status.includes('تمت')).length;
+  const totalPages = library.reduce((s,b) => s + (parseInt(b.pages)||0), 0);
+  document.getElementById('stat-total').textContent = library.length;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-pages').textContent = totalPages > 999 ? (totalPages/1000).toFixed(1)+'k' : totalPages;
+
+  const filter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+  const search = document.getElementById('lib-search').value.toLowerCase();
+  let books = library.filter(b => {
+    const matchFilter = filter === 'all' || (b.status && b.status.includes(filter.replace('✅ تمت القراءة','تمت').replace('⏳ أقرأ حالياً','أقرأ').replace('🔜 قريباً','قريباً')));
+    const matchSearch = !search || b.title.toLowerCase().includes(search) || (b.author||'').toLowerCase().includes(search);
+    return matchFilter && matchSearch;
+  });
+
+  const grid = document.getElementById('lib-grid');
+  if (!books.length) {
+    grid.innerHTML = `<div class="lib-empty" style="grid-column:1/-1"><span style="font-size:2.5rem">📭</span><p style="margin-top:8px">لا توجد نتائج</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = books.map(b => {
+    const coverHTML = b.cover ? `<img src="${b.cover}" alt="">` : `<div class="lc-ph">${b.genre?b.genre.split(' ')[0]:'📚'}</div>`;
+    let statusClass = 'status-done', statusText = b.status || '';
+    if (b.status && b.status.includes('أقرأ')) statusClass = 'status-reading';
+    if (b.status && b.status.includes('قريباً')) statusClass = 'status-soon';
+    return `<div class="lib-card" data-id="${b.id}">
+      <div class="lib-card-cover">${coverHTML}</div>
+      <div class="lib-card-info">
+        <div class="lib-card-title" title="${b.title}">${b.title}</div>
+        <div class="lib-card-author">${b.author||'—'}</div>
+        ${b.status ? `<span class="lib-card-status ${statusClass}">${statusText}</span>` : ''}
+        ${b.rating ? `<div style="font-size:0.75rem;margin-top:4px">${b.rating}</div>` : ''}
+        <div class="lib-card-actions">
+          <button class="lc-btn btn-view" onclick="viewBook(${b.id})">👁️ عرض</button>
+          <button class="lc-btn btn-delete" onclick="deleteBook(${b.id},event)">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('lib-search').addEventListener('input', renderLibrary);
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    renderLibrary();
+  });
+});
+
+function deleteBook(id, e) {
+  e.stopPropagation();
+  if (!confirm('هل تريد حذف هذا الكتاب؟')) return;
+  library = library.filter(b => b.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
+  renderLibrary();
+  showToast('🗑️ تم حذف الكتاب');
+}
+
+function viewBook(id) {
+  const b = library.find(b => b.id === id);
+  if (!b) return;
+  viewingId = id;
+  const html = buildCardHTML(b);
+  document.getElementById('modal-card-content').innerHTML = html;
+  document.getElementById('view-modal').classList.remove('hidden');
+}
+
+function buildCardHTML(b) {
+  const quotes = (b.quotes||[]).map(q => `<p class="quote-text">❝ ${q} ❞</p>`).join('');
+  const metaParts = [];
+  if (b.pages) metaParts.push(`<span class="meta-chip">📄 ${b.pages} صفحة</span>`);
+  if (b.date) metaParts.push(`<span class="meta-chip">📅 ${b.date}</span>`);
+  if (b.genre) metaParts.push(`<span class="meta-chip">${b.genre}</span>`);
+  const tpl = b.template || 'tpl-modern';
+  return `
+  <div class="book-card ${tpl}" style="--c-primary:${b.color||'#1a7f74'};font-family:${b.font||"'Tajawal',sans-serif"}">
+    ${b.status ? `<div class="card-ribbon">${b.status}</div>` : ''}
+    <div class="card-cover" ${!b.cover && tpl !== 'tpl-minimal' ? '' : ''}>
+      ${b.cover ? `<img src="${b.cover}" alt="" style="width:100%;height:100%;object-fit:cover">` : `<div class="cover-ph" style="font-size:3rem;width:100%;height:100%;display:flex;align-items:center;justify-content:center">📚</div>`}
+      ${tpl === 'tpl-magazine' ? `<div class="cover-overlay"></div><div class="cover-titles"><div class="card-title">${b.title}</div><div class="card-author">${b.author||''}</div></div>` : ''}
+    </div>
+    ${tpl === 'tpl-notebook' ? '<div class="nb-lines"></div>' : ''}
+    <div class="card-body">
+      ${tpl !== 'tpl-magazine' ? `<div class="card-title">${b.title}</div><div class="card-author">${b.author||''}</div>${b.rating ? `<div class="card-rating">${b.rating}</div>` : ''}` : (b.rating ? `<div class="card-rating">${b.rating}</div>` : '')}
+      ${metaParts.length ? `<div class="card-meta">${metaParts.join('')}</div>` : ''}
+      ${b.idea ? `<div class="card-section"><h4>💡 الفكرة</h4><p>${b.idea}</p></div>` : ''}
+      ${b.summary ? `<div class="card-section"><h4>📝 الملخص</h4><p>${b.summary}</p></div>` : ''}
+      ${b.opinion ? `<div class="card-section sec-opinion"><h4>💭 رأي شخصي</h4><p>${b.opinion}</p></div>` : ''}
+      ${quotes ? `<div class="card-section sec-quote"><h4>💬 الاقتباسات</h4>${quotes}</div>` : ''}
+      ${b.notes ? `<div class="card-section sec-notes"><h4>📎 ملاحظات</h4><p>${b.notes}</p></div>` : ''}
+      ${b.sig ? `<div class="card-sig">لُخِّص بواسطة: ${b.sig}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function closeModal() { document.getElementById('view-modal').classList.add('hidden'); }
+document.getElementById('view-modal').addEventListener('click', e => { if (e.target.id === 'view-modal') closeModal(); });
+
+function editFromLibrary() {
+  if (!viewingId) return;
+  const b = library.find(b => b.id === viewingId);
+  if (!b) return;
+  closeModal();
+  // Switch to creator tab
+  document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelector('[data-section="sec-creator"]').classList.add('active');
+  document.getElementById('sec-creator').classList.add('active');
+  // Fill form
+  const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val||''; };
+  setVal('inp-title', b.title); setVal('inp-author', b.author); setVal('inp-status', b.status);
+  setVal('inp-rating', b.rating); setVal('inp-pages', b.pages); setVal('inp-date', b.date);
+  setVal('inp-genre', b.genre); setVal('inp-page-start', b.pageStart); setVal('inp-page-end', b.pageEnd);
+  setVal('inp-idea', b.idea); setVal('inp-summary', b.summary); setVal('inp-opinion', b.opinion);
+  setVal('inp-notes', b.notes); setVal('inp-sig', b.sig);
+  document.getElementById('inp-color').value = b.color || '#1a7f74';
+  document.getElementById('inp-font').value = b.font || "'Tajawal',sans-serif";
+  // Set template
+  currentTpl = b.template || 'tpl-modern';
+  document.querySelectorAll('.seg-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.tpl === currentTpl); });
+  document.getElementById('card-preview').className = 'book-card ' + currentTpl;
+  // Quotes
+  const qc = document.getElementById('quotes-container');
+  qc.innerHTML = '<div class="quote-item-wrap"><textarea class="inp-quote" placeholder="اقتباس..."></textarea></div>';
+  (b.quotes||[]).forEach((q,i) => {
+    if (i === 0) qc.querySelector('.inp-quote').value = q;
+    else { addQuote(); qc.querySelectorAll('.inp-quote')[i].value = q; }
+  });
+  // Cover
+  if (b.cover) {
+    hasImg = true;
+    document.getElementById('out-cover-img').src = b.cover;
+    document.getElementById('btn-rm-cover').classList.remove('hidden');
+  }
+  updatePreview();
+  showToast('✏️ جاهز للتعديل');
+}
+
+function downloadModalImage() {
+  const inner = document.getElementById('modal-card-content').querySelector('.book-card');
+  if (!inner) return;
+  html2canvas(inner, { scale:2, useCORS:true, backgroundColor:'#ffffff' }).then(canvas => {
+    const a = document.createElement('a'); a.download = 'بطاقة_كتاب.png'; a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+
+// ====== DOWNLOAD IMAGE ======
+function downloadImage() {
+  const card = document.getElementById('card-preview');
+  html2canvas(card, { scale:2, useCORS:true, backgroundColor:'#ffffff' }).then(canvas => {
+    const a = document.createElement('a'); a.download = 'بطاقة_كتاب.png'; a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showToast('✅ تم تحميل الصورة');
+  }).catch(() => showToast('❌ خطأ في التحميل'));
+}
+
+// ====== TRACKER ======
+function updateGoalProgress() {
+  const goal = parseInt(document.getElementById('inp-goal').value) || 24;
+  localStorage.setItem(GOAL_KEY, goal);
+  const done = library.filter(b => b.status && b.status.includes('تمت')).length;
+  const pct = Math.min(100, Math.round(done/goal*100));
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${done} من ${goal} كتاب (${pct}%)`;
+}
+document.getElementById('inp-goal').addEventListener('input', updateGoalProgress);
+
+function addLog() {
+  const book = document.getElementById('log-book-name').value.trim();
+  if (!book) { showToast('⚠️ أدخل اسم الكتاب'); return; }
+  const pages = parseInt(document.getElementById('log-pages').value)||0;
+  const note = document.getElementById('log-note').value.trim();
+  const today = new Date();
+  const dayKey = today.toISOString().split('T')[0];
+  if (!readDays.includes(dayKey)) { readDays.push(dayKey); localStorage.setItem(CAL_KEY, JSON.stringify(readDays)); }
+  const entry = { book, pages, note, date: today.toLocaleDateString('ar-EG'), dayKey, time: today.getTime() };
+  logs.unshift(entry);
+  localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+  document.getElementById('log-book-name').value = '';
+  document.getElementById('log-pages').value = '';
+  document.getElementById('log-note').value = '';
+  renderLogs(); renderCalendar();
+  showToast('✅ تم تسجيل الجلسة');
+}
+
+function renderLogs() {
+  const list = document.getElementById('timeline-list');
+  if (!logs.length) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">لم تسجل أي جلسة قراءة بعد</p>'; return; }
+  list.innerHTML = logs.slice(0,15).map(l => {
+    const d = new Date(l.time);
+    return `<div class="timeline-item">
+      <div>
+        <div class="tl-dot"></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">${l.book}</div>
+        <div class="tl-meta">${l.date}${l.pages ? ' · '+l.pages+' صفحة' : ''}${l.note ? ' · '+l.note : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCalendar() {
+  const now = new Date();
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  document.getElementById('cal-month-label').textContent = months[calMonth] + ' ' + calYear;
+  const grid = document.getElementById('calendar-grid');
+  let html = '';
+  for (let i=0;i<firstDay;i++) html += '<div class="cal-day empty"></div>';
+  for (let d=1;d<=daysInMonth;d++) {
+    const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isRead = readDays.includes(key);
+    const isToday = d===now.getDate() && calMonth===now.getMonth() && calYear===now.getFullYear();
+    html += `<div class="cal-day ${isRead?'read':'no-read'} ${isToday?'today':''}" title="${d}">${d}</div>`;
+  }
+  grid.innerHTML = html;
+  grid.querySelectorAll('.cal-day:not(.empty)').forEach(el => {
+    el.addEventListener('click', function() {
+      const d = this.textContent;
+      const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      if (readDays.includes(key)) { readDays = readDays.filter(k=>k!==key); this.classList.remove('read'); this.classList.add('no-read'); }
+      else { readDays.push(key); this.classList.add('read'); this.classList.remove('no-read'); }
+      localStorage.setItem(CAL_KEY, JSON.stringify(readDays));
+    });
+  });
+}
+
+document.getElementById('cal-prev').addEventListener('click', () => { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
+document.getElementById('cal-next').addEventListener('click', () => { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); });
+
+// ====== QUOTES WALL ======
+function renderQuotes() {
+  const wall = document.getElementById('quotes-wall');
+  const allQuotes = [];
+  library.forEach(b => (b.quotes||[]).forEach(q => { if(q) allQuotes.push({text:q, book:b.title, author:b.author, color:b.color||'#1a7f74'}); }));
+  document.getElementById('quotes-count').textContent = allQuotes.length + ' اقتباس';
+  if (!allQuotes.length) {
+    wall.innerHTML = `<div class="empty-state"><span class="es-icon">💬</span><h3>لا توجد اقتباسات بعد</h3><p>احفظ كتاباً بأي اقتباس لتظهر هنا</p></div>`;
+    return;
+  }
+  wall.innerHTML = allQuotes.map(q => `
+    <div class="quote-wall-item" style="border-right:3px solid ${q.color}">
+      <p class="qw-text">${q.text}</p>
+      <div class="qw-source" style="color:${q.color}">${q.book}${q.author?' — '+q.author:''}</div>
+    </div>`).join('');
+}
+
+// ====== WISHES ======
+function addWish() {
+  const title = document.getElementById('w-title').value.trim();
+  if (!title) { showToast('⚠️ أدخل عنوان الكتاب'); return; }
+  wishes.unshift({
+    id: Date.now(), title, author: document.getElementById('w-author').value.trim(),
+    priority: document.getElementById('w-priority').value, reason: document.getElementById('w-reason').value.trim()
+  });
+  localStorage.setItem(WISH_KEY, JSON.stringify(wishes));
+  document.getElementById('w-title').value = '';
+  document.getElementById('w-author').value = '';
+  document.getElementById('w-reason').value = '';
+  renderWishes();
+  showToast('🌟 تمت الإضافة');
+}
+
+function renderWishes() {
+  const grid = document.getElementById('wishes-grid');
+  if (!wishes.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span class="es-icon">🌟</span><h3>قائمتك فارغة</h3><p>أضف الكتب التي تريد قراءتها</p></div>`;
+    return;
+  }
+  grid.innerHTML = wishes.map(w => `<div class="wish-card">
+    <span class="wish-priority">${w.priority}</span>
+    <button class="wish-del" onclick="deleteWish(${w.id},event)">✕</button>
+    <div class="wish-cover">📖</div>
+    <div class="wish-title" title="${w.title}">${w.title}</div>
+    <div class="wish-author">${w.author||'—'}</div>
+    ${w.reason ? `<div style="font-size:0.7rem;color:var(--muted);margin-top:5px;font-style:italic">${w.reason}</div>` : ''}
+  </div>`).join('');
+}
+
+function deleteWish(id, e) {
+  e.stopPropagation();
+  wishes = wishes.filter(w => w.id !== id);
+  localStorage.setItem(WISH_KEY, JSON.stringify(wishes));
+  renderWishes();
+}
+
+// ====== TOAST ======
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ====== INIT ======
+updatePreview();
+renderCalendar();
+updateGoalProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>بطاقة كتاب ✦ صانع البطاقات</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- المكتبات المطلوبة لتوليد الصور والـ PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════════════
+   ROOT & RESET
+══════════════════════════════════════════════ */
+:root {
+  --bg: #f0ede8;
+  --surface: #ffffff;
+  --ink: #1c1917;
+  --ink2: #44403c;
+  --muted: #78716c;
+  --border: #e7e5e4;
+  --accent: #1a7f74;
+  --accent2: #0d4f4a;
+  --gold: #b45309;
+  --gold2: #f59e0b;
+  --rose: #be123c;
+  --sky: #1d4ed8;
+  --purple: #6d28d9;
+  --r: 12px;
+  --rr: 18px;
+  --sh: 0 4px 24px rgba(0,0,0,0.08);
+  --sh2: 0 1px 6px rgba(0,0,0,0.05);
+  --font-ui: 'Cairo', sans-serif;
+  --font-body: 'Tajawal', sans-serif;
+  --font-serif: 'Amiri', serif;
+  --font-naskh: 'Noto Naskh Arabic', serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════════════
+   HEADER / APP BAR
+══════════════════════════════════════════════ */
+.app-bar {
+  background: var(--ink);
+  color: #fff;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+}
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--gold2);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.app-logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--gold2), #f97316);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.app-actions { display: flex; gap: 8px; }
+.app-action-btn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+  color: #fff;
+}
+.app-action-btn:active { transform: scale(0.96); }
+.btn-dl { background: var(--accent); }
+.btn-pdf { background: #44403c; }
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════ */
+.main-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+@media (max-width: 900px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .preview-panel { display: none; }
+  .preview-panel.mobile-show { display: flex; }
+}
+
+/* ══════════════════════════════════════════════
+   FORM PANEL (LEFT)
+══════════════════════════════════════════════ */
+.form-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  height: calc(100vh - 56px);
+  position: sticky;
+  top: 56px;
+}
+.form-panel::-webkit-scrollbar { width: 4px; }
+.form-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.form-inner { padding: 20px; }
+
+/* Template Picker */
+.tpl-picker { margin-bottom: 20px; }
+.tpl-picker-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.tpl-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.tpl-card {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  background: var(--bg);
+}
+.tpl-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.tpl-card.active {
+  border-color: var(--accent);
+  background: rgba(26,127,116,0.06);
+}
+.tpl-card-icon { font-size: 1.4rem; margin-bottom: 4px; display: block; }
+.tpl-card-name { font-size: 0.72rem; font-weight: 700; color: var(--ink); }
+.tpl-card-sub { font-size: 0.62rem; color: var(--muted); margin-top: 1px; }
+
+/* Form Sections */
+.form-section {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.form-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--bg);
+  cursor: pointer;
+  user-select: none;
+  gap: 8px;
+}
+.form-section-header:hover { background: #ebe8e3; }
+.fsh-left { display: flex; align-items: center; gap: 8px; }
+.fsh-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.fsh-title { font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+.fsh-chevron {
+  width: 18px; height: 18px;
+  color: var(--muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.fsh-chevron.open { transform: rotate(180deg); }
+.form-section-body { padding: 14px; display: none; }
+.form-section-body.open { display: block; }
+
+/* Form Controls */
+.fg { margin-bottom: 12px; }
+.fg:last-child { margin-bottom: 0; }
+.fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fg label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+.fg input[type=text],
+.fg input[type=number],
+.fg textarea,
+.fg select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  background: var(--bg);
+  color: var(--ink);
+  outline: none;
+  transition: all 0.15s;
+  -webkit-appearance: none;
+}
+.fg input:focus, .fg textarea:focus, .fg select:focus {
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(26,127,116,0.1);
+}
+.fg textarea { resize: vertical; min-height: 72px; }
+.fg input[type=color] {
+  width: 100%; height: 38px; padding: 3px;
+  border: 1.5px solid var(--border);
+  border-radius: 9px; cursor: pointer;
+}
+.fg input[type=file] { font-size: 0.82rem; cursor: pointer; }
+
+.color-dots { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 6px; }
+.cdot {
+  width: 24px; height: 24px; border-radius: 50%;
+  cursor: pointer; border: 2px solid transparent;
+  transition: transform 0.15s;
+}
+.cdot:hover, .cdot.on { transform: scale(1.2); box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink); }
+
+.img-preview-wrap {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1.5px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+}
+.img-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.img-preview-wrap .img-ph { font-size: 0.8rem; color: var(--muted); text-align: center; }
+.img-rm-btn {
+  position: absolute; top: 6px; left: 6px;
+  background: rgba(0,0,0,0.7); color: #fff;
+  border: none; border-radius: 6px;
+  padding: 3px 8px; font-size: 0.7rem;
+  cursor: pointer; display: none;
+}
+
+/* Checkbox toggle for sections */
+.sec-toggle-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  background: var(--bg);
+}
+.toggle-cb { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+.toggle-label { font-size: 0.82rem; font-weight: 600; color: var(--ink); flex: 1; }
+
+/* Quote items */
+.q-wrap { position: relative; margin-bottom: 8px; }
+.q-wrap textarea { padding-left: 36px; }
+.q-del-btn {
+  position: absolute; top: 50%; left: 8px;
+  transform: translateY(-50%);
+  background: none; border: none;
+  color: var(--muted); font-size: 1rem;
+  cursor: pointer; line-height: 1; padding: 2px;
+}
+.q-del-btn:hover { color: var(--rose); }
+.add-item-btn {
+  width: 100%; padding: 9px;
+  border: 1.5px dashed var(--border);
+  border-radius: 9px;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+.add-item-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(26,127,116,0.04); }
+
+/* Page Ranges (for book template) */
+.page-range-item {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: var(--bg);
+  position: relative;
+}
+.page-range-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.page-range-label {
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--accent);
+  display: flex; align-items: center; gap: 5px;
+}
+.pr-del-btn {
+  background: none; border: none;
+  color: var(--muted); cursor: pointer;
+  font-size: 0.9rem; line-height: 1;
+}
+.pr-del-btn:hover { color: var(--rose); }
+
+/* Action bar */
+.action-bar {
+  display: flex; gap: 8px;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  bottom: 0;
+}
+.act-btn {
+  flex: 1; padding: 11px;
+  border: none; border-radius: 10px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center;
+  justify-content: center; gap: 6px;
+  color: #fff;
+}
+.act-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.act-btn:active { transform: scale(0.97); }
+.act-save { background: var(--accent); }
+.act-img { background: var(--sky); }
+.act-pdf { background: var(--ink); }
+
+/* Mobile preview toggle */
+.mobile-preview-toggle {
+  display: none;
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 11px 22px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 400;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+@media (max-width: 900px) { .mobile-preview-toggle { display: block; } }
+
+/* ══════════════════════════════════════════════
+   PREVIEW PANEL (RIGHT)
+══════════════════════════════════════════════ */
+.preview-panel {
+  background: #e8e4de;
+  padding: 30px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  position: relative;
+}
+.preview-panel::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(26,127,116,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(109,40,217,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.preview-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.preview-label::before, .preview-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.card-wrapper {
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ══════════════════════════════════════════════
+   ═══════════ CARD TEMPLATES ═══════════
+══════════════════════════════════════════════ */
+
+/* ─── SHARED ─── */
+.book-card { width: 100%; font-family: var(--font-body); }
+.card-sec { margin-bottom: 14px; }
+.card-sec:last-of-type { margin-bottom: 0; }
+
+/* ─── TPL 1: LUMIÈRE (Modern Minimal) ─── */
+.tpl-lumiere {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+}
+.lumiere-cover {
+  width: 100%; height: 240px;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #e8f5f4 0%, #dbeafe 100%);
+}
+.lumiere-cover img { width: 100%; height: 100%; object-fit: cover; }
+.lumiere-cover-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+}
+.lumiere-status {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  padding: 30px 20px 14px;
+  display: none;
+}
+.lumiere-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.lumiere-body { padding: 22px; }
+.lumiere-header { text-align: center; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+.lumiere-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--c-primary, #1a7f74);
+  line-height: 1.3;
+  margin-bottom: 5px;
+}
+.lumiere-author {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+.lumiere-rating { font-size: 1rem; margin-top: 6px; }
+.lumiere-meta {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  justify-content: center; margin-bottom: 16px;
+}
+.lumiere-chip {
+  display: flex; align-items: center; gap: 4px;
+  background: #f8f7f5;
+  border: 1px solid #ede9e3;
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  color: var(--ink2);
+  font-weight: 600;
+}
+.lumiere-chip svg { width: 11px; height: 11px; stroke: var(--c-primary, #1a7f74); }
+.lumiere-sec {
+  margin-bottom: 12px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  background: #f9f8f6;
+  border-right: 3px solid var(--c-primary, #1a7f74);
+}
+.lumiere-sec.sec-q { border-right-color: #d97706; background: #fffbeb; }
+.lumiere-sec.sec-op { border-right-color: #be123c; background: #fff1f2; }
+.lumiere-sec.sec-nt { border-right-color: var(--purple, #6d28d9); background: #faf5ff; }
+.lumiere-sec h4 {
+  font-size: 0.7rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.7px;
+  color: var(--c-primary, #1a7f74);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 5px;
+}
+.lumiere-sec h4 svg { width: 12px; height: 12px; }
+.lumiere-sec h4.hq { color: #d97706; }
+.lumiere-sec h4.hop { color: #be123c; }
+.lumiere-sec h4.hnt { color: var(--purple, #6d28d9); }
+.lumiere-sec p { font-size: 0.88rem; line-height: 1.75; color: var(--ink2); white-space: pre-wrap; }
+.lumiere-qitem {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #92400e;
+  padding: 6px 0;
+  border-bottom: 1px dashed #fcd34d;
+}
+.lumiere-qitem:last-child { border-bottom: none; padding-bottom: 0; }
+.lumiere-sig {
+  text-align: center; margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f0ede8;
+  font-size: 0.75rem; color: var(--muted); font-style: italic;
+}
+
+/* ─── TPL 2: OBSIDIAN (Dark Luxury) ─── */
+.tpl-obsidian {
+  background: #0f0f18;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+  color: #e8e6f0;
+}
+.obsidian-cover {
+  width: 100%; height: 230px;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #1a1a30 0%, #2d1a3d 100%);
+}
+.obsidian-cover img { width: 100%; height: 100%; object-fit: cover; }
+.obsidian-cover-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 10px;
+}
+.obsidian-cover-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(transparent 30%, #0f0f18 100%);
+}
+.obsidian-status {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--c-primary, #f59e0b);
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  display: none;
+}
+.obsidian-body { padding: 22px; }
+.obsidian-header { text-align: center; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.obsidian-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--c-primary, #f59e0b);
+  line-height: 1.3; margin-bottom: 5px;
+}
+.obsidian-author { font-size: 0.88rem; color: rgba(255,255,255,0.45); font-style: italic; font-family: var(--font-serif); }
+.obsidian-rating { font-size: 1rem; margin-top: 6px; }
+.obsidian-meta { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; }
+.obsidian-chip {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.6);
+  font-weight: 600;
+}
+.obsidian-chip svg { width: 11px; height: 11px; stroke: var(--c-primary, #f59e0b); }
+.obsidian-sec {
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border-right: 3px solid var(--c-primary, #f59e0b);
+}
+.obsidian-sec.sec-q { border-right-color: #ec4899; background: rgba(236,72,153,0.07); }
+.obsidian-sec.sec-op { border-right-color: #38bdf8; background: rgba(56,189,248,0.06); }
+.obsidian-sec.sec-nt { border-right-color: #4ade80; background: rgba(74,222,128,0.06); }
+.obsidian-sec h4 {
+  font-size: 0.68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--c-primary, #f59e0b);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 5px;
+}
+.obsidian-sec h4 svg { width: 12px; height: 12px; }
+.obsidian-sec h4.hq { color: #ec4899; }
+.obsidian-sec h4.hop { color: #38bdf8; }
+.obsidian-sec h4.hnt { color: #4ade80; }
+.obsidian-sec p { font-size: 0.87rem; line-height: 1.75; color: rgba(255,255,255,0.75); white-space: pre-wrap; }
+.obsidian-qitem {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #f9a8d4;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.obsidian-qitem:last-child { border-bottom: none; padding-bottom: 0; }
+.obsidian-sig {
+  text-align: center; margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 0.75rem; color: rgba(255,255,255,0.3); font-style: italic;
+}
+
+/* ─── TPL 3: SAHIFA (عربي صحيفة) ─── */
+.tpl-sahifa {
+  background: #fdfcf8;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+  border: 1px solid #d6c9a8;
+  position: relative;
+}
+.sahifa-cover {
+  width: 100%; height: 220px;
+  position: relative; overflow: hidden;
+  border-bottom: 3px double #c8a96e;
+}
+.sahifa-cover img { width: 100%; height: 100%; object-fit: cover; }
+.sahifa-cover-ph {
+  width: 100%; height: 100%;
+  background: linear-gradient(160deg, #fdf8ed, #f0e6c8);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 6px;
+}
+.sahifa-status {
+  position: absolute; top: 12px; right: 12px;
+  background: #8b5e00;
+  color: #fef3c7;
+  padding: 4px 12px;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: none;
+}
+.sahifa-body {
+  padding: 20px 22px;
+  background-image: repeating-linear-gradient(
+    transparent, transparent 27px, #e8dfc8 27px, #e8dfc8 28px
+  );
+  background-position: 0 4px;
+}
+.sahifa-header { text-align: center; padding-bottom: 16px; margin-bottom: 16px; position: relative; }
+.sahifa-header::after {
+  content: '';
+  position: absolute; bottom: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c8a96e, transparent);
+}
+.sahifa-title {
+  font-family: var(--font-naskh);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3d2b00;
+  line-height: 1.35; margin-bottom: 6px;
+}
+.sahifa-author {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: #7a5c00;
+  font-size: 0.95rem;
+}
+.sahifa-rating { font-size: 1rem; margin-top: 6px; }
+.sahifa-meta {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+  padding: 10px 0;
+  border-top: 1px dashed #c8a96e;
+  border-bottom: 1px dashed #c8a96e;
+  font-size: 0.78rem;
+  color: #7a5c00;
+  font-family: var(--font-serif);
+}
+.sahifa-chip { display: flex; align-items: center; gap: 4px; }
+.sahifa-chip svg { width: 11px; height: 11px; stroke: #c8a96e; }
+.sahifa-sec { margin-bottom: 14px; background: transparent; }
+.sahifa-sec h4 {
+  font-family: var(--font-naskh);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #8b5e00;
+  margin-bottom: 7px;
+  display: flex; align-items: center; gap: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e8dfc8;
+}
+.sahifa-sec h4 svg { width: 13px; height: 13px; stroke: #c8a96e; }
+.sahifa-sec p {
+  font-family: var(--font-serif);
+  font-size: 0.97rem;
+  line-height: 1.9;
+  color: #2c1e00;
+  white-space: pre-wrap;
+}
+.sahifa-sec.sec-q { background: rgba(200, 169, 110, 0.08); padding: 10px 12px; border-radius: 3px; margin-top: -2px; }
+.sahifa-qitem {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.93rem;
+  color: #4a3000;
+  padding: 6px 0;
+  border-bottom: 1px dashed #d4c9a8;
+}
+.sahifa-qitem:last-child { border-bottom: none; }
+.sahifa-sig {
+  text-align: center; margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #c8a96e;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.82rem; color: #8b5e00;
+}
+
+/* ─── TPL 4: NOVA (Magazine / Visual) ─── */
+.tpl-nova {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.1);
+}
+.nova-cover {
+  width: 100%; height: 260px;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #1a1a2e, #2d2040);
+}
+.nova-cover img { width: 100%; height: 100%; object-fit: cover; }
+.nova-cover-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+}
+.nova-gradient { position: absolute; inset: 0; background: linear-gradient(transparent 30%, rgba(0,0,0,0.88)); }
+.nova-cover-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; color: #fff; }
+.nova-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.nova-author { font-size: 0.85rem; color: rgba(255,255,255,0.65); }
+.nova-status {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--c-primary, #1d4ed8);
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.3px;
+  z-index: 5; display: none;
+}
+.nova-rating-bar {
+  background: var(--c-primary, #1d4ed8);
+  padding: 8px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  display: none;
+}
+.nova-rating-stars { font-size: 0.9rem; }
+.nova-rating-label { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.7); }
+.nova-body { padding: 18px 20px; }
+.nova-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.nova-chip {
+  display: flex; align-items: center; gap: 4px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.72rem; color: #374151;
+  font-weight: 600;
+}
+.nova-chip svg { width: 11px; height: 11px; stroke: var(--c-primary, #1d4ed8); }
+.nova-sec { margin-bottom: 12px; padding: 13px 15px; border-radius: 10px; background: #f9fafb; }
+.nova-sec.sec-q { background: #fffbeb; border-top: 3px solid #f59e0b; }
+.nova-sec.sec-op { background: #fff1f2; border-top: 3px solid #be123c; }
+.nova-sec.sec-nt { background: #f0fdf4; border-top: 3px solid #16a34a; }
+.nova-sec h4 {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.68rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.9px;
+  color: var(--c-primary, #1d4ed8);
+  margin-bottom: 7px;
+  display: flex; align-items: center; gap: 5px;
+}
+.nova-sec h4 svg { width: 12px; height: 12px; }
+.nova-sec h4.hq { color: #d97706; }
+.nova-sec h4.hop { color: #be123c; }
+.nova-sec h4.hnt { color: #16a34a; }
+.nova-sec p { font-size: 0.88rem; line-height: 1.75; color: #1f2937; white-space: pre-wrap; }
+.nova-qitem {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #92400e;
+  padding: 6px 0;
+  border-bottom: 1px solid #fde68a;
+}
+.nova-qitem:last-child { border-bottom: none; padding-bottom: 0; }
+.nova-sig {
+  text-align: center; margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  font-size: 0.75rem; color: #9ca3af; font-style: italic;
+}
+
+/* ─── TPL 5: KITAB (كتاب متعدد الصفحات) ─── */
+.tpl-kitab {
+  font-family: var(--font-body);
+}
+.kitab-pages { display: flex; flex-direction: column; gap: 12px; }
+.kitab-page {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  position: relative;
+}
+.kitab-page::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 4px; height: 100%;
+  background: var(--c-primary, #1a7f74);
+}
+/* Page 1: Cover */
+.kitab-p1-cover {
+  height: 220px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #e8f5f4, #dbeafe);
+}
+.kitab-p1-cover img { width: 100%; height: 100%; object-fit: cover; }
+.kitab-p1-cover-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+}
+.kitab-p1-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 40%, rgba(0,0,0,0.6)); }
+.kitab-p1-titles {
+  position: absolute; bottom: 0; right: 0; left: 0;
+  padding: 16px 18px;
+  color: #fff;
+}
+.kitab-p1-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem; font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  line-height: 1.25; margin-bottom: 3px;
+}
+.kitab-p1-author {
+  font-family: var(--font-serif);
+  font-size: 0.88rem; font-style: italic;
+  color: rgba(255,255,255,0.75);
+}
+.kitab-p1-status {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--c-primary, #1a7f74);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.72rem; font-weight: 700;
+  display: none;
+}
+/* Page 2: Book Info */
+.kitab-p2-body { padding: 18px 20px; }
+.kitab-page-num {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--c-primary, #1a7f74);
+  color: #fff;
+  font-size: 0.65rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 0 0 8px 0;
+  margin-bottom: 12px;
+}
+.kitab-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.kitab-info-item {
+  background: #f8f7f5;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.kitab-info-label {
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--muted); margin-bottom: 3px;
+  display: flex; align-items: center; gap: 4px;
+}
+.kitab-info-label svg { width: 10px; height: 10px; stroke: var(--c-primary, #1a7f74); }
+.kitab-info-value { font-size: 0.88rem; font-weight: 700; color: var(--ink); }
+.kitab-rating-large { text-align: center; padding: 12px; background: #f8f7f5; border-radius: 8px; margin-top: 8px; }
+.kitab-rating-stars { font-size: 1.4rem; }
+.kitab-rating-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; margin-top: 3px; }
+/* Page 3+: Content pages */
+.kitab-content-page .kitab-page-header {
+  background: linear-gradient(135deg, var(--c-primary, #1a7f74), rgba(26,127,116,0.7));
+  padding: 12px 18px;
+  color: #fff;
+  display: flex; align-items: center; gap: 8px;
+}
+.kitab-page-header-title { font-size: 0.82rem; font-weight: 700; }
+.kitab-page-header-range { font-size: 0.72rem; opacity: 0.75; margin-right: auto; }
+.kitab-content-body { padding: 14px 18px; }
+.kitab-content-sec { margin-bottom: 12px; }
+.kitab-content-sec h5 {
+  font-size: 0.68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--c-primary, #1a7f74);
+  margin-bottom: 5px;
+  display: flex; align-items: center; gap: 4px;
+}
+.kitab-content-sec h5 svg { width: 11px; height: 11px; }
+.kitab-content-sec p { font-size: 0.87rem; line-height: 1.75; color: var(--ink2); white-space: pre-wrap; }
+.kitab-content-sec.cq h5 { color: #d97706; }
+.kitab-content-sec.cq .kq-item {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: #92400e;
+  padding: 5px 0;
+  border-bottom: 1px dashed #fcd34d;
+}
+.kitab-content-sec.cq .kq-item:last-child { border-bottom: none; }
+
+/* ─── TPL 6: ZINE (Creative / Bold) ─── */
+.tpl-zine {
+  background: #fff;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 6px 6px 0 var(--c-primary, #1a7f74), 12px 12px 0 rgba(26,127,116,0.2);
+  border: 2px solid var(--ink);
+  margin-bottom: 14px;
+}
+.zine-header-bar {
+  background: var(--c-primary, #1a7f74);
+  padding: 10px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.zine-label {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.72rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.6);
+}
+.zine-status-pill {
+  background: #fff;
+  color: var(--c-primary, #1a7f74);
+  font-size: 0.65rem; font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 2px;
+  display: none;
+}
+.zine-cover {
+  width: 100%; height: 230px;
+  position: relative; overflow: hidden;
+  background: #1a1a1a;
+}
+.zine-cover img { width: 100%; height: 100%; object-fit: cover; }
+.zine-cover-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+  background: repeating-linear-gradient(
+    45deg, #1a1a1a 0, #1a1a1a 20px, #222 20px, #222 40px
+  );
+}
+.zine-body { padding: 20px; border-top: 2px solid var(--ink); }
+.zine-title-block { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 2px solid var(--ink); }
+.zine-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.5rem; font-weight: 900;
+  color: var(--ink);
+  line-height: 1.15;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.zine-author {
+  font-size: 0.88rem;
+  color: var(--c-primary, #1a7f74);
+  font-weight: 700;
+}
+.zine-rating { font-size: 1rem; margin-top: 5px; }
+.zine-meta {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 14px;
+}
+.zine-chip {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 2px;
+  padding: 3px 9px;
+  font-size: 0.68rem; font-weight: 700;
+  display: flex; align-items: center; gap: 4px;
+}
+.zine-chip svg { width: 10px; height: 10px; stroke: var(--c-primary, #1a7f74); }
+.zine-sec { margin-bottom: 12px; padding: 12px; border: 1.5px solid var(--ink); }
+.zine-sec.sec-q { border-style: dashed; background: #fffbeb; }
+.zine-sec.sec-op { background: #fff1f2; }
+.zine-sec.sec-nt { background: #f0fdf4; }
+.zine-sec h4 {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.65rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--c-primary, #1a7f74);
+  margin-bottom: 7px;
+  display: flex; align-items: center; gap: 5px;
+}
+.zine-sec h4 svg { width: 11px; height: 11px; }
+.zine-sec h4.hq { color: #d97706; }
+.zine-sec h4.hop { color: #be123c; }
+.zine-sec h4.hnt { color: #16a34a; }
+.zine-sec p { font-size: 0.88rem; line-height: 1.75; color: var(--ink); white-space: pre-wrap; }
+.zine-qitem {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #92400e;
+  padding: 5px 0;
+  border-bottom: 1px dotted #d97706;
+}
+.zine-qitem:last-child { border-bottom: none; }
+.zine-sig {
+  text-align: center; margin-top: 14px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* ── SHARED SVG ICON HELPER ── */
+.ic { display: inline-block; vertical-align: middle; }
+
+/* ══════════════════════════════════════════════
+   MOBILE MODAL PREVIEW
+══════════════════════════════════════════════ */
+.mobile-preview-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 500;
+  padding: 16px;
+  overflow-y: auto;
+}
+.mobile-preview-modal.show { display: block; }
+.mobile-preview-inner {
+  background: #e8e4de;
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-width: 440px;
+  margin: 0 auto;
+  position: relative;
+}
+.mpm-close {
+  position: sticky; top: 0;
+  display: flex; justify-content: flex-end;
+  margin-bottom: 12px;
+  z-index: 1;
+}
+.mpm-close-btn {
+  background: var(--ink); color: #fff;
+  border: none; border-radius: 8px;
+  padding: 6px 14px; font-size: 0.8rem;
+  cursor: pointer; font-family: var(--font-ui);
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════
+   PRINT STYLES (حتى لو استخدموا Ctrl+P)
+══════════════════════════════════════════════ */
+@media print {
+  body * { visibility: hidden; }
+  #card-wrapper, #card-wrapper * { visibility: visible; }
+  #card-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 800px;
+    margin: 0;
+    padding: 0;
+  }
+  .app-bar, .form-panel, .action-bar, .mobile-preview-toggle, .mobile-preview-modal {
+    display: none !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- APP BAR -->
+<div class="app-bar">
+  <div class="app-logo">
+    <div class="app-logo-icon">📚</div>
+    صانع بطاقة الكتاب
+  </div>
+  <div class="app-actions">
+    <button class="app-action-btn btn-dl" onclick="downloadImage()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      صورة
+    </button>
+    <button class="app-action-btn btn-pdf" onclick="downloadPDF()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      PDF
+    </button>
+  </div>
+</div>
+
+<div class="main-layout">
+
+  <!-- ═══ FORM PANEL ═══ -->
+  <div class="form-panel" id="form-panel">
+    <div class="form-inner">
+
+      <!-- Template Picker -->
+      <div class="tpl-picker">
+        <div class="tpl-picker-title">اختر نموذج البطاقة</div>
+        <div class="tpl-grid">
+          <div class="tpl-card active" data-tpl="lumiere" onclick="selectTpl(this)">
+            <span class="tpl-card-icon">✦</span>
+            <div class="tpl-card-name">لوميير</div>
+            <div class="tpl-card-sub">عصري أنيق</div>
+          </div>
+          <div class="tpl-card" data-tpl="obsidian" onclick="selectTpl(this)">
+            <span class="tpl-card-icon">◈</span>
+            <div class="tpl-card-name">أوبسيديان</div>
+            <div class="tpl-card-sub">داكن فاخر</div>
+          </div>
+          <div class="tpl-card" data-tpl="sahifa" onclick="selectTpl(this)">
+            <span class="tpl-card-icon">☽</span>
+            <div class="tpl-card-name">صحيفة</div>
+            <div class="tpl-card-sub">تراث عربي</div>
+          </div>
+          <div class="tpl-card" data-tpl="nova" onclick="selectTpl(this)">
+            <span class="tpl-card-icon">◎</span>
+            <div class="tpl-card-name">نوفا</div>
+            <div class="tpl-card-sub">مجلة بصرية</div>
+          </div>
+          <div class="tpl-card" data-tpl="kitab" onclick="selectTpl(this)">
+            <span class="tpl-card-icon">⊞</span>
+            <div class="tpl-card-name">كتاب</div>
+            <div class="tpl-card-sub">متعدد الصفحات</div>
+          </div>
+          <div class="tpl-card" data-tpl="zine" onclick="selectTpl(this)">
+            <span class="tpl-card-icon">✶</span>
+            <div class="tpl-card-name">زين</div>
+            <div class="tpl-card-sub">جريء ومبدع</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Style -->
+      <div class="form-section">
+        <div class="form-section-header" onclick="toggleSec(this)">
+          <div class="fsh-left">
+            <div class="fsh-icon" style="background:#e8f4f3">🎨</div>
+            <span class="fsh-title">الألوان والخط</span>
+          </div>
+          <svg class="fsh-chevron open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="form-section-body open">
+          <div class="fg-row">
+            <div class="fg">
+              <label>اللون الأساسي</label>
+              <input type="color" id="inp-color" value="#1a7f74">
+              <div class="color-dots">
+                <div class="cdot on" style="background:#1a7f74" data-c="#1a7f74"></div>
+                <div class="cdot" style="background:#1d4ed8" data-c="#1d4ed8"></div>
+                <div class="cdot" style="background:#be123c" data-c="#be123c"></div>
+                <div class="cdot" style="background:#b45309" data-c="#b45309"></div>
+                <div class="cdot" style="background:#6d28d9" data-c="#6d28d9"></div>
+                <div class="cdot" style="background:#ea580c" data-c="#ea580c"></div>
+                <div class="cdot" style="background:#0f172a" data-c="#0f172a"></div>
+                <div class="cdot" style="background:#0f766e" data-c="#0f766e"></div>
+              </div>
+            </div>
+            <div class="fg">
+              <label>الخط</label>
+              <select id="inp-font">
+                <option value="'Tajawal',sans-serif">تجوال</option>
+                <option value="'Cairo',sans-serif">القاهرة</option>
+                <option value="'Amiri',serif">أميري</option>
+                <option value="'Noto Naskh Arabic',serif">نسخ</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cover Image -->
+      <div class="form-section">
+        <div class="form-section-header" onclick="toggleSec(this)">
+          <div class="fsh-left">
+            <div class="fsh-icon" style="background:#ede9fe">🖼️</div>
+            <span class="fsh-title">صورة الغلاف</span>
+          </div>
+          <svg class="fsh-chevron open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="form-section-body open">
+          <div class="fg">
+            <label>رفع صورة</label>
+            <input type="file" id="inp-cover" accept="image/*">
+            <div class="img-preview-wrap" id="cover-preview-wrap">
+              <img id="cover-preview-img" src="" alt="">
+              <div class="img-ph">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <div style="margin-top:4px;font-size:0.75rem">لا توجد صورة</div>
+              </div>
+              <button class="img-rm-btn" id="img-rm-btn" onclick="removeCover()">✕ إزالة</button>
+            </div>
+          </div>
+          <div class="fg">
+            <label>بديل الغلاف</label>
+            <select id="inp-no-cover">
+              <option value="icon">أيقونة</option>
+              <option value="title">عنوان الكتاب</option>
+              <option value="gradient">تدرج لوني</option>
+              <option value="pattern">نمط هندسي</option>
+              <option value="hide">إخفاء الغلاف</option>
+            </select>
+          </div>
+          <div class="fg" id="icon-fallback-group">
+            <label>الأيقونة</label>
+            <select id="inp-fallback-icon">
+              <option value="📚">📚 مجموعة كتب</option>
+              <option value="📖">📖 كتاب مفتوح</option>
+              <option value="✍️">✍️ قلم</option>
+              <option value="🌙">🌙 قمر</option>
+              <option value="🔭">🔭 علم</option>
+              <option value="💡">💡 فكرة</option>
+              <option value="🌿">🌿 طبيعة</option>
+              <option value="🗺️">🗺️ مغامرة</option>
+              <option value="⭐">⭐ نجمة</option>
+              <option value="svg-book">SVG كتاب</option>
+              <option value="svg-feather">SVG ريشة</option>
+              <option value="svg-layers">SVG طبقات</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Info -->
+      <div class="form-section">
+        <div class="form-section-header" onclick="toggleSec(this)">
+          <div class="fsh-left">
+            <div class="fsh-icon" style="background:#fef3c7">📚</div>
+            <span class="fsh-title">معلومات الكتاب</span>
+          </div>
+          <svg class="fsh-chevron open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="form-section-body open">
+          <div class="fg-row">
+            <div class="fg">
+              <label>عنوان الكتاب</label>
+              <input type="text" id="inp-title" placeholder="اسم الكتاب...">
+            </div>
+            <div class="fg">
+              <label>المؤلف</label>
+              <input type="text" id="inp-author" placeholder="اسم الكاتب...">
+            </div>
+          </div>
+          <div class="fg-row">
+            <div class="fg">
+              <label>حالة القراءة</label>
+              <select id="inp-status">
+                <option value="">بدون حالة</option>
+                <option value="✅ تمت القراءة">✅ تمت القراءة</option>
+                <option value="⏳ أقرأ حالياً">⏳ أقرأ حالياً</option>
+                <option value="🔜 قريباً">🔜 سأقرأه قريباً</option>
+                <option value="⏸️ متوقف">⏸️ متوقف</option>
+                <option value="⭐ مُوصى به">⭐ مُوصى به</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>التقييم</label>
+              <select id="inp-rating">
+                <option value="">بدون تقييم</option>
+                <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ ممتاز</option>
+                <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ جيد جداً</option>
+                <option value="⭐⭐⭐">⭐⭐⭐ جيد</option>
+                <option value="⭐⭐">⭐⭐ مقبول</option>
+                <option value="⭐">⭐ ضعيف</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg-row">
+            <div class="fg">
+              <label>عدد الصفحات</label>
+              <input type="number" id="inp-pages" placeholder="320">
+            </div>
+            <div class="fg">
+              <label>سنة النشر</label>
+              <input type="text" id="inp-date" placeholder="2024">
+            </div>
+          </div>
+          <div class="fg-row">
+            <div class="fg">
+              <label>التصنيف</label>
+              <select id="inp-genre">
+                <option value="">اختر...</option>
+                <option value="📖 روايات">📖 روايات</option>
+                <option value="🚀 تطوير ذات">🚀 تطوير ذات</option>
+                <option value="🏛️ تاريخ">🏛️ تاريخ</option>
+                <option value="🔬 علوم">🔬 علوم</option>
+                <option value="🤔 فلسفة">🤔 فلسفة</option>
+                <option value="💼 أعمال">💼 أعمال</option>
+                <option value="✍️ أدب">✍️ أدب</option>
+                <option value="🕌 دين">🕌 دين</option>
+                <option value="💻 تقنية">💻 تقنية</option>
+                <option value="📦 أخرى">📦 أخرى</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>لُخِّص بواسطة</label>
+              <input type="text" id="inp-sig" placeholder="اسمك...">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Sections -->
+      <div class="form-section">
+        <div class="form-section-header" onclick="toggleSec(this)">
+          <div class="fsh-left">
+            <div class="fsh-icon" style="background:#e0f2fe">📝</div>
+            <span class="fsh-title">محتوى البطاقة</span>
+          </div>
+          <svg class="fsh-chevron open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="form-section-body open">
+
+          <div class="sec-toggle-row">
+            <input type="checkbox" class="toggle-cb" id="vis-idea" checked onchange="updatePreview()">
+            <span class="toggle-label">قسم الفكرة الأساسية</span>
+          </div>
+          <div class="fg" id="group-idea">
+            <label>💡 الفكرة الأساسية</label>
+            <input type="text" id="inp-idea" placeholder="الفكرة المحورية للكتاب...">
+          </div>
+
+          <div class="sec-toggle-row">
+            <input type="checkbox" class="toggle-cb" id="vis-summary" checked onchange="updatePreview()">
+            <span class="toggle-label">قسم الملخص</span>
+          </div>
+          <div class="fg" id="group-summary">
+            <label>📝 الملخص</label>
+            <textarea id="inp-summary" placeholder="اكتب ملخصك هنا..."></textarea>
+          </div>
+
+          <div class="sec-toggle-row">
+            <input type="checkbox" class="toggle-cb" id="vis-opinion" checked onchange="updatePreview()">
+            <span class="toggle-label">قسم الرأي الشخصي</span>
+          </div>
+          <div class="fg" id="group-opinion">
+            <label>💭 الرأي الشخصي</label>
+            <textarea id="inp-opinion" placeholder="ما أعجبك وما لم يعجبك؟"></textarea>
+          </div>
+
+          <div class="sec-toggle-row">
+            <input type="checkbox" class="toggle-cb" id="vis-quotes" checked onchange="updatePreview()">
+            <span class="toggle-label">قسم الاقتباسات</span>
+          </div>
+          <div id="group-quotes">
+            <label style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">💬 الاقتباسات</label>
+            <div id="quotes-container">
+              <div class="q-wrap">
+                <textarea class="inp-quote" placeholder="اقتباس مميز..."></textarea>
+              </div>
+            </div>
+            <button class="add-item-btn" onclick="addQuote()">＋ إضافة اقتباس</button>
+          </div>
+
+          <div style="margin-top:10px">
+            <div class="sec-toggle-row">
+              <input type="checkbox" class="toggle-cb" id="vis-notes" checked onchange="updatePreview()">
+              <span class="toggle-label">قسم الملاحظات</span>
+            </div>
+            <div class="fg" id="group-notes">
+              <label>📎 ملاحظات إضافية</label>
+              <input type="text" id="inp-notes" placeholder="أي ملاحظات أخرى...">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Ranges (Kitab template) -->
+      <div class="form-section" id="page-ranges-section" style="display:none">
+        <div class="form-section-header" onclick="toggleSec(this)">
+          <div class="fsh-left">
+            <div class="fsh-icon" style="background:#f0fdf4">⊞</div>
+            <span class="fsh-title">صفحات الكتاب (نموذج الكتاب)</span>
+          </div>
+          <svg class="fsh-chevron open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="form-section-body open">
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:10px">أضف صفحات لكل نطاق من صفحات الكتاب</p>
+          <div id="page-ranges-container"></div>
+          <button class="add-item-btn" onclick="addPageRange()">＋ إضافة صفحة جديدة</button>
+        </div>
+      </div>
+
+      <!-- Section Icons -->
+      <div class="form-section">
+        <div class="form-section-header" onclick="toggleSec(this)">
+          <div class="fsh-left">
+            <div class="fsh-icon" style="background:#fce7f3">✦</div>
+            <span class="fsh-title">أيقونات الأقسام</span>
+          </div>
+          <svg class="fsh-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="form-section-body">
+          <div class="fg-row">
+            <div class="fg">
+              <label>الفكرة</label>
+              <select id="si-idea">
+                <option value="emoji-💡">💡</option>
+                <option value="svg-lightbulb">SVG مصباح</option>
+                <option value="svg-star">SVG نجمة</option>
+                <option value="svg-target">SVG هدف</option>
+                <option value="none">بدون</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>الملخص</label>
+              <select id="si-summary">
+                <option value="emoji-📝">📝</option>
+                <option value="svg-lines">SVG أسطر</option>
+                <option value="svg-book2">SVG كتاب</option>
+                <option value="none">بدون</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>الرأي</label>
+              <select id="si-opinion">
+                <option value="emoji-💭">💭</option>
+                <option value="svg-heart">SVG قلب</option>
+                <option value="svg-chat">SVG رسالة</option>
+                <option value="none">بدون</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg-row">
+            <div class="fg">
+              <label>الاقتباسات</label>
+              <select id="si-quotes">
+                <option value="emoji-💬">💬</option>
+                <option value="svg-quote2">SVG اقتباس</option>
+                <option value="svg-pen2">SVG قلم</option>
+                <option value="none">بدون</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>الملاحظات</label>
+              <select id="si-notes">
+                <option value="emoji-📎">📎</option>
+                <option value="svg-pin">SVG دبوس</option>
+                <option value="svg-tag">SVG وسم</option>
+                <option value="none">بدون</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /form-inner -->
+
+    <div class="action-bar">
+      <button class="act-btn act-save" onclick="showToast('💾 تم الحفظ مؤقتاً')">💾 حفظ</button>
+      <button class="act-btn act-img" onclick="downloadImage()">📥 صورة</button>
+      <button class="act-btn act-pdf" onclick="downloadPDF()">🖨️ PDF</button>
+    </div>
+  </div>
+
+  <!-- ═══ PREVIEW PANEL ═══ -->
+  <div class="preview-panel" id="preview-panel">
+    <div class="preview-label">معاينة البطاقة</div>
+    <div class="card-wrapper" id="card-wrapper">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+</div><!-- /main-layout -->
+
+<!-- Mobile Preview Toggle -->
+<button class="mobile-preview-toggle" onclick="openMobilePreview()">👁️ معاينة البطاقة</button>
+
+<!-- Mobile Preview Modal -->
+<div class="mobile-preview-modal" id="mobile-preview-modal">
+  <div class="mobile-preview-inner">
+    <div class="mpm-close">
+      <button class="mpm-close-btn" onclick="closeMobilePreview()">✕ إغلاق</button>
+    </div>
+    <div id="mobile-card-wrapper"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="act-btn act-img" style="flex:1" onclick="downloadImage()">📥 تحميل صورة</button>
+      <button class="act-btn act-pdf" style="flex:1" onclick="downloadPDF()">🖨️ PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let currentTpl = 'lumiere';
+let hasImg = false;
+let imgSrc = '';
+let pageRanges = [];
+
+// ══════════════════════════════════════════════
+// SVG ICONS
+// ══════════════════════════════════════════════
+const SVGS = {
+  book: `<svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  feather: `<svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>`,
+  layers: `<svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+  lightbulb: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21h6M12 3a6 6 0 0 1 4.24 10.24C15.4 14.1 15 15 15 16H9c0-1-.4-1.9-1.24-2.76A6 6 0 0 1 12 3z"/></svg>`,
+  star: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  target: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+  lines: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>`,
+  book2: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  heart: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  chat: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  quote2: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5H2v8c0 1.6.8 3 2 4"/><path d="M14 21c3 0 7-1 7-8V5h-8v8c0 1.6.8 3 2 4"/></svg>`,
+  pen2: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  pin: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  tag: `<svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  pages: `<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  calendar: `<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  genre: `<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  bigBook: `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  bigFeather: `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>`,
+  bigLayers: `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`
+};
+
+function getSecIcon(selectId) {
+  const val = document.getElementById(selectId)?.value || '';
+  if (!val || val === 'none') return '';
+  if (val.startsWith('emoji-')) return val.replace('emoji-', '');
+  if (val.startsWith('svg-')) return SVGS[val.replace('svg-', '')] || '';
+  return val;
+}
+
+// ══════════════════════════════════════════════
+// FORM HELPERS
+// ══════════════════════════════════════════════
+function toggleSec(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.fsh-chevron');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+function cb(id) {
+  const el = document.getElementById(id);
+  return el ? el.checked : true;
+}
+
+// ══════════════════════════════════════════════
+// TEMPLATE SELECT
+// ══════════════════════════════════════════════
+function selectTpl(el) {
+  document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentTpl = el.dataset.tpl;
+  const kitabSec = document.getElementById('page-ranges-section');
+  kitabSec.style.display = currentTpl === 'kitab' ? '' : 'none';
+  if (currentTpl === 'kitab' && pageRanges.length === 0) {
+    addPageRange();
+  }
+  updatePreview();
+}
+
+// ══════════════════════════════════════════════
+// COVER IMAGE
+// ══════════════════════════════════════════════
+document.getElementById('inp-cover').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    hasImg = true;
+    imgSrc = ev.target.result;
+    const img = document.getElementById('cover-preview-img');
+    img.src = imgSrc;
+    img.style.display = 'block';
+    document.querySelector('#cover-preview-wrap .img-ph').style.display = 'none';
+    document.getElementById('img-rm-btn').style.display = 'block';
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+});
+
+function removeCover() {
+  hasImg = false; imgSrc = '';
+  document.getElementById('inp-cover').value = '';
+  document.getElementById('cover-preview-img').style.display = 'none';
+  document.getElementById('cover-preview-img').src = '';
+  document.querySelector('#cover-preview-wrap .img-ph').style.display = 'flex';
+  document.getElementById('img-rm-btn').style.display = 'none';
+  updatePreview();
+}
+
+// Color presets
+document.querySelectorAll('.cdot').forEach(d => {
+  d.addEventListener('click', function() {
+    document.querySelectorAll('.cdot').forEach(x => x.classList.remove('on'));
+    this.classList.add('on');
+    document.getElementById('inp-color').value = this.dataset.c;
+    updatePreview();
+  });
+});
+document.getElementById('inp-color').addEventListener('input', () => {
+  document.querySelectorAll('.cdot').forEach(x => x.classList.remove('on'));
+  updatePreview();
+});
+
+// ══════════════════════════════════════════════
+// QUOTES
+// ══════════════════════════════════════════════
+function addQuote() {
+  const c = document.getElementById('quotes-container');
+  const w = document.createElement('div');
+  w.className = 'q-wrap';
+  w.innerHTML = `<textarea class="inp-quote" placeholder="اقتباس..."></textarea><button class="q-del-btn" onclick="this.parentElement.remove();updatePreview()">✕</button>`;
+  c.appendChild(w);
+  w.querySelector('textarea').focus();
+}
+
+// ══════════════════════════════════════════════
+// PAGE RANGES (Kitab)
+// ══════════════════════════════════════════════
+let prIdx = 0;
+function addPageRange() {
+  const idx = prIdx++;
+  const c = document.getElementById('page-ranges-container');
+  const div = document.createElement('div');
+  div.className = 'page-range-item';
+  div.dataset.idx = idx;
+  div.innerHTML = `
+    <div class="page-range-header">
+      <span class="page-range-label">⊞ صفحة ${c.children.length + 1}</span>
+      <button class="pr-del-btn" onclick="this.closest('.page-range-item').remove();updatePreview()">🗑️</button>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>من صفحة</label><input type="number" class="pr-from" placeholder="1" min="1"></div>
+      <div class="fg"><label>إلى صفحة</label><input type="number" class="pr-to" placeholder="50" min="1"></div>
+    </div>
+    <div class="fg"><label>📝 الملخص / الأحداث</label><textarea class="pr-summary" placeholder="ملخص هذا الجزء..."></textarea></div>
+    <div class="fg"><label>💭 الرأي والتحليل</label><textarea class="pr-opinion" placeholder="رأيك في هذا الجزء..."></textarea></div>
+    <div class="fg"><label>💬 اقتباس مميز</label><input type="text" class="pr-quote" placeholder="اقتباس من هذا الجزء..."></div>
+  `;
+  c.appendChild(div);
+  updatePreview();
+}
+
+// ══════════════════════════════════════════════
+// COVER PLACEHOLDER HTML
+// ══════════════════════════════════════════════
+function getCoverPh(color) {
+  const action = v('inp-no-cover');
+  const icon = v('inp-fallback-icon');
+  const title = v('inp-title');
+
+  if (action === 'hide') return { show: false };
+
+  let inner = '';
+  if (action === 'title') {
+    inner = `<span style="font-size:1.25rem;font-weight:800;color:${color};text-align:center;padding:16px;line-height:1.35;font-family:'Cairo',sans-serif">${title || 'عنوان الكتاب'}</span>`;
+  } else if (action === 'gradient') {
+    return { show: true, style: `background:linear-gradient(135deg,${color}22,${color}55);`, inner: `<span style="color:${color};opacity:0.5;font-size:3rem">◈</span>` };
+  } else if (action === 'pattern') {
+    return { show: true, style: `background:repeating-linear-gradient(45deg,${color}08 0,${color}08 10px,transparent 10px,transparent 20px),${color}15;`, inner: `<span style="color:${color};font-size:3rem;opacity:0.6">✦</span>` };
+  } else {
+    if (icon.startsWith('svg-')) {
+      const key = icon.replace('svg-', 'big') + '';
+      const svgKey = 'big' + icon.replace('svg-','').charAt(0).toUpperCase() + icon.replace('svg-','').slice(1);
+      inner = `<span style="color:${color};opacity:0.7">${SVGS[svgKey] || SVGS.bigBook}</span>`;
+    } else {
+      inner = `<span style="font-size:3.5rem">${icon}</span>`;
+    }
+  }
+  return { show: true, style: '', inner };
+}
+
+// ══════════════════════════════════════════════
+// BUILD CARD HTML
+// ══════════════════════════════════════════════
+function buildCard() {
+  const color = document.getElementById('inp-color').value;
+  const font = v('inp-font') || "'Tajawal',sans-serif";
+
+  const title = v('inp-title');
+  const author = v('inp-author');
+  const status = v('inp-status');
+  const rating = v('inp-rating');
+  const pages = v('inp-pages');
+  const date = v('inp-date');
+  const genre = v('inp-genre');
+  const sig = v('inp-sig');
+
+  const idea = cb('vis-idea') ? v('inp-idea') : '';
+  const summary = cb('vis-summary') ? v('inp-summary') : '';
+  const opinion = cb('vis-opinion') ? v('inp-opinion') : '';
+  const notes = cb('vis-notes') ? v('inp-notes') : '';
+  const quotes = cb('vis-quotes') ? [...document.querySelectorAll('.inp-quote')].map(t => t.value.trim()).filter(Boolean) : [];
+
+  const si = {
+    idea: getSecIcon('si-idea'),
+    summary: getSecIcon('si-summary'),
+    opinion: getSecIcon('si-opinion'),
+    quotes: getSecIcon('si-quotes'),
+    notes: getSecIcon('si-notes')
+  };
+
+  // Meta chips
+  const metaItems = [];
+  if (pages) metaItems.push({ icon: SVGS.pages, text: pages + ' صفحة' });
+  if (date) metaItems.push({ icon: SVGS.calendar, text: date });
+  if (genre) metaItems.push({ icon: SVGS.genre, text: genre });
+
+  const ph = getCoverPh(color);
+
+  if (currentTpl === 'lumiere') return buildLumiere({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph });
+  if (currentTpl === 'obsidian') return buildObsidian({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph });
+  if (currentTpl === 'sahifa') return buildSahifa({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph });
+  if (currentTpl === 'nova') return buildNova({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph });
+  if (currentTpl === 'kitab') return buildKitab({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph });
+  if (currentTpl === 'zine') return buildZine({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph });
+  return '';
+}
+
+function metaChipsHtml(items, cls, chipCls) {
+  if (!items.length) return '';
+  const chips = items.map(m => `<span class="${chipCls}">${m.icon || ''}${m.text}</span>`).join('');
+  return `<div class="${cls}">${chips}</div>`;
+}
+
+function coverImgOrPh(ph, phClass, extraStyle = '') {
+  if (hasImg) return `<img src="${imgSrc}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">`;
+  if (!ph.show) return '';
+  return `<div class="${phClass}" style="${ph.style || ''}${extraStyle}">${ph.inner || ''}</div>`;
+}
+
+function quotesHtml(quotes, itemClass) {
+  return quotes.map(q => `<div class="${itemClass}">❝ ${q} ❞</div>`).join('');
+}
+
+function secHtml(cls, hCls, icon, label, content, isQuotes = false, itemClass = '') {
+  if (!content && !isQuotes) return '';
+  if (isQuotes && !content) return '';
+  return `<div class="${cls}"><h4 class="${hCls}">${icon ? icon + ' ' : ''}${label}</h4>${isQuotes ? content : `<p>${content}</p>`}</div>`;
+}
+
+// ─── LUMIERE ───
+function buildLumiere({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph }) {
+  const mc = metaItems.map(m => `<span class="lumiere-chip">${m.icon}${m.text}</span>`).join('');
+  const coverContent = hasImg
+    ? `<img src="${imgSrc}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : ph.show ? `<div class="lumiere-cover-ph" style="${ph.style || ''}">${ph.inner || ''}</div>` : '';
+  return `<div class="tpl-lumiere" style="--c-primary:${color};font-family:${font}">
+    <div class="lumiere-cover">${coverContent}
+      ${status ? `<div class="lumiere-status" style="display:block"><span class="lumiere-status-badge">${status}</span></div>` : ''}
+    </div>
+    <div class="lumiere-body">
+      ${(title||author||rating) ? `<div class="lumiere-header">
+        ${title ? `<div class="lumiere-title">${title}</div>` : ''}
+        ${author ? `<div class="lumiere-author">— ${author}</div>` : ''}
+        ${rating ? `<div class="lumiere-rating">${rating}</div>` : ''}
+      </div>` : ''}
+      ${mc ? `<div class="lumiere-meta">${mc}</div>` : ''}
+      ${idea ? `<div class="lumiere-sec"><h4>${si.idea} ${si.idea ? '' : ''}الفكرة الأساسية</h4><p>${idea}</p></div>` : ''}
+      ${summary ? `<div class="lumiere-sec"><h4>${si.summary} الملخص</h4><p>${summary}</p></div>` : ''}
+      ${opinion ? `<div class="lumiere-sec sec-op"><h4 class="hop">${si.opinion} رأي شخصي</h4><p>${opinion}</p></div>` : ''}
+      ${quotes.length ? `<div class="lumiere-sec sec-q"><h4 class="hq">${si.quotes} الاقتباسات</h4>${quotes.map(q=>`<div class="lumiere-qitem">❝ ${q} ❞</div>`).join('')}</div>` : ''}
+      ${notes ? `<div class="lumiere-sec sec-nt"><h4 class="hnt">${si.notes} ملاحظات</h4><p>${notes}</p></div>` : ''}
+      ${sig ? `<div class="lumiere-sig">لُخِّص بواسطة: ${sig}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ─── OBSIDIAN ───
+function buildObsidian({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph }) {
+  const mc = metaItems.map(m => `<span class="obsidian-chip">${m.icon}${m.text}</span>`).join('');
+  const coverContent = hasImg
+    ? `<img src="${imgSrc}" alt="" style="width:100%;height:100%;object-fit:cover"><div class="obsidian-cover-overlay"></div>`
+    : ph.show ? `<div class="obsidian-cover-ph" style="${ph.style || ''}">${ph.inner || ''}</div>` : '';
+  return `<div class="tpl-obsidian" style="--c-primary:${color};font-family:${font}">
+    <div class="obsidian-cover">${coverContent}
+      ${status ? `<div class="obsidian-status" style="display:block">${status}</div>` : ''}
+    </div>
+    <div class="obsidian-body">
+      ${(title||author||rating) ? `<div class="obsidian-header">
+        ${title ? `<div class="obsidian-title">${title}</div>` : ''}
+        ${author ? `<div class="obsidian-author">— ${author}</div>` : ''}
+        ${rating ? `<div class="obsidian-rating">${rating}</div>` : ''}
+      </div>` : ''}
+      ${mc ? `<div class="obsidian-meta">${mc}</div>` : ''}
+      ${idea ? `<div class="obsidian-sec"><h4>${si.idea} الفكرة الأساسية</h4><p>${idea}</p></div>` : ''}
+      ${summary ? `<div class="obsidian-sec"><h4>${si.summary} الملخص</h4><p>${summary}</p></div>` : ''}
+      ${opinion ? `<div class="obsidian-sec sec-op"><h4 class="hop">${si.opinion} رأي شخصي</h4><p>${opinion}</p></div>` : ''}
+      ${quotes.length ? `<div class="obsidian-sec sec-q"><h4 class="hq">${si.quotes} الاقتباسات</h4>${quotes.map(q=>`<div class="obsidian-qitem">❝ ${q} ❞</div>`).join('')}</div>` : ''}
+      ${notes ? `<div class="obsidian-sec sec-nt"><h4 class="hnt">${si.notes} ملاحظات</h4><p>${notes}</p></div>` : ''}
+      ${sig ? `<div class="obsidian-sig">لُخِّص بواسطة: ${sig}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ─── SAHIFA ───
+function buildSahifa({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph }) {
+  const mc = metaItems.map(m => `<span class="sahifa-chip">${m.icon}${m.text}</span>`).join('');
+  const coverContent = hasImg
+    ? `<img src="${imgSrc}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : ph.show ? `<div class="sahifa-cover-ph" style="${ph.style || ''}">${ph.inner || ''}</div>` : '';
+  return `<div class="tpl-sahifa" style="--c-primary:${color};font-family:'Amiri',serif">
+    ${ph.show !== false ? `<div class="sahifa-cover">${coverContent}
+      ${status ? `<div class="sahifa-status" style="display:block">${status}</div>` : ''}
+    </div>` : ''}
+    <div class="sahifa-body">
+      ${(title||author||rating) ? `<div class="sahifa-header">
+        ${title ? `<div class="sahifa-title">${title}</div>` : ''}
+        ${author ? `<div class="sahifa-author">— ${author}</div>` : ''}
+        ${rating ? `<div class="sahifa-rating">${rating}</div>` : ''}
+      </div>` : ''}
+      ${mc ? `<div class="sahifa-meta">${mc}</div>` : ''}
+      ${idea ? `<div class="sahifa-sec"><h4>${SVGS.lightbulb} الفكرة الأساسية</h4><p>${idea}</p></div>` : ''}
+      ${summary ? `<div class="sahifa-sec"><h4>${SVGS.lines} الملخص</h4><p>${summary}</p></div>` : ''}
+      ${opinion ? `<div class="sahifa-sec"><h4>${SVGS.heart} رأي شخصي</h4><p>${opinion}</p></div>` : ''}
+      ${quotes.length ? `<div class="sahifa-sec sec-q"><h4>${SVGS.quote2} الاقتباسات</h4>${quotes.map(q=>`<div class="sahifa-qitem">❝ ${q} ❞</div>`).join('')}</div>` : ''}
+      ${notes ? `<div class="sahifa-sec"><h4>${SVGS.pin} ملاحظات</h4><p>${notes}</p></div>` : ''}
+      ${sig ? `<div class="sahifa-sig">لُخِّص بواسطة: ${sig}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ─── NOVA ───
+function buildNova({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph }) {
+  const mc = metaItems.map(m => `<span class="nova-chip">${m.icon}${m.text}</span>`).join('');
+  const coverContent = hasImg
+    ? `<img src="${imgSrc}" alt="" style="width:100%;height:100%;object-fit:cover"><div class="nova-gradient"></div>`
+    : ph.show ? `<div class="nova-cover-ph" style="${ph.style || ''}">${ph.inner || ''}</div><div class="nova-gradient" style="opacity:0.5"></div>` : '';
+  return `<div class="tpl-nova" style="--c-primary:${color};font-family:${font}">
+    <div class="nova-cover">
+      ${coverContent}
+      ${status ? `<div class="nova-status" style="display:block">${status}</div>` : ''}
+      ${(title||author) ? `<div class="nova-cover-info">
+        ${title ? `<div class="nova-title">${title}</div>` : ''}
+        ${author ? `<div class="nova-author">${author}</div>` : ''}
+      </div>` : ''}
+    </div>
+    ${rating ? `<div class="nova-rating-bar" style="display:flex"><span class="nova-rating-stars">${rating}</span><span class="nova-rating-label">التقييم</span></div>` : ''}
+    <div class="nova-body">
+      ${mc ? `<div class="nova-meta">${mc}</div>` : ''}
+      ${idea ? `<div class="nova-sec"><h4>${si.idea} الفكرة الأساسية</h4><p>${idea}</p></div>` : ''}
+      ${summary ? `<div class="nova-sec"><h4>${si.summary} الملخص</h4><p>${summary}</p></div>` : ''}
+      ${opinion ? `<div class="nova-sec sec-op"><h4 class="hop">${si.opinion} رأي شخصي</h4><p>${opinion}</p></div>` : ''}
+      ${quotes.length ? `<div class="nova-sec sec-q"><h4 class="hq">${si.quotes} الاقتباسات</h4>${quotes.map(q=>`<div class="nova-qitem">❝ ${q} ❞</div>`).join('')}</div>` : ''}
+      ${notes ? `<div class="nova-sec sec-nt"><h4 class="hnt">${si.notes} ملاحظات</h4><p>${notes}</p></div>` : ''}
+      ${sig ? `<div class="nova-sig">لُخِّص بواسطة: ${sig}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ─── KITAB ───
+function buildKitab({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph }) {
+  const ranges = document.querySelectorAll('.page-range-item');
+  const coverContent = hasImg
+    ? `<img src="${imgSrc}" alt="" style="width:100%;height:100%;object-fit:cover"><div class="kitab-p1-overlay"></div>`
+    : ph.show ? `<div class="kitab-p1-cover-ph" style="${ph.style || ''}">${ph.inner || ''}</div>` : '';
+
+  // Page 1: Cover
+  let html = `<div class="tpl-kitab" style="--c-primary:${color};font-family:${font}"><div class="kitab-pages">
+    <div class="kitab-page">
+      <div class="kitab-p1-cover">
+        ${coverContent}
+        ${(title||author) ? `<div class="kitab-p1-titles">
+          ${title ? `<div class="kitab-p1-title">${title}</div>` : ''}
+          ${author ? `<div class="kitab-p1-author">— ${author}</div>` : ''}
+        </div>` : ''}
+        ${status ? `<div class="kitab-p1-status" style="display:block">${status}</div>` : ''}
+      </div>
+    </div>`;
+
+  // Page 2: Book Info
+  const infoItems = [];
+  if (pages) infoItems.push({ icon: SVGS.pages, label: 'الصفحات', val: pages });
+  if (date) infoItems.push({ icon: SVGS.calendar, label: 'سنة النشر', val: date });
+  if (genre) infoItems.push({ icon: SVGS.genre, label: 'التصنيف', val: genre });
+  if (author) infoItems.push({ icon: SVGS.pen2, label: 'المؤلف', val: author });
+
+  html += `<div class="kitab-page">
+    <div class="kitab-page-num" style="background:${color}">📋 معلومات الكتاب</div>
+    <div class="kitab-p2-body">
+      ${infoItems.length ? `<div class="kitab-info-grid">${infoItems.map(i=>`<div class="kitab-info-item"><div class="kitab-info-label">${i.icon}${i.label}</div><div class="kitab-info-value">${i.val}</div></div>`).join('')}</div>` : ''}
+      ${rating ? `<div class="kitab-rating-large"><div class="kitab-rating-stars">${rating}</div><div class="kitab-rating-label">التقييم الإجمالي</div></div>` : ''}
+    </div>
+  </div>`;
+
+  // Page 3: Main content (idea, summary, opinion, quotes, notes)
+  const mainSecs = [];
+  if (idea) mainSecs.push(`<div class="kitab-content-sec"><h5 style="color:${color}">${si.idea} الفكرة الأساسية</h5><p>${idea}</p></div>`);
+  if (summary) mainSecs.push(`<div class="kitab-content-sec"><h5 style="color:${color}">${si.summary} الملخص العام</h5><p>${summary}</p></div>`);
+  if (opinion) mainSecs.push(`<div class="kitab-content-sec"><h5 style="color:#be123c">${si.opinion} الرأي الشخصي</h5><p>${opinion}</p></div>`);
+  if (notes) mainSecs.push(`<div class="kitab-content-sec"><h5 style="color:#6d28d9">${si.notes} ملاحظات</h5><p>${notes}</p></div>`);
+  if (quotes.length) mainSecs.push(`<div class="kitab-content-sec cq"><h5>${si.quotes} الاقتباسات المميزة</h5>${quotes.map(q=>`<div class="kq-item">❝ ${q} ❞</div>`).join('')}</div>`);
+
+  if (mainSecs.length) {
+    html += `<div class="kitab-page kitab-content-page">
+      <div class="kitab-page-header" style="background:linear-gradient(135deg,${color},${color}bb)">
+        <span>${SVGS.lines}</span>
+        <span class="kitab-page-header-title">المحتوى والتحليل</span>
+      </div>
+      <div class="kitab-content-body">${mainSecs.join('')}</div>
+    </div>`;
+  }
+
+  // Range pages
+  ranges.forEach((r, i) => {
+    const from = r.querySelector('.pr-from')?.value || '';
+    const to = r.querySelector('.pr-to')?.value || '';
+    const rSummary = r.querySelector('.pr-summary')?.value || '';
+    const rOpinion = r.querySelector('.pr-opinion')?.value || '';
+    const rQuote = r.querySelector('.pr-quote')?.value || '';
+    if (!rSummary && !rOpinion && !rQuote) return;
+    html += `<div class="kitab-page kitab-content-page">
+      <div class="kitab-page-header" style="background:linear-gradient(135deg,${color},${color}99)">
+        <span>${SVGS.book2}</span>
+        <span class="kitab-page-header-title">صفحات ${from||'?'} — ${to||'?'}</span>
+        <span class="kitab-page-header-range">القسم ${i+1}</span>
+      </div>
+      <div class="kitab-content-body">
+        ${rSummary ? `<div class="kitab-content-sec"><h5 style="color:${color}">${SVGS.lines} الملخص</h5><p>${rSummary}</p></div>` : ''}
+        ${rOpinion ? `<div class="kitab-content-sec"><h5 style="color:#be123c">${SVGS.heart} الرأي</h5><p>${rOpinion}</p></div>` : ''}
+        ${rQuote ? `<div class="kitab-content-sec cq"><h5>${SVGS.quote2} اقتباس</h5><div class="kq-item">❝ ${rQuote} ❞</div></div>` : ''}
+      </div>
+    </div>`;
+  });
+
+  if (sig) {
+    html += `<div class="kitab-page"><div class="kitab-p2-body" style="text-align:center;padding:16px;font-size:0.8rem;color:var(--muted)">لُخِّص بواسطة: ${sig}</div></div>`;
+  }
+
+  html += `</div></div>`;
+  return html;
+}
+
+// ─── ZINE ───
+function buildZine({ color, font, title, author, status, rating, pages, date, genre, sig, idea, summary, opinion, notes, quotes, si, metaItems, ph }) {
+  const mc = metaItems.map(m => `<span class="zine-chip">${m.icon}${m.text}</span>`).join('');
+  const coverContent = hasImg
+    ? `<img src="${imgSrc}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : ph.show ? `<div class="zine-cover-ph" style="${ph.style || ''}">${ph.inner || '<span style="color:#aaa;font-size:3rem">✦</span>'}</div>` : '';
+  return `<div class="tpl-zine" style="--c-primary:${color};font-family:${font}">
+    <div class="zine-header-bar">
+      <span class="zine-label">بطاقة كتاب</span>
+      ${status ? `<span class="zine-status-pill" style="display:inline-block">${status}</span>` : ''}
+    </div>
+    ${ph.show !== false ? `<div class="zine-cover">${coverContent}</div>` : ''}
+    <div class="zine-body">
+      <div class="zine-title-block">
+        ${title ? `<div class="zine-title">${title}</div>` : ''}
+        ${author ? `<div class="zine-author">${author}</div>` : ''}
+        ${rating ? `<div class="zine-rating">${rating}</div>` : ''}
+      </div>
+      ${mc ? `<div class="zine-meta">${mc}</div>` : ''}
+      ${idea ? `<div class="zine-sec"><h4>${si.idea} الفكرة الأساسية</h4><p>${idea}</p></div>` : ''}
+      ${summary ? `<div class="zine-sec"><h4>${si.summary} الملخص</h4><p>${summary}</p></div>` : ''}
+      ${opinion ? `<div class="zine-sec sec-op"><h4 class="hop">${si.opinion} رأي شخصي</h4><p>${opinion}</p></div>` : ''}
+      ${quotes.length ? `<div class="zine-sec sec-q"><h4 class="hq">${si.quotes} الاقتباسات</h4>${quotes.map(q=>`<div class="zine-qitem">❝ ${q} ❞</div>`).join('')}</div>` : ''}
+      ${notes ? `<div class="zine-sec sec-nt"><h4 class="hnt">${si.notes} ملاحظات</h4><p>${notes}</p></div>` : ''}
+      ${sig ? `<div class="zine-sig">// لُخِّص بواسطة: ${sig} //</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// UPDATE PREVIEW
+// ══════════════════════════════════════════════
+function updatePreview() {
+  const html = buildCard();
+  document.getElementById('card-wrapper').innerHTML = html;
+  const mobileWrap = document.getElementById('mobile-card-wrapper');
+  if (mobileWrap) mobileWrap.innerHTML = html;
+
+  // Show/hide icon fallback
+  const nocover = document.getElementById('inp-no-cover').value;
+  document.getElementById('icon-fallback-group').style.display = (nocover === 'icon') ? '' : 'none';
+
+  // Hide section groups based on checkbox
+  ['idea','summary','opinion','notes'].forEach(name => {
+    const g = document.getElementById('group-' + name);
+    if (g) g.style.opacity = document.getElementById('vis-' + name)?.checked ? '1' : '0.4';
+  });
+  const qg = document.getElementById('group-quotes');
+  if (qg) qg.style.opacity = document.getElementById('vis-quotes')?.checked ? '1' : '0.4';
+}
+
+// All inputs trigger update
+document.getElementById('form-panel').addEventListener('input', updatePreview);
+document.getElementById('inp-no-cover').addEventListener('change', updatePreview);
+
+// ══════════════════════════════════════════════
+// MOBILE PREVIEW
+// ══════════════════════════════════════════════
+function openMobilePreview() {
+  updatePreview();
+  document.getElementById('mobile-preview-modal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobilePreview() {
+  document.getElementById('mobile-preview-modal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ══════════════════════════════════════════════
+// DOWNLOAD IMAGE
+// ══════════════════════════════════════════════
+function downloadImage() {
+  const target = document.getElementById('card-wrapper');
+  showToast('⏳ جاري تحضير الصورة...');
+  html2canvas(target, {
+    scale: 2.5,
+    useCORS: true,
+    backgroundColor: (currentTpl === 'obsidian' || currentTpl === 'nova') ? '#0f0f18' : '#ffffff',
+    logging: false
+  }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = `بطاقة_${document.getElementById('inp-title').value || 'كتاب'}.png`;
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('✅ تم تحميل الصورة بنجاح');
+  }).catch(() => showToast('❌ خطأ في تحميل الصورة'));
+}
+
+// ══════════════════════════════════════════════
+// DOWNLOAD PDF
+// ══════════════════════════════════════════════
+function downloadPDF() {
+  const target = document.getElementById('card-wrapper');
+  showToast('⏳ جاري تحضير ملف PDF...');
+  html2canvas(target, {
+    scale: 2, 
+    useCORS: true,
+    backgroundColor: (currentTpl === 'obsidian' || currentTpl === 'nova') ? '#0f0f18' : '#ffffff',
+    logging: false
+  }).then(canvas => {
+    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+    const { jsPDF } = window.jspdf;
+    
+    // إنشاء ملف PDF يتناسب مع أبعاد البطاقة بالضبط
+    const pdf = new jsPDF({
+      orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+      unit: 'px',
+      format: [canvas.width, canvas.height]
+    });
+    
+    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+    pdf.save(`بطاقة_${document.getElementById('inp-title').value || 'كتاب'}.pdf`);
+    
+    showToast('✅ تم تحميل PDF بنجاح');
+  }).catch((err) => {
+    console.error(err);
+    showToast('❌ خطأ في تحميل PDF');
+  });
+}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+updatePreview();
+// Add one page range for kitab on init
+addPageRange();
+document.getElementById('page-ranges-section').style.display = 'none';
+</script>
+</body>
+</html>

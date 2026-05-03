@@ -992,48 +992,22 @@ async function generateMobile(){
       else{blob=await makePNG(name);}
       var burl=URL.createObjectURL(blob);
       
-      // ❌ تم حذف سطر التحميل التلقائي الذي يسبب حظر الأندرويد من هنا
-
+      // إنشاء بطاقة الشهادة كرابط تحميل مباشر وبسيط
       var card=document.createElement('a');
       card.className='dl-item';
       card.href=burl;
-      card.download=sn+'.'+ext;
-      // card.target='_blank'; // إزالتها أفضل مع زر المشاركة
-
-      // ✅ إضافة ميزة المشاركة عند ضغط المستخدم على البطاقة يدوياً
-      card.onclick = async function(e) {
-        if (navigator.share && S.fmt === 'png') {
-          e.preventDefault(); 
-          try {
-            var file = new File([blob], sn+'.'+ext, { type: 'image/png' });
-            await navigator.share({
-              title: 'شهادة ' + name,
-              files: [file]
-            });
-          } catch (err) {
-            // كخيار بديل إذا ألغى المستخدم المشاركة، يتم التحميل العادي
-            var lnk = document.createElement('a');
-            lnk.href = burl;
-            lnk.download = sn+'.'+ext;
-            document.body.appendChild(lnk);
-            lnk.click();
-            document.body.removeChild(lnk);
-          }
-        }
-      };
-
+      card.download=sn+'.'+ext; // هذه الخاصية تجبر المتصفح على التحميل عند الضغط
+      
       card.innerHTML='<div class="di">'+(S.fmt==='pdf'?'📄':'🖼')+'</div><div>'+name+'</div><div class="dn">'+sn+'.'+ext+'</div>';
       dlGrid.appendChild(card);
       
-      // تقليل وقت الانتظار قليلاً لتسريع العملية بما أننا أزلنا التحميل التلقائي
-      if(S.fmt==='png')await new Promise(function(r){setTimeout(r,50);}); 
+      if(S.fmt==='png')await new Promise(function(r){setTimeout(r,50);});
     }
     setOv(true,'تم! جاري الانتهاء...','',100);await tick();
     setOv(false);mProg.style.display='none';mFill.style.width='0%';
     dlSec.style.display='block';
     
-    // ✅ تحديث رسالة النجاح لتوجيه المستخدم
-    toast('✅ '+total+' شهادة جاهزة! اضغط عليها للتحميل أو المشاركة.','ok');
+    toast('✅ '+total+' شهادة جاهزة! اضغط على كل شهادة لتحميلها مباشرة.','ok');
     setTimeout(function(){switchTab('p');},300);
   }catch(err){
     toast('خطأ: '+err.message,'er');console.error(err);

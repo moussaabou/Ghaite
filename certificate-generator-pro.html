@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0d1017">
+<title>مولّد الشهادات — Certificate Generator Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@400;600;700&family=Almarai:wght@400;700&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;700&family=Lateef&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════ */
+:root{
+  --bg:#07080d;--card:#0d1017;--panel:#111420;
+  --border:#1a1e2e;--border2:#252a40;
+  --accent:#4f8ef7;--a2:#a259ff;
+  --gold:#f5c518;--gold2:#c9a200;
+  --txt:#dde2f5;--txt2:#68708a;--txt3:#2a2f4a;
+  --ok:#22c55e;--err:#ef4444;
+  --ga:rgba(79,142,247,.13);--gb:rgba(162,89,255,.10);
+  --grad-a:linear-gradient(135deg,var(--accent),var(--a2));
+  --grad-g:linear-gradient(135deg,var(--gold),var(--gold2));
+  --grad-ok:linear-gradient(135deg,#22c55e,#15803d);
+  --hh:56px;--th:62px;--sbw:310px;
+  --r:14px;--rs:10px;--rxs:6px;
+  --ease:.2s cubic-bezier(.4,0,.2,1);
+  --spring:.35s cubic-bezier(.34,1.56,.64,1);
+  --sh-sm:0 1px 3px rgba(0,0,0,.3);
+  --sh-md:0 4px 18px rgba(0,0,0,.4);
+  --sh-lg:0 14px 48px rgba(0,0,0,.65);
+}
+[data-theme=light]{
+  --bg:#eef1fa;--card:#fff;--panel:#f4f6ff;
+  --border:#d2d8ef;--border2:#b5bcd8;
+  --accent:#1d4ed8;--a2:#7c3aed;
+  --gold:#a16207;--gold2:#78450a;
+  --txt:#141727;--txt2:#3d4778;--txt3:#9aa2c0;
+  --ok:#15803d;--err:#dc2626;
+  --ga:rgba(29,78,216,.09);--gb:rgba(124,58,237,.07);
+  --sh-sm:0 1px 3px rgba(0,0,0,.08);
+  --sh-md:0 4px 18px rgba(0,0,0,.13);
+  --sh-lg:0 14px 48px rgba(0,0,0,.18);
+}
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{height:100%;overflow:hidden;font-family:'Tajawal','Cairo',system-ui,sans-serif;font-size:14px;line-height:1.5;background:var(--bg);color:var(--txt);direction:rtl;transition:background var(--ease),color var(--ease)}
+button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit}
+img{max-width:100%;display:block}
+code{font-family:monospace;font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px;border:1px solid var(--border);color:var(--accent);word-break:break-all}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--rxs)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+*{scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+
+/* ── HEADER ── */
+.hdr{position:fixed;inset:0 0 auto;height:var(--hh);z-index:600;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:14px;box-shadow:var(--sh-sm);transition:background var(--ease),border-color var(--ease)}
+.logo{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.logo-ico{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:var(--grad-a);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 18px var(--ga)}
+.logo-txt{display:flex;flex-direction:column;gap:1px}
+.logo-t1{font-size:15px;font-weight:800;background:var(--grad-a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.logo-t2{font-size:9px;color:var(--txt3);letter-spacing:.6px;text-transform:uppercase}
+.steps{display:flex;align-items:center;gap:3px}
+.stp{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;color:var(--txt3);transition:all var(--ease);white-space:nowrap}
+.stp.active{background:var(--ga);color:var(--txt)}
+.stp.done{color:var(--ok)}
+.sn{width:21px;height:21px;border-radius:50%;background:var(--panel);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;transition:all var(--ease)}
+.stp.active .sn{background:var(--accent);border-color:var(--accent);color:#fff}
+.stp.done .sn{background:var(--ok);border-color:var(--ok);color:#fff}
+.sdash{width:12px;height:1px;background:var(--border);flex-shrink:0}
+.th-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:17px;outline:none;transition:all var(--ease);flex-shrink:0}
+.th-btn:hover{border-color:var(--accent);background:var(--ga);transform:rotate(20deg)}
+
+/* ── LAYOUT ── */
+.layout{display:flex;margin-top:var(--hh);height:calc(100vh - var(--hh))}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sbw);flex-shrink:0;background:var(--card);border-left:1px solid var(--border);overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;height:100%;transition:background var(--ease),border-color var(--ease)}
+.sb-group{display:flex;flex-direction:column;gap:10px;width:100%}
+
+/* ── MAIN ── */
+.main{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:18px 16px;gap:14px;
+  background:radial-gradient(ellipse 60% 35% at 50% 0%,var(--ga),transparent),
+             radial-gradient(ellipse 50% 45% at 95% 100%,var(--gb),transparent),var(--bg)}
+
+/* ── CARD ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:13px;transition:background var(--ease),border-color var(--ease)}
+.card:hover{border-color:var(--border2)}
+.ctitle{font-size:10px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.9px;display:flex;align-items:center;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.cico{width:23px;height:23px;border-radius:var(--rxs);background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(162,89,255,.09));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.main-badge{background:var(--ga);border:1px solid rgba(79,142,247,.3);color:var(--accent);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:.3px;margin-right:auto}
+
+/* ── FORM ── */
+.field{display:flex;flex-direction:column;gap:4px}
+.field.mb{margin-bottom:10px}
+label{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.45px}
+.hint-inline{font-weight:400;color:var(--txt3);text-transform:none;letter-spacing:0;font-size:9px}
+input[type=number],input[type=text],textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--txt);border-radius:var(--rs);padding:7px 11px;font-size:13px;outline:none;transition:border-color var(--ease),box-shadow var(--ease),background var(--ease);direction:rtl}
+input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga)}
+textarea{resize:vertical;min-height:70px;line-height:1.6}
+input[type=color]{width:100%;height:36px;padding:2px 4px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;outline:none;transition:border-color var(--ease)}
+input[type=color]:hover{border-color:var(--accent)}
+.sel-wrap{position:relative}
+.sel-wrap select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--txt);border-radius:var(--rs);padding:7px 11px 7px 30px;font-size:13px;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;transition:border-color var(--ease),box-shadow var(--ease)}
+.sel-wrap select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ga)}
+.sel-arrow{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--txt2);pointer-events:none}
+.fpreview{margin-top:6px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 14px;min-height:46px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.fpreview span{font-size:22px;color:var(--txt);text-align:center;word-break:break-word;transition:font-family .25s}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px}
+.dv{height:1px;background:var(--border);margin:9px 0}
+.mb{margin-bottom:10px}
+.mt{margin-top:10px}
+.cbox{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);padding:9px 12px;font-size:12px;color:var(--txt2);display:flex;gap:14px;flex-wrap:wrap}
+.cl{color:var(--accent);font-weight:700}
+.hint{font-size:10px;color:var(--txt3);line-height:1.6}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--ok);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.ibox{margin-top:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:8px 11px}
+.irow{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--txt2)}
+.irow b{color:var(--accent)}
+.tip-box{background:rgba(79,142,247,.05);border:1px solid rgba(79,142,247,.14);border-radius:var(--rs);padding:10px 13px;font-size:11px;color:var(--txt2);line-height:1.7}
+.tip-box b{font-size:10px;color:var(--accent);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;font-weight:800}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:var(--rs);font-size:12px;font-weight:800;border:none;outline:none;cursor:pointer;white-space:nowrap;transition:all var(--ease)}
+.btn:active:not(:disabled){transform:scale(.97)!important}
+.btn.fw{width:100%}
+.btn.sm{padding:5px 11px;font-size:11px}
+.btn.lg{padding:13px 16px;font-size:14px}
+.btn-p{background:var(--grad-a);color:#fff;box-shadow:0 3px 14px var(--ga)}
+.btn-p:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 22px var(--ga)}
+.btn-s{background:var(--bg);color:var(--txt2);border:1.5px solid var(--border)}
+.btn-s:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.btn-g{background:var(--grad-g);color:#150e00;box-shadow:0 3px 14px rgba(245,197,24,.2)}
+.btn-g:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 22px rgba(245,197,24,.35)}
+.btn-err{background:rgba(239,68,68,.1);color:var(--err);border:1.5px solid rgba(239,68,68,.25)}
+.btn-err:hover:not(:disabled){background:rgba(239,68,68,.18)}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-row{display:flex;gap:7px;flex-wrap:wrap}
+.tb{padding:7px 6px;background:var(--bg);border:1.5px solid var(--border);color:var(--txt2);border-radius:var(--rs);cursor:pointer;font-size:12px;font-weight:700;text-align:center;transition:all var(--ease);outline:none;font-family:inherit}
+.tb.on{background:var(--grad-a);border-color:transparent;color:#fff;box-shadow:0 2px 10px var(--ga)}
+.tb:hover:not(.on){border-color:var(--accent);color:var(--accent)}
+
+/* ── UPLOAD ZONE ── */
+.uz{border:2px dashed var(--border);border-radius:var(--rs);padding:16px 10px;text-align:center;cursor:pointer;transition:all var(--ease);user-select:none}
+.uz:hover,.uz.over{border-color:var(--accent);background:var(--ga)}
+.uico{font-size:28px;display:block;margin-bottom:5px;transition:transform var(--spring)}
+.uz:hover .uico{transform:scale(1.1)}
+.utxt{font-size:11px;color:var(--txt2);line-height:1.7}
+.utxt strong{color:var(--accent);display:block;font-size:12px;margin-bottom:2px;font-weight:700}
+
+/* ── FORMAT & MODE ── */
+.fmt-row{display:flex;gap:8px}
+.fmt-btn{flex:1;padding:8px;text-align:center;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);font-size:12px;font-weight:700;color:var(--txt2);transition:all var(--ease);outline:none;cursor:pointer;font-family:inherit}
+.fmt-btn.on{border-color:var(--gold);color:var(--gold);background:rgba(245,197,24,.06)}
+.fmt-btn:hover:not(.on){border-color:var(--border2);color:var(--txt)}
+.xmodes{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.xmode{padding:11px 8px;background:var(--bg);border:2px solid var(--border);border-radius:var(--rs);cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all var(--ease);outline:none;font-family:inherit}
+.xmode:hover:not(.on){border-color:var(--border2)}
+.xmode.on{border-color:var(--accent);background:var(--ga)}
+.xm-ico{font-size:24px}
+.xm-lbl{font-size:11px;font-weight:800;color:var(--txt);transition:color var(--ease)}
+.xm-sub{font-size:9px;color:var(--txt2);line-height:1.4}
+.xmode.on .xm-lbl{color:var(--accent)}
+
+/* ── PROGRESS ── */
+.prog-wrap{margin-bottom:10px}
+.prog-bg{background:var(--bg);border:1px solid var(--border);border-radius:20px;height:7px;overflow:hidden;margin-bottom:5px}
+.prog-fill{height:100%;width:0%;background:var(--grad-a);border-radius:20px;transition:width .35s ease}
+.prog-lbl{font-size:10px;color:var(--txt3);text-align:center}
+
+/* ══════════════════════════════════════════
+   EXTRA FIELDS SYSTEM
+══════════════════════════════════════════ */
+.fields-list{display:flex;flex-direction:column;gap:8px}
+.fields-empty{text-align:center;padding:18px 10px;color:var(--txt3);font-size:11px;border:2px dashed var(--border);border-radius:var(--rs);line-height:1.8}
+.fields-empty-ico{font-size:28px;margin-bottom:6px;opacity:.4}
+
+.field-card{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 12px;display:flex;flex-direction:column;gap:8px;transition:border-color var(--ease),box-shadow var(--ease);animation:scaleIn .25s ease both}
+.field-card:hover{border-color:var(--border2)}
+.field-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--ga)}
+.field-card.placing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(245,197,24,.2)}
+
+.fc-top{display:flex;align-items:center;gap:8px}
+.fc-dot{width:13px;height:13px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.25)}
+.fc-name{flex:1;font-size:12px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.fc-badge.fixed{color:var(--gold);border:1px solid rgba(245,197,24,.3);background:rgba(245,197,24,.06)}
+.fc-badge.variable{color:var(--a2);border:1px solid rgba(162,89,255,.3);background:rgba(162,89,255,.06)}
+
+.fc-meta{font-size:10px;color:var(--txt3);display:flex;gap:8px;flex-wrap:wrap}
+.fc-meta span{display:inline-flex;align-items:center;gap:3px}
+
+.fc-pos{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--border);border-radius:var(--rxs);padding:5px 9px;font-size:10px;color:var(--txt2);gap:8px}
+.fc-pos.placed{color:var(--ok);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.05)}
+.fc-pos.unplaced{color:var(--err);border-color:rgba(239,68,68,.2)}
+
+.fc-actions{display:flex;gap:6px;flex-wrap:wrap}
+.fc-btn{padding:4px 10px;border-radius:var(--rxs);border:1.5px solid var(--border);background:var(--panel);color:var(--txt2);font-size:10px;font-weight:700;cursor:pointer;transition:all var(--ease);display:inline-flex;align-items:center;gap:4px;font-family:inherit}
+.fc-btn:hover{border-color:var(--accent);color:var(--accent)}
+.fc-btn.active-place{background:rgba(245,197,24,.1);border-color:var(--gold);color:var(--gold)}
+.fc-btn.del:hover{border-color:var(--err);color:var(--err)}
+
+/* ── CANVAS ── */
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:48px 32px;animation:fadeIn .4s ease}
+.empty-ico{font-size:66px;opacity:.07;filter:grayscale(1)}
+.empty-ttl{font-size:18px;font-weight:800;color:var(--txt3)}
+.empty-sub{font-size:12px;color:var(--txt3);max-width:220px;line-height:1.8;opacity:.65}
+
+.toolbar{width:100%;max-width:980px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.tinfo{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.tinfo span{font-size:10px;color:var(--txt2);background:var(--panel);border:1px solid var(--border);padding:3px 10px;border-radius:20px;font-weight:600}
+.mode-lbl{color:var(--accent)!important;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tnav{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:30px;padding:4px 13px}
+.tnav-lbl{font-size:11px;color:var(--txt2);min-width:58px;text-align:center;font-weight:700}
+
+.cwrap{position:relative;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-lg),0 0 0 1px var(--border);flex-shrink:0;display:inline-block;max-width:100%;touch-action:none;animation:fadeIn .3s ease}
+#mc{display:block;max-width:100%;height:auto;cursor:crosshair}
+#dotsContainer{position:absolute;inset:0;pointer-events:none}
+.fdot{position:absolute;width:16px;height:16px;border-radius:50%;border:2.5px solid #fff;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.5)}
+.fdot.name-dot{background:var(--accent);box-shadow:0 0 0 4px rgba(79,142,247,.28),0 2px 8px rgba(0,0,0,.5)}
+.fdot.pulsing{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.35)}}
+
+/* ── MOBILE STAT BOX ── */
+.stat-box{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);padding:2px 13px;margin-bottom:13px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border-bottom:none}
+.stat-key{font-size:11px;color:var(--txt3);font-weight:700}
+.stat-val{font-size:11px;font-weight:800}
+.stat-val.ok{color:var(--ok)}
+.stat-val.err{color:var(--err)}
+
+/* ── ZIP BANNER ── */
+.zip-banner{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(34,197,94,.04));border:1.5px solid rgba(34,197,94,.28);border-radius:var(--rs);padding:18px;text-align:center;margin-top:10px;animation:slideDown .3s ease}
+.zb-ico{font-size:32px;margin-bottom:8px}
+.zb-ttl{font-size:15px;font-weight:800;color:var(--ok);margin-bottom:4px}
+.zb-sub{font-size:11px;color:var(--txt2);margin-bottom:12px}
+.zb-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:var(--rs);background:var(--grad-ok);color:#fff;font-weight:800;font-size:13px;border:none;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(34,197,94,.28);transition:all var(--ease)}
+.zb-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(34,197,94,.38)}
+
+/* ── RESULT CARDS ── */
+.res-sec{width:100%;max-width:980px;animation:fadeIn .35s ease}
+.res-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.res-title{font-size:13px;font-weight:800;color:var(--txt2);display:flex;align-items:center;gap:8px}
+.res-badge{background:var(--accent);color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:800}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.res-card{background:var(--panel);border:1.5px solid var(--border);border-radius:var(--rs);overflow:hidden;display:flex;flex-direction:column;transition:border-color var(--ease),transform var(--ease),box-shadow var(--ease);animation:scaleIn .25s ease both}
+.res-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--sh-md)}
+.res-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--bg);border-bottom:1px solid var(--border);cursor:zoom-in;transition:filter var(--ease)}
+.res-card:hover .res-thumb{filter:brightness(1.05)}
+.res-pdf-ph{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:var(--bg);border-bottom:1px solid var(--border);font-size:36px}
+.res-body{padding:8px 10px;display:flex;flex-direction:column;gap:7px}
+.res-name{font-size:11px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res-dl{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border-radius:var(--rxs);border:none;cursor:pointer;background:var(--grad-a);color:#fff;font-size:10px;font-weight:800;font-family:inherit;transition:all var(--ease)}
+.res-dl:hover{opacity:.85;transform:scale(1.03)}
+.res-dl.done{background:var(--grad-ok)}
+
+/* ══════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════ */
+.modal-bg{position:fixed;inset:0;z-index:800;background:rgba(7,8,13,.75);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeIn .2s ease}
+[data-theme=light] .modal-bg{background:rgba(180,190,230,.7)}
+.modal{width:100%;max-width:540px;max-height:90vh;background:var(--card);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--sh-lg);animation:scaleIn .25s ease}
+.modal-hdr{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--panel)}
+.modal-title{font-size:14px;font-weight:800;color:var(--txt)}
+.modal-close{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);color:var(--txt2);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--ease)}
+.modal-close:hover{border-color:var(--err);color:var(--err)}
+.modal-body{flex:1;overflow-y:auto;padding:16px}
+.modal-footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0}
+.type-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.type-tab{padding:10px 8px;background:var(--bg);border:2px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:12px;font-weight:700;color:var(--txt2);display:flex;align-items:center;justify-content:center;gap:7px;transition:all var(--ease);outline:none;font-family:inherit}
+.type-tab.on{border-color:var(--accent);background:var(--ga);color:var(--accent)}
+.type-tab:hover:not(.on){border-color:var(--border2);color:var(--txt)}
+
+/* ── LIGHTBOX ── */
+.lbox{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);animation:fadeIn .2s ease}
+.lbox-img{max-width:100%;max-height:90vh;border-radius:var(--r);box-shadow:0 20px 60px rgba(0,0,0,.8);animation:scaleIn .25s ease}
+.lbox-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background var(--ease)}
+.lbox-close:hover{background:rgba(255,255,255,.2)}
+
+/* ── OVERLAY ── */
+.ov{position:fixed;inset:0;background:rgba(7,8,13,.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(10px);animation:fadeIn .2s ease}
+[data-theme=light] .ov{background:rgba(238,241,250,.9)}
+.ov-ring{width:50px;height:50px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite}
+.ov-ttl{font-size:15px;font-weight:800;color:var(--txt)}
+.ov-sub{font-size:11px;color:var(--txt2)}
+.ov-bar{width:230px}
+.ov-prog{background:var(--bg);border:1px solid var(--border);border-radius:20px;height:7px;overflow:hidden}
+.ov-fill{height:100%;width:0%;background:var(--grad-a);border-radius:20px;transition:width .35s ease}
+
+/* ── TOASTS ── */
+.toasts{position:fixed;top:calc(var(--hh) + 10px);left:50%;transform:translateX(-50%);z-index:9998;display:flex;flex-direction:column;gap:6px;pointer-events:none;width:max-content;max-width:min(90vw,360px)}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:9px 16px;font-size:12px;font-weight:700;box-shadow:var(--sh-md);display:flex;align-items:center;gap:8px;animation:tin .28s ease,tout .28s ease 2.7s forwards}
+.toast.ok{border-color:rgba(34,197,94,.38);color:var(--ok)}
+.toast.err{border-color:rgba(239,68,68,.38);color:var(--err)}
+.toast.in{border-color:rgba(79,142,247,.38);color:var(--accent)}
+
+/* ── MOBILE PANEL ── */
+.mob-panel{width:100%;max-width:460px}
+
+/* ── ANIMATIONS ── */
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+@keyframes tin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tout{to{opacity:0;transform:translateY(-8px)}}
+
+/* ══════════════════════════════════════════
+   DESKTOP
+══════════════════════════════════════════ */
+@media(min-width:769px){
+  .tab-bar{display:none!important}
+  .mob-only{display:none!important}
+  .sb{display:flex!important}
+  .main{display:flex!important}
+  .sb-group{display:flex!important}
+  #genPanel{display:none!important}
+  .res-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+}
+@media(min-width:769px) and (max-width:1100px){
+  :root{--sbw:272px}
+  .steps span{display:none}
+  .stp{padding:5px 8px}
+}
+
+/* ══════════════════════════════════════════
+   MOBILE
+══════════════════════════════════════════ */
+@media(max-width:768px){
+  :root{--hh:52px;--th:62px}
+  body{overflow:hidden}
+  .hdr{padding:0 13px}
+  .steps,.dsk-only{display:none!important}
+  .layout{flex-direction:column;height:calc(100vh - var(--hh) - var(--th));overflow:hidden}
+  .sb{width:100%;height:100%;border-left:none;padding:11px;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .sb.mob-on{display:flex}
+  .sb-group{display:none}
+  .sb-group.mob-on{display:flex}
+  .main{width:100%;height:100%;overflow-y:auto;padding:10px;-webkit-overflow-scrolling:touch;display:none}
+  .main.mob-on{display:flex}
+  #genPanel{width:100%}
+  .cwrap,#mc,.res-grid{max-width:100%}
+  .toolbar .tinfo{display:none}
+  .toolbar{justify-content:center}
+  .res-grid{grid-template-columns:repeat(2,1fr)}
+  .modal{max-height:92vh}
+  .g4{grid-template-columns:1fr 1fr}
+
+  .tab-bar{position:fixed;bottom:0;inset-inline:0;height:var(--th);z-index:700;background:var(--card);border-top:1px solid var(--border);display:flex;box-shadow:0 -4px 28px rgba(0,0,0,.3);transition:background var(--ease),border-color var(--ease)}
+  .ti{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:transparent;color:var(--txt3);padding:0 2px;position:relative;outline:none;transition:color var(--ease);font-family:inherit}
+  .ti.active{color:var(--accent)}
+  .ti::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2.5px;border-radius:0 0 4px 4px;background:transparent;transition:background var(--ease)}
+  .ti.active::before{background:var(--grad-a)}
+  .ti-bg{width:38px;height:27px;display:flex;align-items:center;justify-content:center;font-size:18px;border-radius:9px;transition:all var(--ease)}
+  .ti.active .ti-bg{background:linear-gradient(135deg,var(--ga),var(--gb));transform:translateY(-2px)}
+  .ti-lbl{font-size:8.5px;font-weight:800;letter-spacing:.2px;text-transform:uppercase}
+  .ti-dot{position:absolute;top:5px;left:calc(50% + 9px);width:7px;height:7px;border-radius:50%;background:var(--ok);display:none;box-shadow:0 0 0 2px var(--card);animation:scaleIn .3s ease}
+  .ti-dot.on{display:block}
+}
+</style>
+</head>
+<body data-theme="light">
+
+<!-- ══ HEADER ══ -->
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-ico">🎓</div>
+    <div class="logo-txt">
+      <span class="logo-t1">مولّد الشهادات</span>
+      <span class="logo-t2">Certificate Generator Pro</span>
+    </div>
+  </div>
+  <nav class="steps" id="stepsEl">
+    <div class="stp active" id="s1"><div class="sn">1</div><span>الصورة</span></div>
+    <div class="sdash"></div>
+    <div class="stp" id="s2"><div class="sn">2</div><span>العناصر</span></div>
+    <div class="sdash"></div>
+    <div class="stp" id="s3"><div class="sn">3</div><span>الأسماء</span></div>
+    <div class="sdash"></div>
+    <div class="stp" id="s4"><div class="sn">4</div><span>التصدير</span></div>
+  </nav>
+  <button class="th-btn" onclick="toggleTheme()" title="تبديل المظهر"><span id="thIco">☀️</span></button>
+</header>
+
+<!-- ══ LAYOUT ══ -->
+<div class="layout">
+
+  <!-- ════ SIDEBAR ════ -->
+  <aside class="sb mob-on" id="sbEl">
+
+    <!-- ── GROUP: SETTINGS ── -->
+    <div class="sb-group mob-on" id="grpSettings">
+
+      <!-- Image Upload -->
+      <section class="card">
+        <div class="ctitle"><div class="cico">🖼</div>صورة الشهادة</div>
+        <div class="uz" id="imgZone" onclick="document.getElementById('imgIn').click()">
+          <input type="file" id="imgIn" accept="image/*">
+          <span class="uico">📂</span>
+          <div class="utxt"><strong>اضغط لاختيار الصورة</strong>PNG · JPG · WEBP · اسحب وأفلت</div>
+        </div>
+        <div class="ibox" id="ibox" hidden>
+          <div class="irow"><span><b>الأبعاد:</b> <span id="imgDim">—</span></span><span><b>الصيغة:</b> <span id="imgFmt">—</span></span></div>
+          <div class="hint">⚡ التصدير بالجودة الأصلية الكاملة</div>
+        </div>
+      </section>
+
+      <!-- Name Field Settings -->
+      <section class="card">
+        <div class="ctitle"><div class="cico">✏️</div>عنصر الاسم <span class="main-badge">رئيسي</span></div>
+        <div class="field mb">
+          <label>نوع الخط</label>
+          <div class="sel-wrap">
+            <select id="ff" onchange="onFontChange()">
+              <optgroup label="── عربية حديثة">
+                <option value="'Tajawal',sans-serif">Tajawal — تجوال</option>
+                <option value="'Cairo',sans-serif">Cairo — القاهرة</option>
+                <option value="'Almarai',sans-serif">Almarai — المراعي</option>
+                <option value="'IBM Plex Sans Arabic',sans-serif">IBM Plex Arabic</option>
+              </optgroup>
+              <optgroup label="── كلاسيكية وفنية">
+                <option value="'Amiri',serif">Amiri — أميري</option>
+                <option value="'Aref Ruqaa',serif">Aref Ruqaa — رقعة</option>
+                <option value="'Reem Kufi',sans-serif">Reem Kufi — كوفي</option>
+                <option value="'Lateef',serif">Lateef — لطيف</option>
+              </optgroup>
+              <optgroup label="── أخرى">
+                <option value="'Traditional Arabic',serif">Traditional Arabic</option>
+                <option value="Arial,sans-serif">Arial</option>
+                <option value="'Times New Roman',serif">Times New Roman</option>
+                <option value="Georgia,serif">Georgia</option>
+              </optgroup>
+            </select>
+            <span class="sel-arrow">▼</span>
+          </div>
+          <div class="fpreview"><span id="fpTxt">أحمد بن علي — Ahmed Ali</span></div>
+        </div>
+        <div class="g2 mb">
+          <div class="field"><label>الحجم (px)</label><input type="number" id="fs" value="52" min="8" max="500" oninput="drawAll()"></div>
+          <div class="field"><label>اللون</label><input type="color" id="fc" value="#1a3a6e" oninput="drawAll()"></div>
+        </div>
+        <div class="field mb">
+          <label>تنسيق</label>
+          <div class="g3">
+            <button class="tb" id="bB" onclick="tog('bold')"><b>B عريض</b></button>
+            <button class="tb" id="bI" onclick="tog('italic')"><i>I مائل</i></button>
+            <button class="tb" id="bU" onclick="tog('underline')"><u>U تسطير</u></button>
+          </div>
+        </div>
+        <div class="field mb">
+          <label>محاذاة</label>
+          <div class="g3">
+            <button class="tb on" id="aC" onclick="aln('center')">⎄ وسط</button>
+            <button class="tb" id="aR" onclick="aln('right')">⇐ يمين</button>
+            <button class="tb" id="aL" onclick="aln('left')">يسار ⇒</button>
+          </div>
+        </div>
+        <div class="field mb">
+          <label>نص المعاينة</label>
+          <input type="text" id="smp" value="أحمد بن علي" placeholder="اكتب اسماً للمعاينة..." oninput="onSmpChange()">
+        </div>
+        <div class="dv"></div>
+        <div class="field">
+          <label>📍 موضع الاسم على الشهادة</label>
+          <p class="hint mb">اضغط على الشهادة لتحديد الموضع · اسحب النقطة للضبط · إصبعان للحجم</p>
+          <div class="cbox">
+            <span><span class="cl">X:</span> <output id="px">—</output></span>
+            <span><span class="cl">Y:</span> <output id="py">—</output></span>
+            <span><span class="cl">الحالة:</span> <output id="pst">لم يُحدد</output></span>
+          </div>
+          <div class="btn-row mt">
+            <button class="btn btn-s sm" onclick="resetPos()">🔄 إعادة ضبط</button>
+            <button class="btn btn-p sm dsk-only" onclick="switchMobTab('p')">👁 معاينة</button>
+            <button class="btn btn-p sm mob-only" onclick="switchMobTab('f')">الحقول الإضافية ←</button>
+          </div>
+        </div>
+      </section>
+    </div><!-- /grpSettings -->
+
+    <!-- ── GROUP: EXTRA FIELDS ── -->
+    <div class="sb-group" id="grpFields">
+      <section class="card">
+        <div class="ctitle"><div class="cico">➕</div>الحقول الإضافية</div>
+        <p class="hint mb">أضف عناصر نصية ثابتة (تاريخ، موسم...) أو متغيرة بقوائم مخصصة. لكل حقل خط ولون وموضع مستقل.</p>
+        <div id="fieldsList" class="fields-list"></div>
+        <button class="btn btn-p fw mt" onclick="openFieldModal()">➕ إضافة حقل جديد</button>
+        <button class="btn btn-p sm fw mob-only mt" onclick="switchMobTab('n')">الأسماء ←</button>
+      </section>
+    </div><!-- /grpFields -->
+
+    <!-- ── GROUP: NAMES ── -->
+    <div class="sb-group" id="grpNames">
+      <section class="card">
+        <div class="ctitle"><div class="cico">👥</div>قائمة الأسماء</div>
+        <div class="uz" id="jsonZone" onclick="document.getElementById('jsonIn').click()">
+          <input type="file" id="jsonIn" accept=".json,.txt">
+          <span class="uico">📋</span>
+          <div class="utxt"><strong>رفع ملف JSON أو TXT</strong>[{"name":"Ahmed","date":"2024"},...] · أو سطر لكل اسم</div>
+        </div>
+        <div id="namesBadge" hidden><div class="badge mt">✅ <span id="nCount">0</span> اسم محمّل</div></div>
+        <div class="dv"></div>
+        <div class="field">
+          <label>أو أدخل يدوياً (سطر لكل اسم)</label>
+          <textarea id="manual" placeholder="أحمد محمد&#10;سارة علي&#10;خالد عمر&#10;فاطمة حسن" oninput="onManual()" rows="5"></textarea>
+        </div>
+        <div class="tip-box mt">
+          <b>💡 صيغة JSON مع حقول متغيرة</b>
+          <code>[{"name":"أحمد","date":"2025/01/15","season":"الدورة الأولى"}]</code>
+        </div>
+        <button class="btn btn-p fw mob-only mt" onclick="switchMobTab('x')">التصدير ⚡</button>
+      </section>
+    </div><!-- /grpNames -->
+
+    <!-- ── DESKTOP EXPORT ── -->
+    <section class="card dsk-only" id="dskExport">
+      <div class="ctitle"><div class="cico">📦</div>التصدير</div>
+      <div class="field mb">
+        <label>صيغة الملف</label>
+        <div class="fmt-row">
+          <button class="fmt-btn on" id="ePNG" onclick="setFmt('png')">🖼 PNG</button>
+          <button class="fmt-btn" id="ePDF" onclick="setFmt('pdf')">📄 PDF</button>
+        </div>
+      </div>
+      <div class="field mb">
+        <label>طريقة التحميل</label>
+        <div class="xmodes">
+          <button class="xmode on" id="xmZip" onclick="setMode('zip')">
+            <span class="xm-ico">🗜</span><span class="xm-lbl">ZIP واحد</span>
+            <span class="xm-sub">كل الشهادات في ملف ضغط</span>
+          </button>
+          <button class="xmode" id="xmIndv" onclick="setMode('indv')">
+            <span class="xm-ico">🗂</span><span class="xm-lbl">بطاقات فردية</span>
+            <span class="xm-sub">زر تحميل لكل شهادة</span>
+          </button>
+        </div>
+      </div>
+      <div class="prog-wrap" id="dskProg" hidden>
+        <div class="prog-bg"><div class="prog-fill" id="dPFill"></div></div>
+        <div class="prog-lbl" id="dPLbl">جاري...</div>
+      </div>
+      <button class="btn btn-g fw" id="btnGen" onclick="generate()" disabled>⚡ توليد الشهادات</button>
+    </section>
+
+  </aside>
+
+  <!-- ════ MAIN ════ -->
+  <main class="main" id="mainEl">
+
+    <div class="empty" id="emptyEl">
+      <div class="empty-ico">🎓</div>
+      <h2 class="empty-ttl">ارفع صورة الشهادة للبدء</h2>
+      <p class="empty-sub">اختر الصورة، أعدّ العناصر النصية، حدّد الأسماء ثم صدّر.</p>
+    </div>
+
+    <div class="toolbar" id="toolbarEl" hidden>
+      <div class="tinfo">
+        <span id="dimLbl">—</span>
+        <span id="zoomLbl">—</span>
+        <span id="modeLbl" class="mode-lbl">▶ اضغط لتحديد الموضع</span>
+      </div>
+      <div class="tnav" id="navEl" hidden>
+        <button class="btn btn-s sm" onclick="nav(-1)">← السابق</button>
+        <output class="tnav-lbl" id="navLbl">1 / 1</output>
+        <button class="btn btn-s sm" onclick="nav(1)">التالي →</button>
+      </div>
+    </div>
+
+    <div class="cwrap" id="cwrapEl" hidden>
+      <canvas id="mc"></canvas>
+      <div id="dotsContainer"></div>
+    </div>
+
+    <!-- Mobile Export Panel -->
+    <div id="genPanel" class="mob-panel" hidden>
+      <div class="card">
+        <div class="ctitle"><div class="cico">⚡</div>التصدير</div>
+        <div class="stat-box">
+          <div class="stat-row"><span class="stat-key">📷 الصورة</span><span class="stat-val err" id="mS1">غير محمّلة</span></div>
+          <div class="stat-row"><span class="stat-key">📍 موضع الاسم</span><span class="stat-val err" id="mS2">لم يُحدد</span></div>
+          <div class="stat-row"><span class="stat-key">👥 الأسماء</span><span class="stat-val err" id="mS3">لا يوجد</span></div>
+          <div class="stat-row"><span class="stat-key">➕ الحقول الإضافية</span><span class="stat-val ok" id="mS4">0 حقل</span></div>
+        </div>
+        <div class="field mb">
+          <label>صيغة الملف</label>
+          <div class="fmt-row">
+            <button class="fmt-btn on" id="mePNG" onclick="setFmt('png')">🖼 PNG</button>
+            <button class="fmt-btn" id="mePDF" onclick="setFmt('pdf')">📄 PDF</button>
+          </div>
+        </div>
+        <div class="field mb">
+          <label>طريقة التحميل</label>
+          <div class="xmodes">
+            <button class="xmode on" id="mxmZip" onclick="setMode('zip')"><span class="xm-ico">🗜</span><span class="xm-lbl">ZIP واحد</span><span class="xm-sub">ملف ضغط واحد يحتوي الكل</span></button>
+            <button class="xmode" id="mxmIndv" onclick="setMode('indv')"><span class="xm-ico">🗂</span><span class="xm-lbl">بطاقات فردية</span><span class="xm-sub">تحميل كل شهادة بزر منفصل</span></button>
+          </div>
+        </div>
+        <div class="prog-wrap" id="mobProg" hidden>
+          <div class="prog-bg"><div class="prog-fill" id="mPFill"></div></div>
+          <div class="prog-lbl" id="mPLbl">جاري...</div>
+        </div>
+        <button class="btn btn-g fw lg" id="mbtnGen" onclick="generate()" disabled>⚡ توليد الشهادات</button>
+        <div class="zip-banner" id="zipBanner" hidden>
+          <div class="zb-ico">🎉</div>
+          <div class="zb-ttl">الشهادات جاهزة!</div>
+          <div class="zb-sub" id="zBSub"></div>
+          <button class="zb-btn" id="zBBtn">⬇️ تحميل ZIP</button>
+        </div>
+        <div class="tip-box mt"><b>📱 تلميح</b><span id="mobHint">ZIP = ملف واحد لا يُحجَب · بطاقات = كل شهادة بزر</span></div>
+      </div>
+    </div>
+
+    <!-- Result Cards -->
+    <section class="res-sec" id="resSec" hidden>
+      <div class="res-hdr">
+        <h3 class="res-title">🎓 الشهادات جاهزة <span class="res-badge" id="resCount">0</span></h3>
+        <button class="btn btn-s sm" onclick="closeRes()">✕ إغلاق</button>
+      </div>
+      <div class="res-grid" id="resGrid"></div>
+    </section>
+
+  </main>
+</div><!-- /layout -->
+
+<!-- ══ FIELD MODAL ══ -->
+<div class="modal-bg" id="modalBg" hidden onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 class="modal-title" id="modalTitle">إضافة حقل جديد</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="field mb">
+        <label>اسم الحقل <span class="hint-inline">(يظهر في الواجهة)</span></label>
+        <input type="text" id="mfLabel" placeholder="مثال: التاريخ · اسم الموسم · المدينة">
+      </div>
+
+      <div class="field mb">
+        <label>مفتاح JSON <span class="hint-inline">(للربط بملف الأسماء)</span></label>
+        <input type="text" id="mfKey" placeholder="مثال: date · season · city" dir="ltr" style="direction:ltr;text-align:left">
+      </div>
+
+      <div class="field mb">
+        <label>نوع الحقل</label>
+        <div class="type-tabs">
+          <button class="type-tab on" id="ttFixed" onclick="setFT('fixed')">📌 ثابت للجميع</button>
+          <button class="type-tab" id="ttVar" onclick="setFT('variable')">📋 متغير بقائمة</button>
+        </div>
+      </div>
+
+      <div id="blockFixed" class="field mb">
+        <label>القيمة الثابتة</label>
+        <input type="text" id="mfFixed" placeholder="مثال: 2024/2025 · الدورة الأولى · قسنطينة">
+      </div>
+
+      <div id="blockVar" class="field mb" hidden>
+        <label>قائمة القيم <span class="hint-inline">(سطر لكل قيمة — بنفس ترتيب الأسماء)</span></label>
+        <textarea id="mfVarList" placeholder="2025/01/15&#10;2025/02/20&#10;2025/03/10" rows="4"></textarea>
+        <div class="hint mt">عدد القيم يساوي عدد الأسماء، أو قيمة واحدة تُطبَّق للجميع.</div>
+      </div>
+
+      <div class="dv"></div>
+
+      <div class="field mb">
+        <label>نوع الخط</label>
+        <div class="sel-wrap">
+          <select id="mfFont">
+            <optgroup label="── عربية حديثة">
+              <option value="'Tajawal',sans-serif">Tajawal — تجوال</option>
+              <option value="'Cairo',sans-serif">Cairo — القاهرة</option>
+              <option value="'Almarai',sans-serif">Almarai — المراعي</option>
+              <option value="'IBM Plex Sans Arabic',sans-serif">IBM Plex Arabic</option>
+            </optgroup>
+            <optgroup label="── كلاسيكية وفنية">
+              <option value="'Amiri',serif">Amiri — أميري</option>
+              <option value="'Aref Ruqaa',serif">Aref Ruqaa — رقعة</option>
+              <option value="'Reem Kufi',sans-serif">Reem Kufi — كوفي</option>
+              <option value="'Lateef',serif">Lateef — لطيف</option>
+            </optgroup>
+            <optgroup label="── أخرى">
+              <option value="'Traditional Arabic',serif">Traditional Arabic</option>
+              <option value="Arial,sans-serif">Arial</option>
+              <option value="'Times New Roman',serif">Times New Roman</option>
+              <option value="Georgia,serif">Georgia</option>
+            </optgroup>
+          </select>
+          <span class="sel-arrow">▼</span>
+        </div>
+      </div>
+
+      <div class="g4 mb">
+        <div class="field"><label>الحجم (px)</label><input type="number" id="mfSize" value="36" min="6" max="400"></div>
+        <div class="field"><label>اللون</label><input type="color" id="mfColor" value="#1a3a6e"></div>
+        <div class="field">
+          <label>محاذاة</label>
+          <div class="sel-wrap">
+            <select id="mfAlign">
+              <option value="center">وسط</option>
+              <option value="right">يمين</option>
+              <option value="left">يسار</option>
+            </select>
+            <span class="sel-arrow">▼</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>تنسيق</label>
+          <div style="display:flex;gap:4px">
+            <button class="tb" id="mfBold" onclick="this.classList.toggle('on')" style="flex:1;padding:6px 4px"><b>B</b></button>
+            <button class="tb" id="mfItalic" onclick="this.classList.toggle('on')" style="flex:1;padding:6px 4px"><i>I</i></button>
+            <button class="tb" id="mfUnder" onclick="this.classList.toggle('on')" style="flex:1;padding:6px 4px"><u>U</u></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <b>📍 تحديد الموضع</b>
+        بعد الحفظ اضغط "تحديد الموضع" في بطاقة الحقل، ثم اضغط على موضع النص في الشهادة.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-s" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-g" onclick="saveField()">💾 حفظ الحقل</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIGHTBOX ══ -->
+<div class="lbox" id="lbox" hidden onclick="if(event.target===this)closeLbox()">
+  <button class="lbox-close" onclick="closeLbox()">✕</button>
+  <img class="lbox-img" id="lboxImg" src="" alt="">
+</div>
+
+<!-- ══ MOBILE TAB BAR ══ -->
+<nav class="tab-bar">
+  <button class="ti active" id="ti-s" onclick="switchMobTab('s')"><div class="ti-bg">⚙️</div><div class="ti-lbl">إعدادات</div></button>
+  <button class="ti" id="ti-f" onclick="switchMobTab('f')"><div class="ti-bg">➕</div><div class="ti-lbl">حقول</div></button>
+  <button class="ti" id="ti-n" onclick="switchMobTab('n')"><div class="ti-bg">👥</div><div class="ti-lbl">أسماء</div></button>
+  <button class="ti" id="ti-p" onclick="switchMobTab('p')"><div class="ti-bg">🖼</div><div class="ti-lbl">معاينة</div></button>
+  <button class="ti" id="ti-x" onclick="switchMobTab('x')"><div class="ti-bg">⚡</div><div class="ti-lbl">تصدير</div><div class="ti-dot" id="rdot"></div></button>
+</nav>
+
+<!-- ══ OVERLAY ══ -->
+<div class="ov" id="ovEl" hidden>
+  <div class="ov-ring"></div>
+  <div class="ov-ttl" id="ovTtl">جاري المعالجة...</div>
+  <div class="ov-sub" id="ovSub"></div>
+  <div class="ov-bar"><div class="ov-prog"><div class="ov-fill" id="ovFill"></div></div></div>
+</div>
+<div class="toasts" id="toastsEl"></div>
+
+<!-- ══ LIBS ══ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+'use strict';
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+const S={
+  img:null,iw:0,ih:0,scale:1,
+  tx:null,ty:null,
+  drag:false,dragTarget:null,dox:0,doy:0,
+  pinchDist:null,startFs:52,
+  bold:false,italic:false,underline:false,align:'center',
+  names:[],idx:0,
+  fields:[],      /* { id,label,key,type,fixed,values,font,size,color,align,bold,italic,underline,tx,ty,color } */
+  placing:null,   /* id of field being placed, or 'name' */
+  fmt:'png',mode:'zip',
+  lastZip:null,indvBlobs:[],
+  theme:'light'
+};
+let editId=null,ftype='fixed',fcnt=0;
+const PALETTE=['#e84393','#f97316','#22c55e','#a855f7','#06b6d4','#ef4444','#84cc16','#f59e0b','#10b981','#3b82f6'];
+const $=id=>document.getElementById(id);
+const mc=$('mc'), ctx=mc.getContext('2d',{alpha:false});
+const dotsC=$('dotsContainer');
+const mainEl=$('mainEl'), sbEl=$('sbEl');
+const isMob=()=>window.innerWidth<=768;
+const tick=()=>new Promise(r=>setTimeout(r,0));
+const safe=n=>n.replace(/[<>:"/\\|?*\x00-\x1f]/g,'_').substring(0,80);
+const clamp=(v,a,b)=>Math.max(a,Math.min(v,b));
+const uid=()=>`f${++fcnt}_${Date.now()}`;
+
+/* ── TOAST ── */
+function toast(msg,type='in'){
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.textContent=({ok:'✅',err:'❌',in:'ℹ️'}[type]||'ℹ️')+' '+msg;
+  $('toastsEl').appendChild(el);
+  setTimeout(()=>el.remove(),3200);
+}
+
+/* ── THEME ── */
+function toggleTheme(){
+  S.theme=S.theme==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme',S.theme);
+  $('thIco').textContent=S.theme==='dark'?'🌙':'☀️';
+}
+
+/* ── MOBILE TABS ── */
+function switchMobTab(t){
+  if(!isMob())return;
+  ['s','f','n','p','x'].forEach(x=>$(`ti-${x}`)?.classList.toggle('active',x===t));
+  const inSb=['s','f','n'].includes(t);
+  sbEl.classList.toggle('mob-on',inSb);
+  mainEl.classList.toggle('mob-on',!inSb);
+  $('grpSettings').classList.toggle('mob-on',t==='s');
+  $('grpFields').classList.toggle('mob-on',t==='f');
+  $('grpNames').classList.toggle('mob-on',t==='n');
+  const gp=$('genPanel'),cw=$('cwrapEl'),tb=$('toolbarEl'),em=$('emptyEl'),rs=$('resSec');
+  if(t==='p'){
+    if(gp)gp.hidden=true;
+    cw.hidden=!S.img; tb.hidden=!S.img; em.hidden=!!S.img;
+    if(rs)rs.style.display=rs.classList.contains('show')?'block':'none';
+  }else if(t==='x'){
+    cw.hidden=true;tb.hidden=true;em.hidden=true;
+    if(gp)gp.hidden=false;
+    if(rs)rs.style.display='none';
+    refreshMobStats();
+  }else{
+    if(gp)gp.hidden=true;
+  }
+}
+
+function refreshMobStats(){
+  const sv=(id,txt,ok)=>{const e=$(id);if(e){e.textContent=txt;e.className=`stat-val ${ok?'ok':'err'}`}};
+  sv('mS1',S.img?'محمّلة ✓':'غير محمّلة ✗',!!S.img);
+  sv('mS2',S.tx!==null?'محدد ✓':'لم يُحدد ✗',S.tx!==null);
+  sv('mS3',S.names.length?`${S.names.length} اسم ✓`:'لا يوجد ✗',S.names.length>0);
+  const e4=$('mS4');
+  if(e4){const pl=S.fields.filter(f=>f.tx!==null).length;e4.textContent=`${S.fields.length} حقل (${pl} محدد)`;e4.className='stat-val ok'}
+  const h=$('mobHint');
+  if(h){
+    const r=S.img&&S.tx!==null&&S.names.length>0;
+    h.textContent=r?`✅ ${S.names.length} شهادة · ${S.fields.length} حقل إضافي · ${S.mode==='zip'?'ZIP':'بطاقات'} · ${S.fmt.toUpperCase()}`
+      :`⚠️ ناقص: ${[!S.img&&'صورة',S.tx===null&&'موضع',!S.names.length&&'أسماء'].filter(Boolean).join(' · ')}`;
+  }
+}
+
+/* ══ IMAGE UPLOAD ══ */
+(function(){
+  const z=$('imgZone');
+  $('imgIn').addEventListener('change',e=>e.target.files[0]&&loadImg(e.target.files[0]));
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over')});
+  z.addEventListener('dragenter',e=>{e.preventDefault();z.classList.add('over')});
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over');const f=e.dataTransfer.files[0];if(f?.type.startsWith('image/'))loadImg(f)});
+})();
+
+function loadImg(file){
+  toast('جاري تحميل الصورة...','in');
+  const rd=new FileReader();
+  rd.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      S.img=img;S.iw=img.naturalWidth;S.ih=img.naturalHeight;
+      $('ibox').hidden=false;
+      $('imgDim').textContent=`${S.iw} × ${S.ih}`;
+      $('imgFmt').textContent=file.name.split('.').pop().toUpperCase();
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        fitCanvas();setStep(2);
+        toast('تم تحميل الصورة ✅','ok');
+        if(isMob())setTimeout(()=>switchMobTab('p'),300);
+      }));
+    };
+    img.onerror=()=>toast('فشل تحميل الصورة!','err');
+    img.src=ev.target.result;
+  };
+  rd.readAsDataURL(file);
+}
+
+/* ══ FIT CANVAS ══ */
+function fitCanvas(){
+  if(!S.img)return;
+  const mob=isMob();
+  const aw=mainEl.clientWidth||window.innerWidth;
+  const hh=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hh'))||56;
+  const th=mob?(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--th'))||62):0;
+  const maxW=Math.max(aw-(mob?14:80),80);
+  const maxH=Math.max((window.innerHeight-hh-th)*(mob?.55:.72),160);
+  S.scale=clamp(Math.min(maxW/S.iw,maxH/S.ih,1),.01,4);
+  mc.width=Math.round(S.iw*S.scale);mc.height=Math.round(S.ih*S.scale);
+  $('dimLbl').textContent=`${S.iw} × ${S.ih} px`;
+  $('zoomLbl').textContent=`${Math.round(S.scale*100)}%`;
+  $('emptyEl').hidden=true;$('toolbarEl').hidden=false;$('cwrapEl').hidden=false;
+  drawAll();renderDots();
+}
+
+/* ══ DRAW ══ */
+function drawAll(nameOvr){
+  if(!S.img)return;
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  ctx.drawImage(S.img,0,0,mc.width,mc.height);
+  /* name */
+  if(S.tx!==null){
+    const nm=nameOvr!==undefined?nameOvr:(S.names.length?S.names[S.idx]:($('smp').value||'اسم المشارك'));
+    drawTxt(ctx,nm,S.tx,S.ty,{font:$('ff').value,size:parseInt($('fs').value)||52,color:$('fc').value,bold:S.bold,italic:S.italic,underline:S.underline,align:S.align});
+  }
+  /* extra fields */
+  for(const f of S.fields){
+    if(f.tx===null)continue;
+    const val=fieldVal(f,S.idx);
+    if(!val)continue;
+    drawTxt(ctx,val,f.tx,f.ty,f);
+  }
+}
+
+function drawTxt(cx,text,tx,ty,s){
+  const sc=S.scale,sz=Math.max(1,Math.round(s.size*sc)),dx=Math.round(tx*sc),dy=Math.round(ty*sc);
+  cx.save();
+  cx.font=`${s.italic?'italic':'normal'} ${s.bold?'bold':'normal'} ${sz}px ${s.font}`;
+  cx.fillStyle=s.color;cx.textAlign=s.align;cx.textBaseline='middle';
+  if(s.underline){
+    const w=cx.measureText(text).width;
+    const sx=s.align==='center'?dx-w/2:s.align==='right'?dx-w:dx;
+    cx.strokeStyle=s.color;cx.lineWidth=Math.max(1,sz*.05);
+    cx.beginPath();cx.moveTo(sx,dy+sz*.56);cx.lineTo(sx+w,dy+sz*.56);cx.stroke();
+  }
+  cx.fillText(text,dx,dy);cx.restore();
+}
+
+function fieldVal(f,idx){
+  if(f.type==='fixed')return f.fixed;
+  if(!f.values.length)return '';
+  return f.values[idx]??f.values[0]??'';
+}
+
+/* ══ DOTS ══ */
+function renderDots(){
+  dotsC.innerHTML='';
+  if(S.tx!==null){
+    const d=mkDot(S.tx*S.scale,S.ty*S.scale,'var(--accent)','name-dot');
+    dotsC.appendChild(d);
+  }
+  S.fields.forEach(f=>{
+    if(f.tx===null)return;
+    const pulsing=S.placing===f.id;
+    const d=mkDot(f.tx*S.scale,f.ty*S.scale,f.color,pulsing?'pulsing':'');
+    dotsC.appendChild(d);
+  });
+}
+function mkDot(cx,cy,color,cls=''){
+  const d=document.createElement('div');
+  d.className=`fdot ${cls}`.trim();
+  d.style.cssText=`left:${cx}px;top:${cy}px;background:${color}`;
+  return d;
+}
+
+/* ══ CANVAS INTERACTION ══ */
+function handleStart(mx,my){
+  if(!S.img)return;
+  /* placing mode */
+  if(S.placing){
+    const id=S.placing;
+    if(id==='name'){
+      setNamePos(mx/S.scale,my/S.scale);
+    }else{
+      const f=S.fields.find(x=>x.id===id);
+      if(f){f.tx=clamp(mx/S.scale,0,S.iw);f.ty=clamp(my/S.scale,0,S.ih);}
+      toast(`تم تحديد موضع "${f?.label}" ✅`,'ok');
+    }
+    stopPlacing();
+    drawAll();renderDots();checkReady();
+    return;
+  }
+  /* try drag name dot */
+  if(S.tx!==null){
+    const px=S.tx*S.scale,py=S.ty*S.scale,hit=isMob()?60:30;
+    if(Math.abs(mx-px)<hit&&Math.abs(my-py)<hit){S.drag=true;S.dragTarget='name';S.dox=mx-px;S.doy=my-py;mc.style.cursor='grabbing';return;}
+  }
+  /* try drag field dots */
+  for(const f of S.fields){
+    if(f.tx===null)continue;
+    const px=f.tx*S.scale,py=f.ty*S.scale,hit=isMob()?60:30;
+    if(Math.abs(mx-px)<hit&&Math.abs(my-py)<hit){S.drag=true;S.dragTarget=f.id;S.dox=mx-px;S.doy=my-py;mc.style.cursor='grabbing';return;}
+  }
+  /* set name position */
+  setNamePos(mx/S.scale,my/S.scale);
+}
+
+function handleMove(mx,my){
+  if(!S.drag)return;
+  if(S.dragTarget==='name'){
+    setNamePos((mx-S.dox)/S.scale,(my-S.doy)/S.scale);
+  }else{
+    const f=S.fields.find(x=>x.id===S.dragTarget);
+    if(f){f.tx=clamp((mx-S.dox)/S.scale,0,S.iw);f.ty=clamp((my-S.doy)/S.scale,0,S.ih);}
+    drawAll();renderDots();
+  }
+}
+
+function pDist(t1,t2){return Math.hypot(t1.clientX-t2.clientX,t1.clientY-t2.clientY)}
+
+mc.addEventListener('mousedown',e=>{e.preventDefault();const r=mc.getBoundingClientRect();handleStart(e.clientX-r.left,e.clientY-r.top)});
+mc.addEventListener('mousemove',e=>{const r=mc.getBoundingClientRect();handleMove(e.clientX-r.left,e.clientY-r.top)});
+mc.addEventListener('mouseup',()=>{S.drag=false;S.dragTarget=null;mc.style.cursor='crosshair'});
+mc.addEventListener('mouseleave',()=>{S.drag=false;S.dragTarget=null;mc.style.cursor='crosshair'});
+mc.addEventListener('touchstart',e=>{
+  e.preventDefault();const r=mc.getBoundingClientRect();
+  if(e.touches.length===1)handleStart(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);
+  else if(e.touches.length===2){S.pinchDist=pDist(e.touches[0],e.touches[1]);S.startFs=parseInt($('fs').value)||52}
+},{passive:false});
+mc.addEventListener('touchmove',e=>{
+  e.preventDefault();const r=mc.getBoundingClientRect();
+  if(e.touches.length===1)handleMove(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);
+  else if(e.touches.length===2&&S.pinchDist){const nd=pDist(e.touches[0],e.touches[1]);$('fs').value=clamp(Math.round(S.startFs*nd/S.pinchDist),8,500);drawAll()}
+},{passive:false});
+mc.addEventListener('touchend',e=>{if(e.touches.length<2)S.pinchDist=null;if(e.touches.length===0){S.drag=false;S.dragTarget=null}});
+
+function setNamePos(x,y){
+  S.tx=clamp(x,0,S.iw);S.ty=clamp(y,0,S.ih);
+  $('px').value=Math.round(S.tx);$('py').value=Math.round(S.ty);$('pst').value='محدد ✓';
+  $('modeLbl').textContent='✓ محدد — اسحب للتعديل · إصبعان للحجم';
+  $('modeLbl').style.color='var(--ok)';
+  checkReady();drawAll();renderDots();
+}
+function resetPos(){
+  S.tx=S.ty=null;
+  $('px').value='—';$('py').value='—';$('pst').value='لم يُحدد';
+  $('modeLbl').textContent='▶ اضغط لتحديد الموضع';$('modeLbl').style.color='';
+  checkReady();drawAll();renderDots();
+}
+
+/* ══ TEXT CONTROLS ══ */
+function tog(k){S[k]=!S[k];const m={bold:'bB',italic:'bI',underline:'bU'};$(m[k]).classList.toggle('on',S[k]);drawAll()}
+function aln(a){S.align=a;[['C','center'],['R','right'],['L','left']].forEach(([x,v])=>$(`a${x}`).classList.toggle('on',v===a));drawAll()}
+function onFontChange(){const ff=$('ff').value;$('fpTxt').style.fontFamily=ff;$('fpTxt').textContent=$('smp').value||'أحمد بن علي — Ahmed Ali';drawAll()}
+function onSmpChange(){$('fpTxt').textContent=$('smp').value||'أحمد بن علي — Ahmed Ali';drawAll()}
+
+/* ══ NAMES ══ */
+(function(){
+  const z=$('jsonZone');
+  $('jsonIn').addEventListener('change',e=>e.target.files[0]&&readFile(e.target.files[0]));
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over')});
+  z.addEventListener('dragenter',e=>{e.preventDefault();z.classList.add('over')});
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over');e.dataTransfer.files[0]&&readFile(e.dataTransfer.files[0])});
+})();
+
+function readFile(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    const txt=e.target.result.trim();
+    try{
+      const d=JSON.parse(txt);
+      if(!Array.isArray(d))throw 0;
+      S.names=d.map(x=>x.name||x.Name||String(x)).filter(Boolean);
+      /* sync variable fields */
+      S.fields.forEach(f=>{
+        if(f.type!=='variable'||!f.key)return;
+        const vals=d.map(row=>String(row[f.key]??'')).filter(Boolean);
+        if(vals.length){f.values=vals;toast(`ربط "${f.label}" بـ ${vals.length} قيمة`,'ok')}
+      });
+    }catch{S.names=txt.split('\n').map(l=>l.trim()).filter(Boolean)}
+    refreshNames();toast(`${S.names.length} اسم محمّل ✅`,'ok');
+  };
+  r.onerror=()=>toast('فشل قراءة الملف!','err');
+  r.readAsText(file);
+}
+function onManual(){S.names=$('manual').value.split('\n').map(l=>l.trim()).filter(Boolean);refreshNames()}
+function refreshNames(){
+  const n=S.names.length;
+  $('nCount').textContent=n;$('namesBadge').hidden=n===0;$('navEl').hidden=n<=1;
+  S.idx=0;updateNav();checkReady();
+  if(n&&S.img)drawAll(S.names[0]);
+}
+function nav(d){if(!S.names.length)return;S.idx=(S.idx+d+S.names.length)%S.names.length;updateNav();drawAll(S.names[S.idx])}
+function updateNav(){$('navLbl').value=`${S.idx+1} / ${S.names.length}`}
+
+/* ══ FORMAT & MODE ══ */
+function setFmt(f){S.fmt=f;['ePNG','ePDF','mePNG','mePDF'].forEach(id=>$(id)?.classList.toggle('on',id.toLowerCase().includes(f)))}
+function setMode(m){S.mode=m;['xmZip','xmIndv','mxmZip','mxmIndv'].forEach(id=>$(id)?.classList.toggle('on',id.toLowerCase().includes(m)));refreshMobStats()}
+
+/* ══ READY ══ */
+function checkReady(){
+  const ok=!!(S.img&&S.names.length>0&&S.tx!==null);
+  ['btnGen','mbtnGen'].forEach(id=>{const e=$(id);if(e)e.disabled=!ok});
+  $('rdot')?.classList.toggle('on',ok);
+  if(S.img)setStep(2);if(S.names.length)setStep(3);if(ok)setStep(4);
+}
+
+/* ══════════════════════════════════════════
+   EXTRA FIELDS
+══════════════════════════════════════════ */
+/* ── Modal ── */
+function openFieldModal(id=null){
+  editId=id;
+  $('modalTitle').textContent=id?'تعديل الحقل':'إضافة حقل جديد';
+  if(id){
+    const f=S.fields.find(x=>x.id===id);
+    $('mfLabel').value=f.label;$('mfKey').value=f.key;
+    $('mfFixed').value=f.fixed;$('mfVarList').value=f.values.join('\n');
+    $('mfFont').value=f.font;$('mfSize').value=f.size;
+    $('mfColor').value=f.color;$('mfAlign').value=f.align;
+    $('mfBold').classList.toggle('on',f.bold);
+    $('mfItalic').classList.toggle('on',f.italic);
+    $('mfUnder').classList.toggle('on',f.underline);
+    setFT(f.type);
+  }else{
+    $('mfLabel').value='';$('mfKey').value='';$('mfFixed').value='';$('mfVarList').value='';
+    $('mfFont').value="'Tajawal',sans-serif";$('mfSize').value=36;
+    $('mfColor').value='#1a3a6e';$('mfAlign').value='center';
+    $('mfBold').classList.remove('on');$('mfItalic').classList.remove('on');$('mfUnder').classList.remove('on');
+    setFT('fixed');
+  }
+  $('modalBg').hidden=false;
+  setTimeout(()=>$('mfLabel').focus(),50);
+}
+function closeModal(){$('modalBg').hidden=true;editId=null}
+function setFT(t){
+  ftype=t;
+  $('ttFixed').classList.toggle('on',t==='fixed');
+  $('ttVar').classList.toggle('on',t==='variable');
+  $('blockFixed').hidden=t!=='fixed';
+  $('blockVar').hidden=t!=='variable';
+}
+function saveField(){
+  const label=$('mfLabel').value.trim();
+  if(!label){toast('أدخل اسم الحقل','err');return}
+  const data={
+    label,
+    key:$('mfKey').value.trim()||label.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,''),
+    type:ftype,
+    fixed:$('mfFixed').value.trim(),
+    values:$('mfVarList').value.split('\n').map(l=>l.trim()).filter(Boolean),
+    font:$('mfFont').value,
+    size:parseInt($('mfSize').value)||36,
+    color:$('mfColor').value,
+    align:$('mfAlign').value,
+    bold:$('mfBold').classList.contains('on'),
+    italic:$('mfItalic').classList.contains('on'),
+    underline:$('mfUnder').classList.contains('on'),
+  };
+  if(editId){
+    const f=S.fields.find(x=>x.id===editId);
+    if(f)Object.assign(f,data);
+    toast('تم تحديث الحقل ✅','ok');
+  }else{
+    data.id=uid();data.tx=null;data.ty=null;
+    data.color=data.color||PALETTE[S.fields.length%PALETTE.length];
+    S.fields.push(data);
+    toast(`تم إضافة "${label}" — حدّد موضعه على الشهادة`,'ok');
+    closeModal();
+    renderFieldsList();drawAll();renderDots();checkReady();
+    startPlacing(data.id);
+    if(isMob())switchMobTab('p');
+    return;
+  }
+  closeModal();renderFieldsList();drawAll();renderDots();checkReady();
+}
+
+/* ── Placing ── */
+function startPlacing(id){
+  S.placing=id;
+  const f=S.fields.find(x=>x.id===id);
+  const lbl=f?`📍 اضغط على الشهادة لتحديد موضع "${f.label}"`:'📍 اضغط على الشهادة';
+  $('modeLbl').textContent=lbl;
+  $('modeLbl').style.color='var(--gold)';
+  $('cwrapEl').hidden=false;$('emptyEl').hidden=true;
+  renderFieldsList();
+}
+function stopPlacing(){
+  S.placing=null;
+  $('modeLbl').textContent=S.tx!==null?'✓ محدد — اسحب للتعديل · إصبعان للحجم':'▶ اضغط لتحديد الموضع';
+  $('modeLbl').style.color=S.tx!==null?'var(--ok)':'';
+  renderFieldsList();
+}
+function togglePlace(id){
+  if(S.placing===id)stopPlacing();else startPlacing(id);
+}
+
+/* ── Render Fields List ── */
+function renderFieldsList(){
+  const list=$('fieldsList');list.innerHTML='';
+  if(!S.fields.length){
+    list.innerHTML=`<div class="fields-empty"><div class="fields-empty-ico">➕</div>لا توجد حقول إضافية بعد.<br>اضغط "إضافة حقل جديد" للبدء.</div>`;
+    return;
+  }
+  S.fields.forEach((f,i)=>{
+    const isPlacing=S.placing===f.id;
+    const placed=f.tx!==null;
+    const preview=f.type==='fixed'?(f.fixed||'—'):(f.values[0]?`${f.values[0]}${f.values.length>1?' ...':''}`:f.key?`من JSON: ${f.key}`:'—');
+    const card=document.createElement('div');
+    card.className=`field-card${isPlacing?' placing':''}`;
+    card.innerHTML=`
+      <div class="fc-top">
+        <div class="fc-dot" style="background:${f.color}"></div>
+        <div class="fc-name">${f.label}</div>
+        <span class="fc-badge ${f.type}">${f.type==='fixed'?'📌 ثابت':'📋 متغير'}</span>
+      </div>
+      <div class="fc-meta">
+        <span>🔤 ${f.font.split(',')[0].replace(/'/g,'')}</span>
+        <span>📏 ${f.size}px</span>
+        <span>💬 ${preview}</span>
+        ${f.key?`<span>🔑 ${f.key}</span>`:''}
+      </div>
+      <div class="fc-pos ${placed?'placed':'unplaced'}">
+        <span>${placed?`X:${Math.round(f.tx)} · Y:${Math.round(f.ty)}`:'الموضع غير محدد بعد'}</span>
+        <span>${placed?'✅ محدد':'❌ يحتاج تحديد'}</span>
+      </div>
+      <div class="fc-actions">
+        <button class="fc-btn${isPlacing?' active-place':''}" onclick="togglePlace('${f.id}')">
+          ${isPlacing?'⏹ إلغاء':'📍 تحديد الموضع'}
+        </button>
+        <button class="fc-btn" onclick="openFieldModal('${f.id}')">✏️ تعديل</button>
+        <button class="fc-btn del" onclick="deleteField('${f.id}')">🗑 حذف</button>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function deleteField(id){
+  if(!confirm('حذف هذا الحقل نهائياً؟'))return;
+  S.fields=S.fields.filter(f=>f.id!==id);
+  if(S.placing===id)stopPlacing();
+  renderFieldsList();drawAll();renderDots();toast('تم حذف الحقل','ok');
+}
+
+/* ══ RENDER (offscreen high-res) ══ */
+function makeCanvas(name,idx){
+  const oc=document.createElement('canvas');oc.width=S.iw;oc.height=S.ih;
+  const ox=oc.getContext('2d',{alpha:false});
+  ox.imageSmoothingEnabled=true;ox.imageSmoothingQuality='high';
+  ox.drawImage(S.img,0,0,S.iw,S.ih);
+  /* scale=1 for full res */
+  const origScale=S.scale;S.scale=1;
+  if(S.tx!==null)drawTxt(ox,name,S.tx,S.ty,{font:$('ff').value,size:parseInt($('fs').value)||52,color:$('fc').value,bold:S.bold,italic:S.italic,underline:S.underline,align:S.align});
+  for(const f of S.fields){
+    if(f.tx===null)continue;
+    const val=fieldVal(f,idx);if(!val)continue;
+    drawTxt(ox,val,f.tx,f.ty,f);
+  }
+  S.scale=origScale;
+  return oc;
+}
+function makePNG(name,idx){return new Promise(res=>makeCanvas(name,idx).toBlob(res,'image/png',1.0))}
+async function makePDF(name,idx){
+  const blob=await makePNG(name,idx);const url=URL.createObjectURL(blob);
+  const pdf=new window.jspdf.jsPDF({orientation:S.iw>=S.ih?'landscape':'portrait',unit:'px',format:[S.iw,S.ih],compress:false});
+  pdf.addImage(url,'PNG',0,0,S.iw,S.ih,'','NONE');URL.revokeObjectURL(url);
+  return pdf.output('arraybuffer');
+}
+
+/* ══ OVERLAY ══ */
+function setOv(on,ttl='',sub='',pct=-1){
+  $('ovEl').hidden=!on;
+  if(ttl)$('ovTtl').textContent=ttl;
+  if(sub!=='')$('ovSub').textContent=sub;
+  if(pct>=0)$('ovFill').style.width=`${pct}%`;
+}
+function showProg(mob,v){$(mob?'mobProg':'dskProg').hidden=!v}
+function setProg(mob,pct,lbl){const p=mob?'m':'d';$(`${p}PFill`).style.width=`${pct}%`;$(`${p}PLbl`).textContent=lbl}
+
+/* ══ GENERATE ══ */
+async function generate(){
+  if(!S.img||!S.names.length||S.tx===null){toast('تأكد من الصورة والموضع والأسماء','err');return}
+  const unplaced=S.fields.filter(f=>f.tx===null);
+  if(unplaced.length&&!confirm(`${unplaced.length} حقل(حقول) بدون موضع: ${unplaced.map(f=>f.label).join('، ')}\nهل تريد المتابعة بدونها؟`))return;
+  if(S.mode==='zip')await genZip();else await genIndv();
+}
+
+async function genZip(){
+  const mob=isMob();
+  $('zipBanner')&&($('zipBanner').hidden=true);
+  showProg(mob,true);setOv(true,'جاري التوليد...','',0);
+  const zip=new JSZip(),total=S.names.length;
+  try{
+    for(let i=0;i<total;i++){
+      const name=S.names[i],pct=Math.round(i/total*100);
+      setOv(true,`(${i+1}/${total}) ${name}`,'',pct);
+      setProg(mob,pct,`${i+1} من ${total}`);
+      await tick();
+      const sn=safe(name);
+      if(S.fmt==='pdf')zip.file(`${sn}.pdf`,await makePDF(name,i));
+      else zip.file(`${sn}.png`,await makePNG(name,i));
+    }
+    setOv(true,'جاري الضغط...','',100);await tick();
+    const zblob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
+    S.lastZip=zblob;setOv(false);showProg(mob,false);
+    if(mob&&$('zipBanner')){
+      $('zBSub').textContent=`تم توليد ${total} شهادة — اضغط للتحميل`;
+      $('zipBanner').hidden=false;
+      $('zBBtn').onclick=()=>{saveAs(S.lastZip,'certificates.zip');toast('جاري التحميل...','ok')};
+    }else{saveAs(zblob,'certificates.zip')}
+    setStep(4);toast(`✅ ${total} شهادة في ZIP!`,'ok');
+  }catch(err){console.error(err);toast(`خطأ: ${err.message}`,'err');setOv(false);showProg(mob,false)}
+}
+
+async function genIndv(){
+  const rs=$('resSec'),rg=$('resGrid');
+  rg.innerHTML='';rs.classList.remove('show');rs.hidden=true;
+  S.indvBlobs.forEach(b=>{try{URL.revokeObjectURL(b.url)}catch(e){}});S.indvBlobs=[];
+  const total=S.names.length;setOv(true,'جاري التوليد...','',0);
+  try{
+    for(let i=0;i<total;i++){
+      const name=S.names[i];
+      setOv(true,`(${i+1}/${total}) ${name}`,'',Math.round(i/total*100));await tick();
+      let blob,ext;
+      if(S.fmt==='pdf'){blob=new Blob([await makePDF(name,i)],{type:'application/pdf'});ext='pdf'}
+      else{blob=await makePNG(name,i);ext='png'}
+      const url=URL.createObjectURL(blob),sn=safe(name);
+      S.indvBlobs.push({name,sn,ext,url,blob});
+      rg.appendChild(buildCard(name,sn,ext,url,blob,i));
+    }
+    setOv(false);$('resCount').textContent=total;rs.hidden=false;rs.classList.add('show');
+    if(isMob()){switchMobTab('p');rs.style.display='block';setTimeout(()=>rs.scrollIntoView({behavior:'smooth',block:'start'}),200)}
+    else setTimeout(()=>rs.scrollIntoView({behavior:'smooth',block:'start'}),100);
+    setStep(4);toast(`✅ ${total} شهادة جاهزة`,'ok');
+  }catch(err){console.error(err);toast(`خطأ: ${err.message}`,'err');setOv(false)}
+}
+
+function buildCard(name,sn,ext,url,blob,idx){
+  const card=document.createElement('div');card.className='res-card';card.style.animationDelay=`${idx*25}ms`;
+  if(ext==='png'){const th=document.createElement('img');th.className='res-thumb';th.src=url;th.alt=name;th.loading='lazy';th.addEventListener('click',()=>openLbox(url,name));card.appendChild(th)}
+  else{const ph=document.createElement('div');ph.className='res-pdf-ph';ph.textContent='📄';card.appendChild(ph)}
+  const body=document.createElement('div');body.className='res-body';
+  const nm=document.createElement('div');nm.className='res-name';nm.textContent=name;nm.title=name;
+  const dl=document.createElement('button');dl.className='res-dl';dl.innerHTML=`${ext==='pdf'?'📄':'🖼'} تحميل`;
+  dl.addEventListener('click',()=>{saveAs(blob,`${sn}.${ext}`);dl.innerHTML='✅ تم';dl.classList.add('done');setTimeout(()=>{dl.innerHTML=`${ext==='pdf'?'📄':'🖼'} تحميل`;dl.classList.remove('done')},2500)});
+  body.appendChild(nm);body.appendChild(dl);card.appendChild(body);return card;
+}
+function closeRes(){$('resSec').classList.remove('show');$('resSec').hidden=true;$('resGrid').innerHTML='';S.indvBlobs.forEach(b=>{try{URL.revokeObjectURL(b.url)}catch(e){}});S.indvBlobs=[]}
+
+/* ══ LIGHTBOX ══ */
+function openLbox(url,name){$('lboxImg').src=url;$('lboxImg').alt=name;$('lbox').hidden=false}
+function closeLbox(){$('lbox').hidden=true}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLbox();closeModal()}});
+
+/* ══ STEPS ══ */
+function setStep(n){for(let i=1;i<=4;i++){const e=$(`s${i}`);if(!e)continue;e.classList.toggle('active',i===n);e.classList.toggle('done',i<n)}}
+
+/* ══ RESIZE ══ */
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(S.img)fitCanvas()},120)});
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded',()=>{
+  /* image upload zone setup (already inlined above via IIFE) */
+  renderFieldsList();
+  if(isMob()){mainEl.classList.remove('mob-on');sbEl.classList.add('mob-on')}
+  toast('مرحباً! ارفع صورة الشهادة للبدء 🎓','in');
+});
+</script>
+</body>
+</html>
